@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #f4f7ff;
+  background: radial-gradient(circle at 20% 20%, #1f2840, #0b101b 70%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --surface-panel: rgba(18, 26, 40, 0.78);
+  --surface-elevated: rgba(27, 37, 54, 0.72);
+  --accent-primary: #6f8cff;
+  --accent-positive: #4ed2a7;
+  --accent-warning: #f7b84b;
+  --accent-danger: #ff7d73;
+  --text-muted: rgba(204, 214, 235, 0.75);
+  --text-strong: #f8fbff;
+  --shadow-soft: 0 24px 45px rgba(4, 9, 20, 0.45);
+  --shadow-subtle: 0 18px 38px rgba(8, 12, 24, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #151c2f, #090c16 70%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}

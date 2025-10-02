@@ -1,0 +1,45 @@
+.notification-stack {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+}
+
+.notification {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-soft);
+  font-size: 0.9rem;
+  max-width: 18rem;
+  animation: notification-pop 0.4s ease;
+}
+
+.notification--positive {
+  background: linear-gradient(135deg, rgba(72, 199, 116, 0.8), rgba(48, 146, 78, 0.8));
+  color: #0b2e16;
+}
+
+.notification--negative {
+  background: linear-gradient(135deg, rgba(255, 99, 71, 0.85), rgba(168, 32, 32, 0.85));
+  color: #fff7f7;
+}
+
+.notification--neutral {
+  background: linear-gradient(135deg, rgba(118, 138, 166, 0.8), rgba(68, 84, 105, 0.8));
+  color: #f5f8ff;
+}
+
+@keyframes notification-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
