@@ -1,0 +1,68 @@
+.event-log {
+  background: var(--surface-panel);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-log h3 {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.event-log__items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 18rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.event-log__item {
+  border-radius: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-elevated);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-log__item header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.event-log__item header span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.event-log__item header strong {
+  font-size: 0.95rem;
+  color: var(--text-strong);
+}
+
+.event-log__item p {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.event-log__item--success {
+  border: 1px solid rgba(72, 199, 116, 0.2);
+}
+
+.event-log__item--warning {
+  border: 1px solid rgba(255, 193, 59, 0.25);
+}
+
+.event-log__item--danger {
+  border: 1px solid rgba(255, 107, 99, 0.25);
+}

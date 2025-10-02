@@ -1,0 +1,277 @@
+[
+  {
+    "id": "medes",
+    "name": "Medes",
+    "description": "Highland coalition famed for swift horse archers and vigilant satraps guarding the Iranian plateau.",
+    "territories": ["medes_caspian", "medes_plateau", "medes_frontier"],
+    "stats": {
+      "stability": 68,
+      "military": 74,
+      "tech": 56,
+      "economy": 62,
+      "crime": 34,
+      "influence": 65,
+      "support": 58,
+      "science": 52,
+      "laws": 60
+    },
+    "advantages": [
+      "Cavalry Overwatch: +5% defense bonus when holding frontier tiles.",
+      "Satrap Network reduces crime growth after wars by 1."
+    ],
+    "disadvantages": [
+      "Fragmented Nobility: -5 stability if economy falls below 50.",
+      "Mountain Supply: Army recruitment costs +1 upkeep."
+    ]
+  },
+  {
+    "id": "shang",
+    "name": "Shang",
+    "description": "Bronze-age dynasty mastering divination and chariot warfare across the Yellow River basin.",
+    "territories": ["shang_yellow", "shang_delta"],
+    "stats": {
+      "stability": 72,
+      "military": 70,
+      "tech": 64,
+      "economy": 69,
+      "crime": 28,
+      "influence": 70,
+      "support": 75,
+      "science": 66,
+      "laws": 68
+    },
+    "advantages": [
+      "Oracle Workshops: Invest in Tech grants +1 extra science.",
+      "Ritual Authority: Events give +1 stability when positive."
+    ],
+    "disadvantages": [
+      "Ancestor Burdens: -5 support if laws fall under 55.",
+      "Flood Risk: Delta territories suffer +1 crime per drought event."
+    ]
+  },
+  {
+    "id": "harappa",
+    "name": "Harappa",
+    "description": "Indus valley planners balancing trade guilds and elaborate irrigation networks.",
+    "territories": ["harappa_indus", "harappa_meluha", "harappa_sindh"],
+    "stats": {
+      "stability": 75,
+      "military": 54,
+      "tech": 62,
+      "economy": 78,
+      "crime": 22,
+      "influence": 60,
+      "support": 70,
+      "science": 64,
+      "laws": 71
+    },
+    "advantages": [
+      "Canal Artisans: Collect Taxes grants +2 additional economy.",
+      "Script Sealers: Suppress Crime also gives +2 influence."
+    ],
+    "disadvantages": [
+      "Pacifist Merchants: -10 military if stability drops under 55.",
+      "Monsoon Fragility: Drought events reduce economy by extra 2."
+    ]
+  },
+  {
+    "id": "akkad",
+    "name": "Akkad",
+    "description": "Imperial architects leveraging river trade and siegecraft to dominate Mesopotamia.",
+    "territories": ["akkad_mesopotamia", "akkad_lower"],
+    "stats": {
+      "stability": 64,
+      "military": 76,
+      "tech": 60,
+      "economy": 66,
+      "crime": 40,
+      "influence": 72,
+      "support": 63,
+      "science": 58,
+      "laws": 62
+    },
+    "advantages": [
+      "Siege Masters: Declare War grants +5 military this turn.",
+      "Trade Tributaries: Alliances yield +2 economy on upkeep."
+    ],
+    "disadvantages": [
+      "Rebel Cities: Crime penalties doubled on revolt checks.",
+      "Harsh Conscription: Recruit Army lowers support by 2."
+    ]
+  },
+  {
+    "id": "assyria",
+    "name": "Assyria",
+    "description": "Hardened armies and iron discipline radiating from fortress cities along the Tigris.",
+    "territories": ["assyria_upper", "assyria_heartland"],
+    "stats": {
+      "stability": 66,
+      "military": 82,
+      "tech": 58,
+      "economy": 60,
+      "crime": 36,
+      "influence": 68,
+      "support": 59,
+      "science": 55,
+      "laws": 65
+    },
+    "advantages": [
+      "Iron Discipline: Suppress Crime reduces crime by +2 extra.",
+      "Rapid Levies: Recruit Army gains +2 strength when near capital."
+    ],
+    "disadvantages": [
+      "Overextension: Stability -3 for each concurrent war after the first.",
+      "Intimidation Diplomacy: Diplomacy Offer effects halved."
+    ]
+  },
+  {
+    "id": "carthage",
+    "name": "Carthage",
+    "description": "Thalassocratic traders balancing mercenary hosts and far-flung harbors.",
+    "territories": ["carthage_carthage", "carthage_maghrib"],
+    "stats": {
+      "stability": 70,
+      "military": 68,
+      "tech": 59,
+      "economy": 80,
+      "crime": 30,
+      "influence": 75,
+      "support": 67,
+      "science": 57,
+      "laws": 63
+    },
+    "advantages": [
+      "Merchant Fleets: Collect Taxes adds +1 influence.",
+      "Hirelings: Recruit Army costs -1 economy."
+    ],
+    "disadvantages": [
+      "Senatorial Gridlock: Passing laws requires stability >=60 or fails.",
+      "Mercenary Loyalty: Lose 3 stability if military falls under 55."
+    ]
+  },
+  {
+    "id": "scythia",
+    "name": "Scythia",
+    "description": "Nomadic confederations patrolling the steppe with composite bows and raiding savvy.",
+    "territories": ["scythia_steppe", "scythia_caspian", "scythia_borderlands"],
+    "stats": {
+      "stability": 58,
+      "military": 78,
+      "tech": 50,
+      "economy": 54,
+      "crime": 46,
+      "influence": 55,
+      "support": 62,
+      "science": 48,
+      "laws": 52
+    },
+    "advantages": [
+      "Horse Archers: Move Army from steppe tiles gains +10% attack bonus.",
+      "Migratory Slack: Stability loss from war reduced by 2."
+    ],
+    "disadvantages": [
+      "Loose Confederacy: Passing laws reduces support by 3.",
+      "Nomad Crime: Crime decays 1 point slower."
+    ]
+  },
+  {
+    "id": "egypt",
+    "name": "Egypt",
+    "description": "Nile dynasts sustaining bureaucracy and monumental projects through predictable floods.",
+    "territories": ["egypt_delta", "egypt_upper"],
+    "stats": {
+      "stability": 82,
+      "military": 64,
+      "tech": 62,
+      "economy": 77,
+      "crime": 24,
+      "influence": 78,
+      "support": 80,
+      "science": 60,
+      "laws": 74
+    },
+    "advantages": [
+      "Inundation Control: Events that increase economy also give +1 stability.",
+      "Vizier Cadres: Pass Law increases laws by an additional 2."
+    ],
+    "disadvantages": [
+      "Labor Corvée: Suppress Crime reduces support by 2.",
+      "Desert Supply: Armies outside Nile tiles lose 1 strength per turn."
+    ]
+  },
+  {
+    "id": "rome",
+    "name": "Rome",
+    "description": "Ambitious republic leveraging disciplined legions, civic roads, and resilient citizenry.",
+    "territories": ["rome_etruria", "rome_latium", "rome_campania"],
+    "stats": {
+      "stability": 74,
+      "military": 80,
+      "tech": 66,
+      "economy": 72,
+      "crime": 32,
+      "influence": 76,
+      "support": 78,
+      "science": 64,
+      "laws": 70
+    },
+    "advantages": [
+      "Legion Logistics: Move Army costs 1 less strength when marching on roads.",
+      "Civic Virtue: Pass Law also grants +1 support if stability >=70."
+    ],
+    "disadvantages": [
+      "Class Tensions: Collect Taxes adds +2 crime if support <65.",
+      "Senate Debates: Diplomacy Offer effectiveness reduced by 1 relation."
+    ]
+  },
+  {
+    "id": "minoa",
+    "name": "Minoa",
+    "description": "Aegean maritime power controlling key islands with vibrant artisan guilds.",
+    "territories": ["minoa_aegean", "minoa_crete"],
+    "stats": {
+      "stability": 68,
+      "military": 58,
+      "tech": 63,
+      "economy": 74,
+      "crime": 26,
+      "influence": 69,
+      "support": 72,
+      "science": 59,
+      "laws": 67
+    },
+    "advantages": [
+      "Sea Lanes: Diplomacy Offer grants +1 economy with coastal nations.",
+      "Palatial Stores: Events that lower economy reduced by 2."
+    ],
+    "disadvantages": [
+      "Earthquake Threat: Random events can hit stability harder (-1 additional).",
+      "No Standing Army: Recruit Army costs +1 economy."
+    ]
+  },
+  {
+    "id": "hittites",
+    "name": "Hittites",
+    "description": "Anatolian federation famed for chariot corps and complex legal code.",
+    "territories": ["hittites_anatolia", "hittites_capital"],
+    "stats": {
+      "stability": 71,
+      "military": 77,
+      "tech": 61,
+      "economy": 64,
+      "crime": 35,
+      "influence": 66,
+      "support": 68,
+      "science": 57,
+      "laws": 76
+    },
+    "advantages": [
+      "Bronze Forges: Invest in Tech also adds +1 military.",
+      "Tablet Archive: Pass Law increases stability by 1."
+    ],
+    "disadvantages": [
+      "Vassal Disputes: Alliances reduce stability by 1 due to obligations.",
+      "Mountain Routes: Move Army into Anatolia tiles costs +1 strength."
+    ]
+  }
+]

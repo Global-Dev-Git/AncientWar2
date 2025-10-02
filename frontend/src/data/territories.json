@@ -1,0 +1,218 @@
+[
+  {
+    "id": "rome_etruria",
+    "name": "Etruria",
+    "coordinates": [1, 0],
+    "terrain": "hills",
+    "neighbors": ["rome_latium", "minoa_aegean", "hittites_anatolia"],
+    "ownerId": "rome"
+  },
+  {
+    "id": "rome_latium",
+    "name": "Latium",
+    "coordinates": [2, 0],
+    "terrain": "plains",
+    "neighbors": ["rome_etruria", "rome_campania", "minoa_aegean"],
+    "ownerId": "rome"
+  },
+  {
+    "id": "rome_campania",
+    "name": "Campania",
+    "coordinates": [3, 0],
+    "terrain": "coastal",
+    "neighbors": ["rome_latium", "carthage_carthage", "minoa_crete"],
+    "ownerId": "rome"
+  },
+  {
+    "id": "carthage_carthage",
+    "name": "Carthage",
+    "coordinates": [3, 1],
+    "terrain": "coastal",
+    "neighbors": ["rome_campania", "carthage_maghrib", "minoa_crete", "egypt_delta"],
+    "ownerId": "carthage"
+  },
+  {
+    "id": "carthage_maghrib",
+    "name": "Maghrib",
+    "coordinates": [4, 1],
+    "terrain": "desert",
+    "neighbors": ["carthage_carthage", "egypt_upper"],
+    "ownerId": "carthage"
+  },
+  {
+    "id": "minoa_aegean",
+    "name": "Aegean Isles",
+    "coordinates": [2, 1],
+    "terrain": "coastal",
+    "neighbors": ["rome_etruria", "rome_latium", "minoa_crete", "hittites_capital"],
+    "ownerId": "minoa"
+  },
+  {
+    "id": "minoa_crete",
+    "name": "Crete",
+    "coordinates": [3, 2],
+    "terrain": "coastal",
+    "neighbors": ["rome_campania", "carthage_carthage", "minoa_aegean", "egypt_delta"],
+    "ownerId": "minoa"
+  },
+  {
+    "id": "hittites_anatolia",
+    "name": "Western Anatolia",
+    "coordinates": [1, 1],
+    "terrain": "mountain",
+    "neighbors": ["rome_etruria", "minoa_aegean", "hittites_capital", "scythia_borderlands"],
+    "ownerId": "hittites"
+  },
+  {
+    "id": "hittites_capital",
+    "name": "Hattusa",
+    "coordinates": [2, 2],
+    "terrain": "mountain",
+    "neighbors": ["minoa_aegean", "hittites_anatolia", "assyria_upper", "assyria_heartland"],
+    "ownerId": "hittites"
+  },
+  {
+    "id": "assyria_upper",
+    "name": "Upper Assyria",
+    "coordinates": [1, 3],
+    "terrain": "hills",
+    "neighbors": ["hittites_capital", "assyria_heartland", "scythia_borderlands", "akkad_mesopotamia"],
+    "ownerId": "assyria"
+  },
+  {
+    "id": "assyria_heartland",
+    "name": "Assur",
+    "coordinates": [2, 3],
+    "terrain": "plains",
+    "neighbors": ["hittites_capital", "assyria_upper", "akkad_mesopotamia", "akkad_lower"],
+    "ownerId": "assyria"
+  },
+  {
+    "id": "akkad_mesopotamia",
+    "name": "Akkad",
+    "coordinates": [2, 4],
+    "terrain": "plains",
+    "neighbors": ["assyria_upper", "assyria_heartland", "akkad_lower", "medes_plateau"],
+    "ownerId": "akkad"
+  },
+  {
+    "id": "akkad_lower",
+    "name": "Lower Mesopotamia",
+    "coordinates": [3, 4],
+    "terrain": "river",
+    "neighbors": ["assyria_heartland", "akkad_mesopotamia", "egypt_delta", "medes_plateau", "harappa_indus"],
+    "ownerId": "akkad"
+  },
+  {
+    "id": "egypt_delta",
+    "name": "Lower Nile",
+    "coordinates": [3, 3],
+    "terrain": "river",
+    "neighbors": ["carthage_carthage", "minoa_crete", "akkad_lower", "egypt_upper"],
+    "ownerId": "egypt"
+  },
+  {
+    "id": "egypt_upper",
+    "name": "Upper Nile",
+    "coordinates": [4, 3],
+    "terrain": "river",
+    "neighbors": ["egypt_delta", "carthage_maghrib", "medes_frontier"],
+    "ownerId": "egypt"
+  },
+  {
+    "id": "medes_caspian",
+    "name": "Caspian Gates",
+    "coordinates": [1, 4],
+    "terrain": "mountain",
+    "neighbors": ["assyria_upper", "medes_plateau", "scythia_caspian"],
+    "ownerId": "medes"
+  },
+  {
+    "id": "medes_plateau",
+    "name": "Median Plateau",
+    "coordinates": [2, 5],
+    "terrain": "hills",
+    "neighbors": ["akkad_mesopotamia", "akkad_lower", "medes_caspian", "medes_frontier", "harappa_indus"],
+    "ownerId": "medes"
+  },
+  {
+    "id": "medes_frontier",
+    "name": "Eastern Frontier",
+    "coordinates": [4, 4],
+    "terrain": "mountain",
+    "neighbors": ["egypt_upper", "medes_plateau", "harappa_meluha"],
+    "ownerId": "medes"
+  },
+  {
+    "id": "harappa_indus",
+    "name": "Indus Heartland",
+    "coordinates": [2, 6],
+    "terrain": "river",
+    "neighbors": ["medes_plateau", "akkad_lower", "harappa_meluha", "shang_yellow"],
+    "ownerId": "harappa"
+  },
+  {
+    "id": "harappa_meluha",
+    "name": "Meluha Coast",
+    "coordinates": [3, 5],
+    "terrain": "coastal",
+    "neighbors": ["medes_plateau", "harappa_indus", "medes_frontier", "harappa_sindh"],
+    "ownerId": "harappa"
+  },
+  {
+    "id": "harappa_sindh",
+    "name": "Sindh Delta",
+    "coordinates": [4, 5],
+    "terrain": "coastal",
+    "neighbors": ["harappa_meluha", "medes_frontier", "shang_delta"],
+    "ownerId": "harappa"
+  },
+  {
+    "id": "shang_yellow",
+    "name": "Yellow River",
+    "coordinates": [2, 7],
+    "terrain": "river",
+    "neighbors": ["harappa_indus", "shang_delta", "scythia_east"],
+    "ownerId": "shang"
+  },
+  {
+    "id": "shang_delta",
+    "name": "Eastern Delta",
+    "coordinates": [3, 6],
+    "terrain": "coastal",
+    "neighbors": ["harappa_meluha", "harappa_sindh", "shang_yellow"],
+    "ownerId": "shang"
+  },
+  {
+    "id": "scythia_steppe",
+    "name": "Great Steppe",
+    "coordinates": [0, 3],
+    "terrain": "steppe",
+    "neighbors": ["scythia_borderlands", "scythia_caspian"],
+    "ownerId": "scythia"
+  },
+  {
+    "id": "scythia_caspian",
+    "name": "Caspian Steppe",
+    "coordinates": [0, 4],
+    "terrain": "steppe",
+    "neighbors": ["scythia_steppe", "medes_caspian", "scythia_east"],
+    "ownerId": "scythia"
+  },
+  {
+    "id": "scythia_borderlands",
+    "name": "Border Marches",
+    "coordinates": [1, 2],
+    "terrain": "steppe",
+    "neighbors": ["scythia_steppe", "hittites_anatolia", "assyria_upper"],
+    "ownerId": "scythia"
+  },
+  {
+    "id": "scythia_east",
+    "name": "Far Steppe",
+    "coordinates": [1, 5],
+    "terrain": "steppe",
+    "neighbors": ["scythia_caspian", "medes_plateau", "shang_yellow"],
+    "ownerId": "scythia"
+  }
+]
