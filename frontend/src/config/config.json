@@ -21,5 +21,10 @@
   "baseScienceDrift": 1,
   "baseCrimeGrowth": 1,
   "eventStabilityVariance": 3,
-  "eventEconomyVariance": 4
+  "eventEconomyVariance": 4,
+  "baseTariffRate": 0.08,
+  "priceElasticity": 0.6,
+  "blockadePenalty": 0.5,
+  "routeMaintenance": 2,
+  "smugglingEfficiency": 0.25
 }

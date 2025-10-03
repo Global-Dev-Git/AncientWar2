@@ -8,6 +8,7 @@ import DiplomacyPanel from './components/DiplomacyPanel'
 import EventLog from './components/EventLog'
 import NotificationStack from './components/NotificationStack'
 import { useGameEngine } from './hooks/useGameEngine'
+import { useEconomySelectors } from './hooks/useEconomySelectors'
 import { gameConfig, nations as nationDefinitions } from './game/data'
 import type { ActionType } from './game/types'
 import { ACTION_SHORTCUTS } from './game/constants'
@@ -76,6 +77,11 @@ function App() {
   const territories = useMemo(() => (state ? Object.values(state.territories) : []), [state])
   const nations = useMemo(() => (state ? Object.values(state.nations) : []), [state])
 
+  const { overlay: economyOverlay, summary: economySummary, priceHistory, marketPrices } = useEconomySelectors(
+    state,
+    state?.playerNationId,
+  )
+
   if (!state || !playerNation) {
     return <NationSelect nations={nationDefinitions} onSelect={(nationId) => initialise(nationId)} />
   }
@@ -86,7 +92,15 @@ function App() {
     <div className="app-shell">
       <NotificationStack notifications={state.notifications} />
       <main className="app-main">
-        <HUD nation={playerNation} treasury={playerNation.treasury} turn={state.turn} actionsRemaining={actionsRemaining} />
+        <HUD
+          nation={playerNation}
+          treasury={playerNation.treasury}
+          turn={state.turn}
+          actionsRemaining={actionsRemaining}
+          economySummary={economySummary}
+          marketPrices={marketPrices}
+          priceHistory={priceHistory}
+        />
         <section className="app-content">
           <div className="map-panel">
             <div className="map-panel__header">
@@ -112,6 +126,7 @@ function App() {
               selectedTerritoryId={state.selectedTerritoryId}
               mode={mapMode}
               onSelect={(territoryId) => setSelectedTerritory(territoryId)}
+              economyOverlay={economyOverlay}
             />
           </div>
           <aside className="sidebar">

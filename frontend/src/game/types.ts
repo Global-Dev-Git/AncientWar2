@@ -18,6 +18,8 @@ export type TerrainType =
   | 'steppe'
   | 'desert'
 
+export type ResourceType = 'grain' | 'timber' | 'ore' | 'luxury'
+
 export interface NationDefinition {
   id: string
   name: string
@@ -116,6 +118,11 @@ export interface GameConfig {
   baseCrimeGrowth: number
   eventStabilityVariance: number
   eventEconomyVariance: number
+  baseTariffRate: number
+  priceElasticity: number
+  blockadePenalty: number
+  routeMaintenance: number
+  smugglingEfficiency: number
 }
 
 export interface GameState {
@@ -133,6 +140,7 @@ export interface GameState {
   winner?: string
   defeated?: boolean
   actionsTaken: number
+  economy: EconomyState
 }
 
 export interface PlayerAction {
@@ -149,4 +157,42 @@ export interface CombatResult {
   outcome: 'attackerVictory' | 'defenderHolds' | 'stalemate'
   attackerLoss: number
   defenderLoss: number
+}
+
+export type ResourceLedger = Record<ResourceType, number>
+
+export interface TradeRoute {
+  id: string
+  ownerId: string
+  from: string
+  to: string
+  mode: 'land' | 'sea'
+  blocked: boolean
+  smugglingModifier: number
+}
+
+export interface BlockadeReport {
+  ownerId: string
+  aggressorId: string
+  territories: string[]
+  severity: number
+}
+
+export interface NationEconomySummary {
+  production: ResourceLedger
+  demand: ResourceLedger
+  netExports: ResourceLedger
+  tariffRevenue: number
+  maintenanceCost: number
+  tradeIncome: number
+  blockadePressure: number
+  smugglingRelief: number
+}
+
+export interface EconomyState {
+  marketPrices: Record<ResourceType, number>
+  priceHistory: Record<ResourceType, number[]>
+  tradeRoutes: TradeRoute[]
+  blockades: BlockadeReport[]
+  nationSummaries: Record<string, NationEconomySummary>
 }

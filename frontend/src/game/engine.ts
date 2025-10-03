@@ -4,8 +4,12 @@ import { TERRAIN_MODIFIERS } from './constants'
 import type {
   ActionType,
   CombatResult,
+  EconomyState,
   GameState,
   NationState,
+  ResourceLedger,
+  ResourceType,
+  TradeRoute,
   PlayerAction,
   TerritoryState,
 } from './types'
@@ -19,6 +23,7 @@ import {
   toggleAlliance,
   toggleWar,
   updateStats,
+  isAtWar,
 } from './utils'
 import { decideActions, getArchetypeMap } from './ai'
 import { applyTurnEvents } from './events'
@@ -41,6 +46,308 @@ const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionT
   carthage: { RecruitArmy: -1 },
   medes: { RecruitArmy: 1 },
   minoa: { RecruitArmy: 1 },
+}
+
+const RESOURCE_TYPES: ResourceType[] = ['grain', 'timber', 'ore', 'luxury']
+
+const BASE_MARKET_PRICES: Record<ResourceType, number> = {
+  grain: 10,
+  timber: 12,
+  ore: 16,
+  luxury: 24,
+}
+
+const PRICE_HISTORY_LENGTH = 12
+
+const TERRAIN_RESOURCE_OUTPUT: Record<TerritoryState['terrain'], ResourceLedger> = {
+  plains: { grain: 6, timber: 2, ore: 1, luxury: 1 },
+  hills: { grain: 4, timber: 3, ore: 2, luxury: 1 },
+  mountain: { grain: 2, timber: 1, ore: 4, luxury: 1 },
+  river: { grain: 7, timber: 2, ore: 1, luxury: 2 },
+  coastal: { grain: 5, timber: 3, ore: 1, luxury: 3 },
+  steppe: { grain: 3, timber: 2, ore: 1, luxury: 1 },
+  desert: { grain: 1, timber: 1, ore: 1, luxury: 2 },
+}
+
+const emptyLedger = (): ResourceLedger => ({ grain: 0, timber: 0, ore: 0, luxury: 0 })
+
+const cloneLedger = (ledger: ResourceLedger): ResourceLedger => ({ ...ledger })
+
+const addLedger = (target: ResourceLedger, delta: ResourceLedger): ResourceLedger => {
+  RESOURCE_TYPES.forEach((resource) => {
+    target[resource] += delta[resource]
+  })
+  return target
+}
+
+const scaleLedger = (ledger: ResourceLedger, factor: number): ResourceLedger => {
+  const result = emptyLedger()
+  RESOURCE_TYPES.forEach((resource) => {
+    result[resource] = ledger[resource] * factor
+  })
+  return result
+}
+
+const subtractLedger = (a: ResourceLedger, b: ResourceLedger): ResourceLedger => {
+  const result = emptyLedger()
+  RESOURCE_TYPES.forEach((resource) => {
+    result[resource] = a[resource] - b[resource]
+  })
+  return result
+}
+
+const ledgerValue = (ledger: ResourceLedger, prices: Record<ResourceType, number>): number =>
+  RESOURCE_TYPES.reduce((sum, resource) => sum + ledger[resource] * prices[resource], 0)
+
+const calculateTerritoryProduction = (territory: TerritoryState): ResourceLedger => {
+  const base = TERRAIN_RESOURCE_OUTPUT[territory.terrain] ?? emptyLedger()
+  const multiplier = 0.6 + territory.development / 100
+  return scaleLedger(base, multiplier)
+}
+
+const calculateNationProduction = (state: GameState, nationId: string): ResourceLedger => {
+  const production = emptyLedger()
+  const tiles = getControlledTerritories(state, nationId)
+  tiles.forEach((territory) => {
+    addLedger(production, calculateTerritoryProduction(territory))
+  })
+  return production
+}
+
+const calculateNationDemand = (nation: NationState, territoriesControlled: number): ResourceLedger => {
+  const baseDemand = emptyLedger()
+  const populationFactor = Math.max(1, territoriesControlled)
+  baseDemand.grain = populationFactor * (4 + nation.stats.stability / 50)
+  baseDemand.timber = populationFactor * (2 + nation.stats.economy / 80)
+  baseDemand.ore = populationFactor * (1.5 + nation.stats.military / 120)
+  baseDemand.luxury = populationFactor * (0.75 + nation.stats.influence / 140)
+  return baseDemand
+}
+
+const buildTradeRoutes = (state: GameState): TradeRoute[] => {
+  const routes: TradeRoute[] = []
+  const seen = new Set<string>()
+  Object.values(state.territories).forEach((territory) => {
+    territory.neighbors.forEach((neighborId) => {
+      const neighbor = state.territories[neighborId]
+      if (!neighbor) return
+      if (neighbor.ownerId !== territory.ownerId) return
+      const pairKey = [territory.id, neighbor.id].sort().join('|')
+      if (seen.has(pairKey)) return
+      seen.add(pairKey)
+      const mode = territory.terrain === 'coastal' || neighbor.terrain === 'coastal' ? 'sea' : 'land'
+      routes.push({
+        id: `${territory.ownerId}:${pairKey}:${mode}`,
+        ownerId: territory.ownerId,
+        from: territory.id,
+        to: neighbor.id,
+        mode,
+        blocked: false,
+        smugglingModifier: 0,
+      })
+    })
+  })
+  return routes
+}
+
+const markBlockades = (state: GameState, routes: TradeRoute[]): void => {
+  routes.forEach((route) => {
+    if (route.mode !== 'sea') {
+      route.blocked = false
+      route.smugglingModifier = 0
+      return
+    }
+    const from = state.territories[route.from]
+    const to = state.territories[route.to]
+    const hostileNeighbors = new Set<string>([...from.neighbors, ...to.neighbors])
+    const hasBlockade = Array.from(hostileNeighbors).some((neighborId) => {
+      const neighbor = state.territories[neighborId]
+      if (!neighbor) return false
+      if (neighbor.ownerId === route.ownerId) return false
+      return isAtWar(state.diplomacy, route.ownerId, neighbor.ownerId)
+    })
+    route.blocked = hasBlockade
+    route.smugglingModifier = hasBlockade ? gameConfig.smugglingEfficiency : 0
+  })
+}
+
+const deriveBlockadeReports = (state: GameState, routes: TradeRoute[]): EconomyState['blockades'] => {
+  const reportsMap = new Map<string, {
+    ownerId: string
+    aggressorId: string
+    territories: Set<string>
+    blockedRoutes: number
+    totalRoutes: number
+  }>()
+
+  routes
+    .filter((route) => route.mode === 'sea')
+    .forEach((route) => {
+      const keyBase = `${route.ownerId}`
+      const ownerEntry = reportsMap.get(keyBase)
+      if (!ownerEntry) {
+        reportsMap.set(keyBase, {
+          ownerId: route.ownerId,
+          aggressorId: '',
+          territories: new Set<string>(),
+          blockedRoutes: route.blocked ? 1 : 0,
+          totalRoutes: 1,
+        })
+      } else {
+        ownerEntry.totalRoutes += 1
+        if (route.blocked) {
+          ownerEntry.blockedRoutes += 1
+        }
+      }
+
+      if (!route.blocked) {
+        return
+      }
+
+      const from = state.territories[route.from]
+      const to = state.territories[route.to]
+      const neighbors = new Set<string>([...from.neighbors, ...to.neighbors])
+      neighbors.forEach((neighborId) => {
+        const neighbor = state.territories[neighborId]
+        if (!neighbor) return
+        if (neighbor.ownerId === route.ownerId) return
+        if (!isAtWar(state.diplomacy, route.ownerId, neighbor.ownerId)) return
+        const pairKey = `${route.ownerId}|${neighbor.ownerId}`
+        let entry = reportsMap.get(pairKey)
+        if (!entry) {
+          entry = {
+            ownerId: route.ownerId,
+            aggressorId: neighbor.ownerId,
+            territories: new Set<string>(),
+            blockedRoutes: 0,
+            totalRoutes: 0,
+          }
+          reportsMap.set(pairKey, entry)
+        }
+        entry.blockedRoutes += 1
+        entry.totalRoutes += 1
+        entry.territories.add(route.from)
+        entry.territories.add(route.to)
+      })
+    })
+
+  return Array.from(reportsMap.values()).map((entry) => ({
+    ownerId: entry.ownerId,
+    aggressorId: entry.aggressorId,
+    territories: Array.from(entry.territories),
+    severity: entry.totalRoutes > 0 ? entry.blockedRoutes / entry.totalRoutes : 0,
+  }))
+}
+
+const createInitialEconomyState = (state: GameState): EconomyState => {
+  const routes = buildTradeRoutes(state)
+  markBlockades(state, routes)
+  const marketPrices: Record<ResourceType, number> = { ...BASE_MARKET_PRICES }
+  const priceHistory: Record<ResourceType, number[]> = {
+    grain: [marketPrices.grain],
+    timber: [marketPrices.timber],
+    ore: [marketPrices.ore],
+    luxury: [marketPrices.luxury],
+  }
+
+  return {
+    marketPrices,
+    priceHistory,
+    tradeRoutes: routes,
+    blockades: deriveBlockadeReports(state, routes),
+    nationSummaries: {},
+  }
+}
+
+const updateEconomySystems = (state: GameState): void => {
+  const routes = buildTradeRoutes(state)
+  markBlockades(state, routes)
+
+  const productionByNation: Record<string, ResourceLedger> = {}
+  const demandByNation: Record<string, ResourceLedger> = {}
+  const globalSupply = emptyLedger()
+  const globalDemand = emptyLedger()
+
+  Object.values(state.nations).forEach((nation) => {
+    const territoriesControlled = getControlledTerritories(state, nation.id).length
+    const production = calculateNationProduction(state, nation.id)
+    const demand = calculateNationDemand(nation, territoriesControlled)
+    productionByNation[nation.id] = production
+    demandByNation[nation.id] = demand
+    addLedger(globalSupply, production)
+    addLedger(globalDemand, demand)
+  })
+
+  const marketPrices: Record<ResourceType, number> = { ...BASE_MARKET_PRICES }
+  RESOURCE_TYPES.forEach((resource) => {
+    const base = BASE_MARKET_PRICES[resource]
+    const supply = globalSupply[resource]
+    const demand = globalDemand[resource]
+    const imbalance = demand - supply
+    const elasticity = gameConfig.priceElasticity
+    const ratio = demand > 0 ? imbalance / demand : 0
+    const multiplier = 1 + elasticity * ratio
+    const price = base * multiplier
+    marketPrices[resource] = Math.max(base * 0.4, Math.min(base * 1.8, Number(price.toFixed(2))))
+  })
+
+  const nationSummaries = Object.values(state.nations).reduce<Record<string, EconomyState['nationSummaries'][string]>>( (
+    acc,
+    nation,
+  ) => {
+    const production = productionByNation[nation.id]
+    const demand = demandByNation[nation.id]
+    const netExports = subtractLedger(production, demand)
+
+    const routesOwned = routes.filter((route) => route.ownerId === nation.id)
+    const totalSea = routesOwned.filter((route) => route.mode === 'sea')
+    const blockedSea = totalSea.filter((route) => route.blocked)
+    const blockadePressure = totalSea.length > 0 ? blockedSea.length / totalSea.length : 0
+    const smugglingRelief = blockadePressure * gameConfig.smugglingEfficiency
+
+    const exportLedger = emptyLedger()
+    RESOURCE_TYPES.forEach((resource) => {
+      exportLedger[resource] = Math.max(0, netExports[resource])
+    })
+    const exportValue = ledgerValue(exportLedger, marketPrices)
+    const mitigatedExports = exportValue * (1 - gameConfig.blockadePenalty * blockadePressure)
+    const smugglingRecovered = exportValue * smugglingRelief
+    const tariffRevenue = (mitigatedExports + smugglingRecovered) * gameConfig.baseTariffRate
+    const maintenanceCost = routesOwned.length * gameConfig.routeMaintenance
+    const tradeIncome = tariffRevenue - maintenanceCost
+
+    nation.treasury = Math.max(0, nation.treasury + Math.round(tradeIncome))
+
+    acc[nation.id] = {
+      production: cloneLedger(production),
+      demand: cloneLedger(demand),
+      netExports,
+      tariffRevenue: Number(tariffRevenue.toFixed(2)),
+      maintenanceCost: Number(maintenanceCost.toFixed(2)),
+      tradeIncome: Number(tradeIncome.toFixed(2)),
+      blockadePressure: Number(blockadePressure.toFixed(2)),
+      smugglingRelief: Number(smugglingRelief.toFixed(2)),
+    }
+    return acc
+  }, {})
+
+  const priceHistory = { ...state.economy.priceHistory }
+  RESOURCE_TYPES.forEach((resource) => {
+    const history = priceHistory[resource] ? [...priceHistory[resource]] : []
+    history.push(marketPrices[resource])
+    if (history.length > PRICE_HISTORY_LENGTH) {
+      history.splice(0, history.length - PRICE_HISTORY_LENGTH)
+    }
+    priceHistory[resource] = history
+  })
+
+  state.economy = {
+    marketPrices,
+    priceHistory,
+    tradeRoutes: routes,
+    blockades: deriveBlockadeReports(state, routes),
+    nationSummaries,
+  }
 }
 
 export const createInitialGameState = (
@@ -86,7 +393,11 @@ export const createInitialGameState = (
     winner: undefined,
     defeated: undefined,
     actionsTaken: 0,
+    economy: undefined as unknown as EconomyState,
   }
+
+  state.economy = createInitialEconomyState(state)
+  updateEconomySystems(state)
 
   pushLog(state, {
     summary: `${nationStates[playerNationId].name} prepares for ascendance`,
@@ -502,6 +813,8 @@ const upkeepPhase = (state: GameState): void => {
       updateStats(nation, 'stability', -3)
     }
   })
+
+  updateEconomySystems(state)
 }
 
 const revoltChecks = (state: GameState, rng: RandomGenerator): void => {
@@ -605,7 +918,7 @@ export const quickSaveState = (state: GameState): string => {
 
 export const loadStateFromString = (payload: string): GameState => {
   const parsed = JSON.parse(payload)
-  return {
+  const state: GameState = {
     ...parsed,
     diplomacy: {
       relations: parsed.diplomacy.relations,
@@ -613,4 +926,18 @@ export const loadStateFromString = (payload: string): GameState => {
       alliances: new Set(parsed.diplomacy.alliances),
     },
   }
+  if (!state.economy) {
+    state.economy = createInitialEconomyState(state)
+  } else {
+    const priceHistory = { ...state.economy.priceHistory }
+    RESOURCE_TYPES.forEach((resource) => {
+      priceHistory[resource] = [...(priceHistory[resource] ?? [])]
+    })
+    state.economy = {
+      ...state.economy,
+      priceHistory,
+    }
+  }
+  updateEconomySystems(state)
+  return state
 }

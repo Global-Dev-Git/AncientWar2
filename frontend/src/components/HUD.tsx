@@ -1,4 +1,8 @@
-import type { NationState } from '../game/types'
+import type {
+  NationEconomySummary,
+  NationState,
+  ResourceType,
+} from '../game/types'
 import StatBar from './StatBar'
 import './HUD.css'
 
@@ -7,6 +11,9 @@ interface HUDProps {
   treasury: number
   turn: number
   actionsRemaining: number
+  economySummary: NationEconomySummary | null
+  marketPrices: Record<ResourceType, number> | null
+  priceHistory: Record<ResourceType, number[]> | null
 }
 
 const statConfig = [
@@ -32,7 +39,28 @@ const toneFor = (value: number, invert?: boolean) => {
   return 'critical'
 }
 
-export const HUD = ({ nation, treasury, turn, actionsRemaining }: HUDProps) => (
+const RESOURCE_LABELS: Record<ResourceType, string> = {
+  grain: 'Grain',
+  timber: 'Timber',
+  ore: 'Ore',
+  luxury: 'Luxury',
+}
+
+const formatHistory = (series: number[]): string => {
+  if (!series.length) return 'n/a'
+  const lastSamples = series.slice(-6)
+  return lastSamples.map((value) => value.toFixed(1)).join(' → ')
+}
+
+export const HUD = ({
+  nation,
+  treasury,
+  turn,
+  actionsRemaining,
+  economySummary,
+  marketPrices,
+  priceHistory,
+}: HUDProps) => (
   <section className="hud">
     <header className="hud__header">
       <div>
@@ -55,6 +83,30 @@ export const HUD = ({ nation, treasury, turn, actionsRemaining }: HUDProps) => (
         />
       ))}
     </div>
+    {economySummary && marketPrices && priceHistory && (
+      <section className="hud__economy">
+        <header className="hud__economy-header">
+          <h2>Economic Outlook</h2>
+          <div className="hud__economy-metrics">
+            <span>Tariffs {economySummary.tariffRevenue.toFixed(1)}</span>
+            <span>Maintenance {economySummary.maintenanceCost.toFixed(1)}</span>
+            <span>Net {economySummary.tradeIncome.toFixed(1)}</span>
+            <span>Blockade {(economySummary.blockadePressure * 100).toFixed(0)}%</span>
+          </div>
+        </header>
+        <div className="hud__economy-grid">
+          {(Object.keys(RESOURCE_LABELS) as ResourceType[]).map((resource) => (
+            <article key={resource} className="hud__economy-card">
+              <h3>
+                {RESOURCE_LABELS[resource]}
+                <span className="hud__economy-price">{marketPrices[resource].toFixed(1)}</span>
+              </h3>
+              <p className="hud__economy-history">{formatHistory(priceHistory[resource])}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
   </section>
 )
 

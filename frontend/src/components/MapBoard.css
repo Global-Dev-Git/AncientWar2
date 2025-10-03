@@ -30,6 +30,26 @@
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55), 0 12px 22px rgba(12, 18, 30, 0.3);
 }
 
+.map-tile--blockaded {
+  border-color: #f25d52 !important;
+  position: relative;
+}
+
+.map-tile--blockaded::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.9rem;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(242, 93, 82, 0.15),
+    rgba(242, 93, 82, 0.15) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  pointer-events: none;
+}
+
 .map-tile__name {
   font-weight: 700;
   font-size: 0.85rem;
@@ -55,4 +75,24 @@
 
 .map-board--stability .map-tile__meta {
   color: rgba(255, 255, 255, 0.7);
+}
+
+.map-tile__badge {
+  align-self: flex-start;
+  background: rgba(12, 18, 30, 0.78);
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  margin-bottom: 0.3rem;
+}
+
+.map-tile__trade {
+  margin-top: 0.35rem;
+  font-size: 0.65rem;
+  color: rgba(12, 18, 30, 0.85);
+  font-weight: 600;
 }

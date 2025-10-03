@@ -1,4 +1,4 @@
-import type { NationState, TerritoryState } from '../game/types'
+import type { NationState, TerritoryState, TradeRoute } from '../game/types'
 import './MapBoard.css'
 
 interface MapBoardProps {
@@ -7,6 +7,10 @@ interface MapBoardProps {
   selectedTerritoryId?: string
   onSelect: (territoryId: string) => void
   mode: 'political' | 'stability'
+  economyOverlay?: {
+    blockadedTerritories: Set<string>
+    tradeRoutes: TradeRoute[]
+  }
 }
 
 const nationPalette: Record<string, string> = {
@@ -23,7 +27,7 @@ const nationPalette: Record<string, string> = {
   scythia: '#4c90ff',
 }
 
-export const MapBoard = ({ territories, nations, selectedTerritoryId, onSelect, mode }: MapBoardProps) => {
+export const MapBoard = ({ territories, nations, selectedTerritoryId, onSelect, mode, economyOverlay }: MapBoardProps) => {
   const rows = Math.max(...territories.map((territory) => territory.coordinates[0])) + 1
   const cols = Math.max(...territories.map((territory) => territory.coordinates[1])) + 1
 
@@ -34,11 +38,17 @@ export const MapBoard = ({ territories, nations, selectedTerritoryId, onSelect, 
         const color = nationPalette[territory.ownerId] ?? '#888'
         const stability = nation?.stats.stability ?? 50
         const stabilityOpacity = Math.min(0.85, Math.max(0.25, stability / 120))
+        const isBlockaded = economyOverlay?.blockadedTerritories.has(territory.id)
+        const linkedRoutes = economyOverlay
+          ? economyOverlay.tradeRoutes.filter((route) => route.from === territory.id || route.to === territory.id)
+          : []
         return (
           <button
             key={territory.id}
             type="button"
-            className={`map-tile ${selectedTerritoryId === territory.id ? 'map-tile--selected' : ''}`}
+            className={`map-tile ${selectedTerritoryId === territory.id ? 'map-tile--selected' : ''} ${
+              isBlockaded ? 'map-tile--blockaded' : ''
+            }`}
             style={{
               gridRow: territory.coordinates[0] + 1,
               gridColumn: territory.coordinates[1] + 1,
@@ -47,12 +57,16 @@ export const MapBoard = ({ territories, nations, selectedTerritoryId, onSelect, 
             }}
             onClick={() => onSelect(territory.id)}
           >
+            {isBlockaded && <span className="map-tile__badge">Blockaded</span>}
             <span className="map-tile__name">{territory.name}</span>
             <span className="map-tile__owner">{nation?.name ?? 'Unclaimed'}</span>
             <div className="map-tile__meta">
               <span>Garrison {territory.garrison}</span>
               <span>Dev {territory.development}</span>
             </div>
+            {linkedRoutes.length > 0 && (
+              <div className="map-tile__trade">Routes {linkedRoutes.length}</div>
+            )}
           </button>
         )
       })}
