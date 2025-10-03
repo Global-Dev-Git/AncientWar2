@@ -10,6 +10,23 @@ export const TERRAIN_MODIFIERS: Record<TerrainType, number> = {
   desert: 0.9,
 }
 
+export const TERRAIN_MOVEMENT_COST: Record<TerrainType, number> = {
+  plains: 1,
+  hills: 2,
+  mountain: 3,
+  river: 2,
+  coastal: 1,
+  steppe: 1,
+  desert: 2,
+}
+
+export const ZOC_SUPPLY_PENALTY = 8
+
+export const SUPPLY_STATE_THRESHOLDS = {
+  supplied: 70,
+  strained: 40,
+}
+
 export const ACTION_LABELS = {
   InvestInTech: 'Invest in Technology',
   RecruitArmy: 'Recruit Army',

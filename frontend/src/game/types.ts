@@ -37,10 +37,31 @@ export interface TerritoryDefinition {
   ownerId: string
 }
 
+export type SupplyState = 'supplied' | 'strained' | 'exhausted'
+
+export type VisibilityState = 'hidden' | 'fogged' | 'visible'
+
 export interface TerritoryState extends TerritoryDefinition {
   garrison: number
+  unitCount: number
+  morale: number
+  supply: number
+  supplyState: SupplyState
+  siegeProgress: number
   development: number
   unrest: number
+  visibility: Record<string, VisibilityState>
+}
+
+export interface ArmyUnit {
+  id: string
+  territoryId: string
+  strength: number
+  unitCount: number
+  morale: number
+  supply: number
+  supplyState: SupplyState
+  visibility: VisibilityState
 }
 
 export interface NationState extends NationDefinition {
@@ -48,12 +69,6 @@ export interface NationState extends NationDefinition {
   armies: ArmyUnit[]
   treasury: number
   archetype?: AIArchetype
-}
-
-export interface ArmyUnit {
-  id: string
-  territoryId: string
-  strength: number
 }
 
 export type AIArchetype = 'Expansionist' | 'Defensive' | 'Opportunistic'
@@ -125,6 +140,8 @@ export interface GameState {
   nations: Record<string, NationState>
   territories: Record<string, TerritoryState>
   diplomacy: DiplomacyMatrix
+  visibility: Record<string, VisibilityState>
+  battleReports: CombatResult[]
   selectedTerritoryId?: string
   pendingAction?: PlayerAction
   log: TurnLogEntry[]
@@ -149,4 +166,7 @@ export interface CombatResult {
   outcome: 'attackerVictory' | 'defenderHolds' | 'stalemate'
   attackerLoss: number
   defenderLoss: number
+  siegeProgress: number
+  attackerSupplyPenalty: number
+  defenderSupplyPenalty: number
 }

@@ -1,0 +1,76 @@
+.army-inspector {
+  background: linear-gradient(160deg, rgba(23, 34, 55, 0.9), rgba(12, 18, 28, 0.95));
+  border-radius: 1.2rem;
+  padding: 1rem 1.2rem;
+  box-shadow: var(--shadow-soft);
+  color: #f0f4ff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.army-inspector header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.army-inspector h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.army-inspector__status {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(173, 202, 255, 0.85);
+}
+
+.army-inspector__placeholder {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(214, 226, 255, 0.75);
+}
+
+.army-inspector dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem 0.8rem;
+  margin: 0;
+}
+
+.army-inspector dt {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(180, 210, 255, 0.7);
+}
+
+.army-inspector dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f7fbff;
+}
+
+.army-inspector__supply {
+  grid-column: span 2;
+}
+
+.army-inspector__supply--supplied dd {
+  color: #74f5c1;
+}
+
+.army-inspector__supply--strained dd {
+  color: #ffd57e;
+}
+
+.army-inspector__supply--exhausted dd {
+  color: #ff9b8a;
+}
+
+.army-inspector__supply--unknown dd {
+  color: rgba(214, 226, 255, 0.75);
+}

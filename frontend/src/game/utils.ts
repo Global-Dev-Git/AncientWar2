@@ -1,4 +1,11 @@
-import type { DiplomacyMatrix, GameState, NationState, TerritoryState } from './types'
+import { SUPPLY_STATE_THRESHOLDS } from './constants'
+import type {
+  DiplomacyMatrix,
+  GameState,
+  NationState,
+  SupplyState,
+  TerritoryState,
+} from './types'
 
 export const relationKey = (a: string, b: string): string =>
   [a, b].sort().join('|')
@@ -16,11 +23,23 @@ export const updateStats = (nation: NationState, key: keyof NationState['stats']
   nation.stats[key] = Math.max(0, Math.min(100, value))
 }
 
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value))
+
+const deriveSupplyState = (value: number): SupplyState => {
+  if (value >= SUPPLY_STATE_THRESHOLDS.supplied) return 'supplied'
+  if (value >= SUPPLY_STATE_THRESHOLDS.strained) return 'strained'
+  return 'exhausted'
+}
+
 export const adjustTerritoryGarrison = (
   territory: TerritoryState,
   delta: number,
 ): void => {
   territory.garrison = Math.max(0, territory.garrison + delta)
+  territory.unitCount = Math.max(0, territory.unitCount + delta)
+  territory.morale = clamp(territory.morale, 0, 100)
+  territory.supply = clamp(territory.supply, 0, 100)
+  territory.supplyState = deriveSupplyState(territory.supply)
 }
 
 export const ensureRelationMatrix = (

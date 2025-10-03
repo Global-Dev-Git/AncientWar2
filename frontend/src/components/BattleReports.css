@@ -1,0 +1,94 @@
+.battle-reports {
+  background: linear-gradient(160deg, rgba(21, 30, 46, 0.92), rgba(11, 17, 28, 0.95));
+  border-radius: 1.2rem;
+  padding: 1rem 1.2rem;
+  box-shadow: var(--shadow-soft);
+  color: #f3f6ff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.battle-reports header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(173, 202, 255, 0.8);
+}
+
+.battle-reports h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
+.battle-reports__placeholder {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(205, 218, 245, 0.75);
+}
+
+.battle-reports ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.battle-reports__item {
+  background: rgba(17, 26, 42, 0.75);
+  border-radius: 1rem;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: 1px solid rgba(100, 130, 180, 0.25);
+}
+
+.battle-reports__item--attackerVictory {
+  border-color: rgba(105, 224, 176, 0.45);
+}
+
+.battle-reports__item--defenderHolds {
+  border-color: rgba(255, 196, 102, 0.4);
+}
+
+.battle-reports__item--stalemate {
+  border-color: rgba(155, 169, 205, 0.35);
+}
+
+.battle-reports__combatants {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #f8fbff;
+}
+
+.battle-reports__combatants span {
+  font-weight: 600;
+  color: rgba(195, 210, 245, 0.75);
+}
+
+.battle-reports__details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: rgba(205, 218, 245, 0.85);
+}
+
+.battle-reports__stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: rgba(205, 218, 245, 0.8);
+}
+
+.battle-reports__stats--secondary {
+  font-size: 0.68rem;
+  color: rgba(185, 205, 238, 0.75);
+}

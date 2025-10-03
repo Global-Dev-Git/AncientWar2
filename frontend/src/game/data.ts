@@ -7,7 +7,12 @@ import type {
   GameConfig,
   NationState,
   TerritoryState,
+  VisibilityState,
 } from './types'
+
+const initialVisibilityMap = (ownerId: string): Record<string, VisibilityState> => ({
+  [ownerId]: 'visible',
+})
 
 export const nations: NationDefinition[] = nationsRaw
 export const territories: TerritoryDefinition[] = territoriesRaw
@@ -20,6 +25,11 @@ export const buildInitialNationState = (definition: NationDefinition): NationSta
     id: `${definition.id}-army-${index + 1}`,
     territoryId,
     strength: 6,
+    unitCount: 6,
+    morale: 70,
+    supply: 80,
+    supplyState: 'supplied',
+    visibility: 'visible',
   })),
   treasury: 20,
 })
@@ -29,6 +39,12 @@ export const buildInitialTerritoryState = (
 ): TerritoryState => ({
   ...definition,
   garrison: 5,
+  unitCount: 5,
+  morale: 70,
+  supply: 80,
+  supplyState: 'supplied',
+  siegeProgress: 0,
   development: 50,
   unrest: 10,
+  visibility: initialVisibilityMap(definition.ownerId),
 })

@@ -1,18 +1,21 @@
 import { nations, territories, gameConfig, buildInitialNationState, buildInitialTerritoryState } from './data'
 import { RandomGenerator } from './random'
-import { TERRAIN_MODIFIERS } from './constants'
+import { TERRAIN_MODIFIERS, TERRAIN_MOVEMENT_COST, ZOC_SUPPLY_PENALTY, SUPPLY_STATE_THRESHOLDS } from './constants'
 import type {
   ActionType,
   CombatResult,
   GameState,
   NationState,
+  SupplyState,
   PlayerAction,
   TerritoryState,
+  VisibilityState,
 } from './types'
 import {
   adjustTerritoryGarrison,
   ensureRelationMatrix,
   getControlledTerritories,
+  isAtWar,
   modifyRelation,
   pushLog,
   pushNotification,
@@ -41,6 +44,115 @@ const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionT
   carthage: { RecruitArmy: -1 },
   medes: { RecruitArmy: 1 },
   minoa: { RecruitArmy: 1 },
+}
+
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value))
+
+const deriveSupplyState = (value: number): SupplyState => {
+  if (value >= SUPPLY_STATE_THRESHOLDS.supplied) return 'supplied'
+  if (value >= SUPPLY_STATE_THRESHOLDS.strained) return 'strained'
+  return 'exhausted'
+}
+
+const adjustTerritorySupply = (territory: TerritoryState, delta: number): number => {
+  const before = territory.supply
+  territory.supply = clamp(territory.supply + delta, 0, 100)
+  territory.supplyState = deriveSupplyState(territory.supply)
+  return before - territory.supply
+}
+
+const adjustTerritoryMorale = (territory: TerritoryState, delta: number): void => {
+  territory.morale = clamp(territory.morale + delta, 0, 100)
+}
+
+const syncNationArmy = (state: GameState, territory: TerritoryState): void => {
+  const nation = state.nations[territory.ownerId]
+  if (!nation) return
+  let army = nation.armies.find((unit) => unit.territoryId === territory.id)
+  if (!army) {
+    army = {
+      id: `${nation.id}-army-${nation.armies.length + 1}`,
+      territoryId: territory.id,
+      strength: territory.garrison,
+      unitCount: territory.unitCount,
+      morale: territory.morale,
+      supply: territory.supply,
+      supplyState: territory.supplyState,
+      visibility: territory.visibility[nation.id] ?? 'hidden',
+    }
+    nation.armies.push(army)
+    return
+  }
+  army.strength = territory.garrison
+  army.unitCount = territory.unitCount
+  army.morale = territory.morale
+  army.supply = territory.supply
+  army.supplyState = territory.supplyState
+  army.visibility = territory.visibility[nation.id] ?? army.visibility
+}
+
+const removeArmyRecord = (state: GameState, nationId: string, territoryId: string): void => {
+  const nation = state.nations[nationId]
+  if (!nation) return
+  nation.armies = nation.armies.filter((army) => army.territoryId !== territoryId)
+}
+
+const markTerritoryVisible = (state: GameState, territoryId: string): void => {
+  const territory = state.territories[territoryId]
+  if (!territory) return
+  const playerId = state.playerNationId
+  territory.visibility[playerId] = 'visible'
+  state.visibility[territoryId] = 'visible'
+}
+
+const recalculateVisibility = (state: GameState): void => {
+  const playerId = state.playerNationId
+  const next: Record<string, VisibilityState> = {}
+
+  Object.values(state.territories).forEach((territory) => {
+    if (territory.ownerId === playerId) {
+      next[territory.id] = 'visible'
+      territory.visibility[playerId] = 'visible'
+    }
+  })
+
+  Object.values(state.territories).forEach((territory) => {
+    if (next[territory.id] === 'visible') {
+      territory.neighbors.forEach((neighborId) => {
+        if (!next[neighborId]) {
+          next[neighborId] = 'fogged'
+        }
+      })
+    }
+  })
+
+  Object.entries(state.territories).forEach(([territoryId, territory]) => {
+    if (!next[territoryId]) {
+      const previous = territory.visibility[playerId] ?? 'hidden'
+      next[territoryId] = previous === 'visible' ? 'fogged' : previous
+      territory.visibility[playerId] = next[territoryId]
+    } else {
+      territory.visibility[playerId] = next[territoryId]
+    }
+  })
+
+  state.visibility = next
+}
+
+const isInEnemyZoneOfControl = (
+  state: GameState,
+  nationId: string,
+  territory: TerritoryState,
+): boolean => {
+  if (territory.ownerId !== nationId && isAtWar(state.diplomacy, nationId, territory.ownerId)) {
+    return true
+  }
+  return territory.neighbors.some((neighborId) => {
+    const neighbor = state.territories[neighborId]
+    if (!neighbor) return false
+    if (neighbor.ownerId === nationId) return false
+    return isAtWar(state.diplomacy, nationId, neighbor.ownerId)
+  })
 }
 
 export const createInitialGameState = (
@@ -78,6 +190,8 @@ export const createInitialGameState = (
     nations: nationStates,
     territories: territoryStates,
     diplomacy,
+    visibility: {},
+    battleReports: [],
     log: [],
     notifications: [],
     queuedEvents: [],
@@ -98,6 +212,11 @@ export const createInitialGameState = (
     message: 'Press A to open actions, D for diplomacy, M to change map mode, E to end the turn.',
     tone: 'neutral',
   })
+
+  Object.values(state.territories).forEach((territory) => {
+    syncNationArmy(state, territory)
+  })
+  recalculateVisibility(state)
 
   return state
 }
@@ -130,47 +249,139 @@ export const resolveCombat = (
   territoryId: string,
   attackingStrength: number,
   rng: RandomGenerator,
+  sourceTerritoryId?: string,
 ): CombatResult => {
   const attacker = state.nations[attackerId]
   const defender = state.nations[defenderId]
   const territory = state.territories[territoryId]
+  const source = sourceTerritoryId ? state.territories[sourceTerritoryId] : undefined
 
   const terrainModifier = TERRAIN_MODIFIERS[territory.terrain]
-  const baseAttacker = attackingStrength + attacker.stats.military / 5
-  const baseDefender = territory.garrison + defender.stats.military / 5
+  const attackerRoll = rng.nextInRange(...gameConfig.combatRandomnessRange)
+  const defenderRoll = rng.nextInRange(...gameConfig.combatRandomnessRange)
 
-  const attackerEffective =
-    baseAttacker * (1 + attacker.stats.tech / 200) * (1 + attacker.stats.support / 200) *
-    terrainModifier * rng.nextInRange(...gameConfig.combatRandomnessRange)
+  const attackerMoraleFactor = source ? 0.6 + source.morale / 200 : 0.75
+  const defenderMoraleFactor = 0.6 + territory.morale / 200
 
-  const defenderEffective =
-    baseDefender * (1 + defender.stats.tech / 200) * (1 + defender.stats.support / 200) *
-    terrainModifier * rng.nextInRange(...gameConfig.combatRandomnessRange)
+  const attackerSupplyFactor = source ? 0.6 + source.supply / 200 : 0.8
+  const defenderSupplyFactor = 0.6 + territory.supply / 200
 
+  const attackerPower =
+    (attackingStrength + attacker.stats.military / 4) *
+    (1 + attacker.stats.tech / 150) *
+    (1 + attacker.stats.support / 180) *
+    attackerMoraleFactor *
+    attackerSupplyFactor *
+    terrainModifier *
+    attackerRoll
+
+  const defenderPower =
+    (territory.garrison + defender.stats.military / 4) *
+    (1 + defender.stats.tech / 160) *
+    (1 + defender.stats.support / 200) *
+    defenderMoraleFactor *
+    Math.max(0.4, defenderSupplyFactor) *
+    terrainModifier *
+    (1 + territory.siegeProgress / 150) *
+    defenderRoll
+
+  const decisiveThreshold = 0.18
   let outcome: CombatResult['outcome'] = 'stalemate'
-  if (attackerEffective > defenderEffective * 1.1) {
+  if (attackerPower > defenderPower * (1 + decisiveThreshold)) {
     outcome = 'attackerVictory'
-  } else if (defenderEffective > attackerEffective * 1.1) {
+  } else if (defenderPower > attackerPower * (1 + decisiveThreshold)) {
     outcome = 'defenderHolds'
   }
 
-  const casualtyRatio = defenderEffective / (attackerEffective + defenderEffective)
-  const attackerLoss = Math.max(1, Math.round(attackingStrength * casualtyRatio))
-  const defenderLoss = Math.max(1, Math.round(territory.garrison * (1 - casualtyRatio)))
+  let siegeProgress = territory.siegeProgress
+  if (outcome === 'attackerVictory') {
+    siegeProgress = 0
+  } else if (outcome === 'defenderHolds') {
+    siegeProgress = Math.max(0, siegeProgress - 12)
+  } else {
+    const siegeGain = Math.max(4, Math.round((attackerPower / Math.max(1, defenderPower)) * 10))
+    siegeProgress = clamp(siegeProgress + siegeGain, 0, 100)
+    if (siegeProgress >= 100) {
+      outcome = 'attackerVictory'
+      siegeProgress = 0
+    }
+  }
+  territory.siegeProgress = siegeProgress
 
-  adjustTerritoryGarrison(territory, -defenderLoss)
+  const totalPower = Math.max(1, attackerPower + defenderPower)
+  const attackerLoss = Math.max(
+    1,
+    Math.min(attackingStrength, Math.round((defenderPower / totalPower) * attackingStrength)),
+  )
+  const defenderLoss = Math.max(
+    1,
+    Math.min(territory.garrison, Math.round((attackerPower / totalPower) * territory.garrison)),
+  )
+
+  let attackerSupplyPenalty = 0
+  if (source) {
+    const supplyDrain = outcome === 'attackerVictory' ? -14 : outcome === 'stalemate' ? -10 : -8
+    attackerSupplyPenalty = adjustTerritorySupply(source, supplyDrain)
+    const moraleShift = outcome === 'attackerVictory' ? 4 : outcome === 'stalemate' ? -1 : -3
+    adjustTerritoryMorale(source, moraleShift)
+  }
+
+  const defenderSupplyDrain = outcome === 'attackerVictory' ? -24 : outcome === 'stalemate' ? -12 : -8
+  const defenderSupplyPenalty = adjustTerritorySupply(territory, defenderSupplyDrain)
+  adjustTerritoryMorale(territory, outcome === 'defenderHolds' ? 3 : -2)
 
   if (outcome === 'attackerVictory') {
+    const survivors = Math.max(1, attackingStrength - attackerLoss)
+    removeArmyRecord(state, defenderId, territory.id)
     territory.ownerId = attackerId
-    territory.garrison = Math.max(1, attackingStrength - attackerLoss)
+    territory.garrison = survivors
+    territory.unitCount = survivors
+    territory.morale = clamp(60 + attacker.stats.support / 5, 0, 100)
+    territory.supply = clamp(55 - Math.round(attackerSupplyPenalty / 2), 20, 100)
+    territory.supplyState = deriveSupplyState(territory.supply)
+    territory.visibility[attackerId] = 'visible'
+    territory.visibility[defenderId] = territory.visibility[defenderId] ?? 'fogged'
+    syncNationArmy(state, territory)
+    if (source) {
+      syncNationArmy(state, source)
+    }
     updateStats(defender, 'stability', -gameConfig.warStabilityPenalty)
     updateStats(defender, 'crime', gameConfig.crimeGainTaxes)
     updateStats(attacker, 'stability', -Math.ceil(gameConfig.warStabilityPenalty / 2))
-  } else if (outcome === 'defenderHolds') {
-    territory.garrison = Math.max(1, territory.garrison)
-    updateStats(attacker, 'stability', -gameConfig.warStabilityPenalty)
-    updateStats(attacker, 'crime', gameConfig.crimeGainTaxes)
+  } else {
+    adjustTerritoryGarrison(territory, -defenderLoss)
+    syncNationArmy(state, territory)
+    if (source) {
+      const survivors = Math.max(0, attackingStrength - attackerLoss)
+      if (survivors > 0) {
+        adjustTerritoryGarrison(source, survivors)
+      }
+      syncNationArmy(state, source)
+    }
+    if (outcome === 'defenderHolds') {
+      updateStats(attacker, 'stability', -gameConfig.warStabilityPenalty)
+      updateStats(attacker, 'crime', gameConfig.crimeGainTaxes)
+    }
   }
+
+  if (attackerId === state.playerNationId || defenderId === state.playerNationId) {
+    markTerritoryVisible(state, territory.id)
+  }
+  recalculateVisibility(state)
+
+  const result: CombatResult = {
+    attackerId,
+    defenderId,
+    territoryId,
+    outcome,
+    attackerLoss,
+    defenderLoss,
+    siegeProgress: territory.siegeProgress,
+    attackerSupplyPenalty,
+    defenderSupplyPenalty,
+  }
+
+  state.battleReports = [result, ...state.battleReports].slice(0, 6)
 
   pushLog(state, {
     summary: `${attacker.name} engages ${defender.name} at ${territory.name}: ${
@@ -178,21 +389,14 @@ export const resolveCombat = (
         ? 'victory'
         : outcome === 'defenderHolds'
         ? 'defender holds'
-        : 'stalemate'
+        : 'siege tightens'
     }`,
-    details: `Attacker loss ${attackerLoss}, Defender loss ${defenderLoss}`,
+    details: `Losses A:${attackerLoss} D:${defenderLoss} • Siege ${territory.siegeProgress}% • Supply Δ A:${-attackerSupplyPenalty} D:${-defenderSupplyPenalty}`,
     tone: outcome === 'attackerVictory' ? 'success' : outcome === 'defenderHolds' ? 'warning' : 'info',
     turn: state.turn,
   })
 
-  return {
-    attackerId,
-    defenderId,
-    territoryId,
-    outcome,
-    attackerLoss,
-    defenderLoss,
-  }
+  return result
 }
 
 const handleInvestInTech = (
@@ -455,12 +659,27 @@ const applyAction = (
       if (!source || !target) return undefined
       if (source.ownerId !== nationId) return undefined
       if (!source.neighbors.includes(target.id)) return undefined
-      const moveable = source.garrison - gameConfig.armyMoveCost
+      const movementCost = TERRAIN_MOVEMENT_COST[target.terrain] ?? 1
+      const moveable = source.garrison - movementCost
       if (moveable <= 0) return undefined
       const sent = Math.max(1, Math.min(moveable, gameConfig.armyRecruitStrength))
       adjustTerritoryGarrison(source, -sent)
+      adjustTerritoryMorale(source, -1)
+      adjustTerritorySupply(source, -movementCost * 2)
+      if (isInEnemyZoneOfControl(state, nationId, source) || isInEnemyZoneOfControl(state, nationId, target)) {
+        adjustTerritorySupply(source, -ZOC_SUPPLY_PENALTY)
+        adjustTerritoryMorale(source, -2)
+      }
+      syncNationArmy(state, source)
       if (target.ownerId === nationId) {
         adjustTerritoryGarrison(target, sent)
+        adjustTerritoryMorale(target, 1)
+        adjustTerritorySupply(target, -Math.max(1, movementCost - 1))
+        syncNationArmy(state, target)
+        if (nationId === state.playerNationId) {
+          markTerritoryVisible(state, target.id)
+          recalculateVisibility(state)
+        }
         pushLog(state, {
           summary: `${nation.name} repositions forces into ${target.name}`,
           tone: 'info',
@@ -468,11 +687,8 @@ const applyAction = (
         })
         return `Moved ${sent} strength to ${target.name}`
       }
-      const result = resolveCombat(state, nationId, target.ownerId, target.id, sent, rng)
-      if (result.outcome !== 'attackerVictory') {
-        adjustTerritoryGarrison(source, -1)
-      }
-      return `Battle result: ${result.outcome}`
+      const result = resolveCombat(state, nationId, target.ownerId, target.id, sent, rng, source.id)
+      return `Battle result: ${result.outcome} (siege ${result.siegeProgress}%)`
     }
     default:
       return undefined
@@ -491,6 +707,17 @@ const upkeepPhase = (state: GameState): void => {
 
     const wars = [...state.diplomacy.wars].filter((key) => key.includes(nation.id))
     updateStats(nation, 'stability', -wars.length * gameConfig.stabilityDecayPerWar)
+
+    tiles.forEach((tile) => {
+      if (tile.siegeProgress > 0) {
+        adjustTerritorySupply(tile, -6)
+        adjustTerritoryMorale(tile, -3)
+      } else {
+        adjustTerritorySupply(tile, 4)
+        adjustTerritoryMorale(tile, 1)
+      }
+      syncNationArmy(state, tile)
+    })
 
     if (nation.id === 'harappa' && nation.stats.stability < 55) {
       updateStats(nation, 'military', -10)
@@ -560,6 +787,7 @@ export const advanceTurn = (state: GameState, rng: RandomGenerator): void => {
   applyTurnEvents(state, rng)
   revoltChecks(state, rng)
   checkVictoryConditions(state)
+  recalculateVisibility(state)
   state.turn += 1
   state.actionsTaken = 0
   if (!state.winner && !state.defeated) {
@@ -607,6 +835,8 @@ export const loadStateFromString = (payload: string): GameState => {
   const parsed = JSON.parse(payload)
   return {
     ...parsed,
+    visibility: parsed.visibility ?? {},
+    battleReports: parsed.battleReports ?? [],
     diplomacy: {
       relations: parsed.diplomacy.relations,
       wars: new Set(parsed.diplomacy.wars),

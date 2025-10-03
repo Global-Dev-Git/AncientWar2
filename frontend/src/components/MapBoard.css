@@ -56,3 +56,22 @@
 .map-board--stability .map-tile__meta {
   color: rgba(255, 255, 255, 0.7);
 }
+
+.map-board--supply .map-tile {
+  color: #f9fbff;
+}
+
+.map-tile--hidden {
+  color: rgba(224, 228, 240, 0.7);
+  filter: saturate(0.35);
+}
+
+.map-tile--fogged {
+  color: rgba(240, 244, 255, 0.85);
+  filter: saturate(0.7);
+}
+
+.map-tile__meta--secondary {
+  font-size: 0.66rem;
+  opacity: 0.85;
+}
