@@ -119,6 +119,7 @@ export interface GameConfig {
 }
 
 export interface GameState {
+  saveVersion: number
   turn: number
   currentPhase: 'selection' | 'player' | 'ai' | 'events' | 'gameover'
   playerNationId: string

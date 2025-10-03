@@ -40,7 +40,9 @@ README.md              → you are here
 
 ### Save / load
 
-The **Save** and **Load** buttons in the map header persist the serialized game state into `localStorage` under the key `ancient-war-save`. The load button retrieves it; the last autosave is restored on refresh.
+The **Save** and **Load** buttons in the map header persist the serialized game state into `localStorage` under the key `ancient-war-save`. The loader now embeds a `saveVersion` marker in every payload; when a legacy v1 save is restored the engine backfills new defaults, logs a compatibility warning in the browser console, and upgrades the state to the latest schema before resuming play.
+
+If you mod the JSON data files (`frontend/src/data/*.json` or `frontend/src/config/config.json`), the import layer validates their schema at startup. Any shape mismatches are reported through console warnings so you can correct custom content before launching a campaign.
 
 ### Example Rome JSON entry
 

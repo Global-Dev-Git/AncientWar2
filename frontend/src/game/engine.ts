@@ -1,4 +1,5 @@
 import { nations, territories, gameConfig, buildInitialNationState, buildInitialTerritoryState } from './data'
+import { SAVE_VERSION } from './save'
 import { RandomGenerator } from './random'
 import { TERRAIN_MODIFIERS } from './constants'
 import type {
@@ -72,6 +73,7 @@ export const createInitialGameState = (
   })
 
   const state: GameState = {
+    saveVersion: SAVE_VERSION,
     turn: 1,
     currentPhase: 'player',
     playerNationId,
@@ -591,26 +593,4 @@ export const executePlayerAction = (
   return false
 }
 
-export const quickSaveState = (state: GameState): string => {
-  const serialisable = {
-    ...state,
-    diplomacy: {
-      ...state.diplomacy,
-      wars: Array.from(state.diplomacy.wars),
-      alliances: Array.from(state.diplomacy.alliances),
-    },
-  }
-  return JSON.stringify(serialisable)
-}
-
-export const loadStateFromString = (payload: string): GameState => {
-  const parsed = JSON.parse(payload)
-  return {
-    ...parsed,
-    diplomacy: {
-      relations: parsed.diplomacy.relations,
-      wars: new Set(parsed.diplomacy.wars),
-      alliances: new Set(parsed.diplomacy.alliances),
-    },
-  }
-}
+export { quickSaveState, loadStateFromString, SAVE_VERSION } from './save'
