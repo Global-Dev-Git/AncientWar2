@@ -51,6 +51,22 @@
   box-shadow: var(--shadow-soft);
 }
 
+.action-card:focus-visible {
+  outline: 3px solid var(--color-highlight);
+  outline-offset: 3px;
+}
+
+.action-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  border-color: var(--color-border);
+}
+
+.action-card:disabled:hover {
+  box-shadow: none;
+}
+
 .action-card__icon {
   width: 2.5rem;
   height: 2.5rem;

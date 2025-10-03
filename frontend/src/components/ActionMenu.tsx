@@ -27,14 +27,16 @@ const actionIcons: Record<ActionType, ReactNode> = {
 export const ActionMenu = ({ onSelect, actionsRemaining }: ActionMenuProps) => {
   const { t } = useTranslation()
   const actionList = useMemo(() => Object.keys(ACTION_LABELS) as ActionType[], [])
+  const isExhausted = actionsRemaining <= 0
+  const statusLabel = isExhausted
+    ? t('actionMenu.exhausted')
+    : `${actionsRemaining} ${t('actionMenu.remaining')}`
 
   return (
     <div className="action-menu">
       <header>
         <h3>{t('actionMenu.title')}</h3>
-        <span>
-          {actionsRemaining} {t('actionMenu.remaining')}
-        </span>
+        <span aria-live="polite">{statusLabel}</span>
       </header>
       <div className="action-menu__grid">
         {actionList.map((actionType) => (
@@ -43,6 +45,7 @@ export const ActionMenu = ({ onSelect, actionsRemaining }: ActionMenuProps) => {
             type="button"
             className="action-card"
             onClick={() => onSelect(actionType)}
+            disabled={isExhausted}
           >
             <div className="action-card__icon">{actionIcons[actionType]}</div>
             <div className="action-card__body">

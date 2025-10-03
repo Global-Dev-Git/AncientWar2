@@ -30,6 +30,7 @@ export type TranslationKey =
   | 'nationSelect.disadvantages'
   | 'actionMenu.title'
   | 'actionMenu.remaining'
+  | 'actionMenu.exhausted'
   | 'actionModal.confirm'
   | 'actionModal.cancel'
   | 'actions.sourceTerritory'
@@ -209,6 +210,7 @@ export const translations: Record<LocaleKey, TranslationDictionary> = {
     'nationSelect.disadvantages': 'Disadvantages',
     'actionMenu.title': 'Command Actions',
     'actionMenu.remaining': 'Remaining',
+    'actionMenu.exhausted': 'No actions available',
     'actionModal.confirm': 'Confirm',
     'actionModal.cancel': 'Cancel',
     'actions.sourceTerritory': 'Source Territory',
@@ -390,6 +392,7 @@ export const translations: Record<LocaleKey, TranslationDictionary> = {
     'nationSelect.disadvantages': 'Nackdelar',
     'actionMenu.title': 'Kommandoåtgärder',
     'actionMenu.remaining': 'Kvar',
+    'actionMenu.exhausted': 'Inga åtgärder kvar',
     'actionModal.confirm': 'Bekräfta',
     'actionModal.cancel': 'Avbryt',
     'actions.sourceTerritory': 'Källt territorium',

@@ -126,3 +126,9 @@ select {
   max-width: 26rem;
   opacity: 1;
 }
+
+:where(button, [role='button'], input, select, textarea, a):focus-visible {
+  outline: 3px solid var(--color-highlight);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-highlight) 25%, transparent);
+}
