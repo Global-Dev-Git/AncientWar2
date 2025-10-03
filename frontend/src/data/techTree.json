@@ -1,0 +1,70 @@
+[
+  {
+    "id": "bronze_working",
+    "name": "Bronze Working",
+    "description": "Unlocks advanced metallurgy workshops and improves military equipment.",
+    "tier": 1,
+    "prerequisites": [],
+    "cultureBonuses": {
+      "hittites": { "military": 2 },
+      "egypt": { "economy": 1 }
+    },
+    "unlocks": ["military_drills"]
+  },
+  {
+    "id": "irrigation_networks",
+    "name": "Irrigation Networks",
+    "description": "River management and canals increase food output and stability.",
+    "tier": 1,
+    "prerequisites": [],
+    "cultureBonuses": {
+      "harappa": { "stability": 2, "economy": 1 },
+      "minoa": { "economy": 1 }
+    },
+    "unlocks": ["bureaucratic_writ"]
+  },
+  {
+    "id": "military_drills",
+    "name": "Military Drills",
+    "description": "Professional standing armies and regimented training.",
+    "tier": 2,
+    "prerequisites": ["bronze_working"],
+    "cultureBonuses": {
+      "assyria": { "military": 3 },
+      "rome": { "support": 2 }
+    }
+  },
+  {
+    "id": "bureaucratic_writ",
+    "name": "Bureaucratic Writ",
+    "description": "Codified taxation ledgers and census taking improve administration.",
+    "tier": 2,
+    "prerequisites": ["irrigation_networks"],
+    "cultureBonuses": {
+      "akkad": { "economy": 2, "laws": 2 },
+      "minoa": { "support": 1 }
+    }
+  },
+  {
+    "id": "seafaring_astrolabes",
+    "name": "Seafaring Astrolabes",
+    "description": "Oceanic navigation empowers maritime expeditions and trade.",
+    "tier": 2,
+    "prerequisites": ["bronze_working"],
+    "cultureBonuses": {
+      "carthage": { "economy": 2, "influence": 1 },
+      "minoa": { "influence": 2 }
+    }
+  },
+  {
+    "id": "scholarly_academies",
+    "name": "Scholarly Academies",
+    "description": "Centers of learning consolidate science and civic order.",
+    "tier": 3,
+    "prerequisites": ["bureaucratic_writ", "military_drills"],
+    "cultureBonuses": {
+      "egypt": { "science": 3, "stability": 1 },
+      "rome": { "laws": 2 }
+    }
+  }
+]

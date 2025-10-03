@@ -42,6 +42,16 @@ README.md              → you are here
 
 The **Save** and **Load** buttons in the map header persist the serialized game state into `localStorage` under the key `ancient-war-save`. The load button retrieves it; the last autosave is restored on refresh.
 
+### Expanded systems
+
+Ancient War II now simulates a broader grand-strategy toolkit:
+
+* **Diplomacy depth** – Bilateral relations track treaty portfolios, reputation drift, casus belli triggers, and the penalties for breaking agreements, all surfaced in the revamped diplomacy table view.
+* **Technology & traditions** – A moddable tech graph with culture-specific bonuses feeds into a parallel tradition tree; both respect prerequisites, configurable focus, and adoption flows.
+* **Missions, scenarios, and achievements** – Progression logic evaluates mission steps, scenario objectives, and long-term achievement conditions, with UI trackers reflecting completion state.
+* **Game modes & persistence** – Ironman toggles, scenario selection, custom seeds, hotkey editing, and replay recording/loading are all persisted between sessions.
+* **Mod support** – Drop JSON mods into the `mods/` directory (or load them via the options panel) to extend techs, traditions, missions, scenarios, or achievements; schema validation and merging happen at runtime.
+
 ### Example Rome JSON entry
 
 ```json

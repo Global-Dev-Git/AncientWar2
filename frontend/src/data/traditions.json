@@ -1,0 +1,32 @@
+[
+  {
+    "id": "heroic_epics",
+    "name": "Heroic Epics",
+    "description": "Celebrated tales of conquest inspire warriors to greater feats.",
+    "prerequisites": [],
+    "cultureBonuses": {
+      "scythia": { "military": 2, "support": 1 },
+      "rome": { "influence": 1 }
+    }
+  },
+  {
+    "id": "mercantile_guilds",
+    "name": "Mercantile Guilds",
+    "description": "Networks of merchants stabilise trade and reduce corruption.",
+    "prerequisites": ["heroic_epics"],
+    "cultureBonuses": {
+      "carthage": { "economy": 3 },
+      "minoa": { "crime": -2 }
+    }
+  },
+  {
+    "id": "sages_circles",
+    "name": "Sages Circles",
+    "description": "Philosopher councils debate policy and codify civic duties.",
+    "prerequisites": ["mercantile_guilds"],
+    "cultureBonuses": {
+      "egypt": { "laws": 2, "stability": 1 },
+      "akkad": { "science": 2 }
+    }
+  }
+]

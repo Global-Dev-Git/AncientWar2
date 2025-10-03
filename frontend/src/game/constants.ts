@@ -1,4 +1,4 @@
-import type { TerrainType } from './types'
+import type { HotkeyBindings, TerrainType } from './types'
 
 export const TERRAIN_MODIFIERS: Record<TerrainType, number> = {
   plains: 1,
@@ -26,9 +26,10 @@ export const ACTION_LABELS = {
 
 export const ARMY_MIN_STRENGTH = 1
 
-export const ACTION_SHORTCUTS: Record<string, string> = {
+export const DEFAULT_HOTKEYS: HotkeyBindings = {
   endTurn: 'e',
   toggleMapMode: 'm',
   openActions: 'a',
   openDiplomacy: 'd',
+  openTech: 't',
 }

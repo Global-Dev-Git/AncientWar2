@@ -1,0 +1,60 @@
+.mission-tracker {
+  background: rgba(18, 24, 34, 0.85);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #f2f4f8;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mission-tracker header h3 {
+  margin: 0;
+}
+
+.mission-tracker ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mission {
+  background: rgba(10, 16, 24, 0.85);
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid transparent;
+}
+
+.mission--complete {
+  border-color: rgba(123, 236, 173, 0.7);
+}
+
+.mission--empty {
+  justify-content: center;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mission__status {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.mission__badge {
+  background: rgba(123, 236, 173, 0.15);
+  color: #6de3a5;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}

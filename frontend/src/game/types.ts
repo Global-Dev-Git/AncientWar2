@@ -71,10 +71,27 @@ export type ActionType =
   | 'Bribe'
   | 'SuppressCrime'
 
+export type TreatyType =
+  | 'nonAggression'
+  | 'trade'
+  | 'defensivePact'
+  | 'research'
+  | 'tribute'
+
+export interface BilateralDiplomacyStatus {
+  score: number
+  treaties: TreatyType[]
+  reputation: number
+  casusBelli: string | null
+  treatyPenalty: number
+  lastUpdated: number
+}
+
 export interface DiplomacyMatrix {
-  relations: Record<string, Record<string, number>>
+  relations: Record<string, Record<string, BilateralDiplomacyStatus>>
   wars: Set<string>
   alliances: Set<string>
+  reputations: Record<string, number>
 }
 
 export interface NotificationEntry {
@@ -125,6 +142,14 @@ export interface GameState {
   nations: Record<string, NationState>
   territories: Record<string, TerritoryState>
   diplomacy: DiplomacyMatrix
+  tech: TechState
+  traditions: TraditionState
+  missionProgress: MissionProgressState
+  scenario?: ScenarioDefinition
+  achievements: AchievementState
+  options: GameOptions
+  replay: ReplayLog
+  hotkeys: HotkeyBindings
   selectedTerritoryId?: string
   pendingAction?: PlayerAction
   log: TurnLogEntry[]
@@ -149,4 +174,130 @@ export interface CombatResult {
   outcome: 'attackerVictory' | 'defenderHolds' | 'stalemate'
   attackerLoss: number
   defenderLoss: number
+}
+
+export interface TechNode {
+  id: string
+  name: string
+  description: string
+  tier: number
+  prerequisites: string[]
+  cultureBonuses?: Partial<Record<string, Partial<Record<StatKey, number>>>>
+  unlocks?: string[]
+}
+
+export interface TechState {
+  researched: Set<string>
+  available: Set<string>
+  focus: string | null
+  progress: Record<string, number>
+  researchPoints: number
+}
+
+export interface TraditionDefinition {
+  id: string
+  name: string
+  description: string
+  cultureBonuses?: Partial<Record<string, Partial<Record<StatKey, number>>>>
+  prerequisites: string[]
+}
+
+export interface TraditionState {
+  adopted: Set<string>
+  available: Set<string>
+}
+
+export interface MissionDefinition {
+  id: string
+  name: string
+  description: string
+  prerequisites: string[]
+  objectives: MissionObjective[]
+  rewards: MissionReward[]
+}
+
+export interface MissionObjective {
+  type: 'controlTerritories' | 'statThreshold' | 'techResearched'
+  value: number | string | string[]
+  stat?: StatKey
+}
+
+export interface MissionReward {
+  type: 'stat' | 'treasury' | 'reputation'
+  target?: StatKey
+  amount: number
+}
+
+export interface MissionProgress {
+  missionId: string
+  completedObjectives: number
+  complete: boolean
+}
+
+export interface MissionProgressState {
+  activeMissions: MissionProgress[]
+  completed: Set<string>
+}
+
+export interface ScenarioDefinition {
+  id: string
+  name: string
+  description: string
+  startingMissions: string[]
+  modifiers?: Partial<Record<StatKey, number>>
+}
+
+export interface AchievementDefinition {
+  id: string
+  name: string
+  description: string
+  trigger: AchievementTrigger
+}
+
+export interface AchievementTrigger {
+  type: 'firstWar' | 'techCount' | 'scenarioWin'
+  threshold?: number
+}
+
+export interface AchievementState {
+  unlocked: Set<string>
+}
+
+export interface ReplayEntry {
+  turn: number
+  actorId: string
+  action: PlayerAction
+}
+
+export interface ReplayLog {
+  seed: number
+  entries: ReplayEntry[]
+}
+
+export interface HotkeyBindings {
+  endTurn: string
+  toggleMapMode: string
+  openActions: string
+  openDiplomacy: string
+  openTech?: string
+}
+
+export interface GameModPackage {
+  id: string
+  name: string
+  version: string
+  techs?: TechNode[]
+  traditions?: TraditionDefinition[]
+  achievements?: AchievementDefinition[]
+  missions?: MissionDefinition[]
+  scenarios?: ScenarioDefinition[]
+}
+
+export interface GameOptions {
+  seed: number
+  ironman: boolean
+  mode: 'sandbox' | 'scenario'
+  scenarioId?: string
+  mods?: GameModPackage[]
+  hotkeys?: Partial<HotkeyBindings>
 }

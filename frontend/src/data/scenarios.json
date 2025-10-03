@@ -1,0 +1,16 @@
+[
+  {
+    "id": "rise_of_empires",
+    "name": "Rise of Empires",
+    "description": "A balanced start focused on stability and civic reform.",
+    "startingMissions": ["secure_heartland", "codify_law"],
+    "modifiers": { "stability": 5, "laws": 5 }
+  },
+  {
+    "id": "tides_of_iron",
+    "name": "Tides of Iron",
+    "description": "Militaristic focus that rewards aggression and naval dominance.",
+    "startingMissions": ["secure_heartland"],
+    "modifiers": { "military": 5, "support": 3 }
+  }
+]

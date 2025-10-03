@@ -9,7 +9,7 @@ interface HUDProps {
   actionsRemaining: number
 }
 
-const statConfig = [
+const statConfig: Array<{ key: keyof NationState['stats']; label: string; invert?: boolean }> = [
   { key: 'stability', label: 'Stability' },
   { key: 'military', label: 'Military' },
   { key: 'tech', label: 'Technology' },

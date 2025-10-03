@@ -1,0 +1,28 @@
+.replay-controls {
+  background: rgba(12, 18, 26, 0.85);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #f2f6fb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.replay-controls__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.replay-controls textarea {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: inherit;
+  padding: 0.5rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.replay-controls__status {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}

@@ -1,27 +1,60 @@
-import { nations, territories, gameConfig, buildInitialNationState, buildInitialTerritoryState } from './data'
+import {
+  nations,
+  territories,
+  gameConfig,
+  buildInitialNationState,
+  buildInitialTerritoryState,
+} from './data'
 import { RandomGenerator } from './random'
-import { TERRAIN_MODIFIERS } from './constants'
+import { TERRAIN_MODIFIERS, DEFAULT_HOTKEYS } from './constants'
 import type {
   ActionType,
   CombatResult,
+  DiplomacyMatrix,
+  GameOptions,
   GameState,
   NationState,
   PlayerAction,
   TerritoryState,
 } from './types'
 import {
+  addTreaty,
   adjustTerritoryGarrison,
+  applyTreatyPenalty,
   ensureRelationMatrix,
   getControlledTerritories,
   modifyRelation,
   pushLog,
   pushNotification,
+  removeTreaty,
+  setCasusBelli,
   toggleAlliance,
   toggleWar,
   updateStats,
 } from './utils'
 import { decideActions, getArchetypeMap } from './ai'
 import { applyTurnEvents } from './events'
+import {
+  advanceTechResearch,
+  buildInitialTechState,
+  buildInitialTraditionState,
+  hydrateAchievements,
+  hydrateMissionProgress,
+  hydrateReplay,
+  hydrateTechState,
+  hydrateTraditionState,
+  serialiseAchievements,
+  serialiseMissionProgress,
+  serialiseReplay,
+  serialiseTechState,
+  serialiseTraditionState,
+} from './tech'
+import {
+  evaluateAchievementTriggers,
+  evaluateMissions,
+  initialiseScenarioProgression,
+  triggerFirstWarAchievement,
+} from './progression'
 
 const ACTION_COSTS: Record<ActionType, number> = {
   InvestInTech: 6,
@@ -46,6 +79,7 @@ const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionT
 export const createInitialGameState = (
   playerNationId: string,
   seed: number = Date.now(),
+  options: Partial<GameOptions> = {},
 ): GameState => {
   const nationStates: Record<string, NationState> = {}
   nations.forEach((nation) => {
@@ -57,12 +91,25 @@ export const createInitialGameState = (
     territoryStates[territory.id] = buildInitialTerritoryState(territory)
   })
 
-  const diplomacy = {
+  const resolvedOptions: GameOptions = {
+    seed,
+    ironman: options.ironman ?? false,
+    mode: options.mode ?? 'sandbox',
+    scenarioId: options.scenarioId,
+    mods: options.mods ?? [],
+    hotkeys: options.hotkeys,
+  }
+
+  const diplomacy: DiplomacyMatrix = {
     relations: {},
     wars: new Set<string>(),
     alliances: new Set<string>(),
+    reputations: {},
   }
   ensureRelationMatrix(diplomacy, nationStates)
+  Object.keys(nationStates).forEach((id) => {
+    diplomacy.reputations[id] = 0
+  })
 
   const archetypeAssignments = getArchetypeMap(playerNationId)
   Object.entries(archetypeAssignments).forEach(([id, archetype]) => {
@@ -78,6 +125,14 @@ export const createInitialGameState = (
     nations: nationStates,
     territories: territoryStates,
     diplomacy,
+    tech: buildInitialTechState(resolvedOptions.mods),
+    traditions: buildInitialTraditionState(resolvedOptions.mods),
+    missionProgress: { activeMissions: [], completed: new Set<string>() },
+    scenario: undefined,
+    achievements: { unlocked: new Set<string>() },
+    options: resolvedOptions,
+    replay: { seed: resolvedOptions.seed, entries: [] },
+    hotkeys: { ...DEFAULT_HOTKEYS, ...(resolvedOptions.hotkeys ?? {}) },
     log: [],
     notifications: [],
     queuedEvents: [],
@@ -87,6 +142,8 @@ export const createInitialGameState = (
     defeated: undefined,
     actionsTaken: 0,
   }
+
+  initialiseScenarioProgression(state)
 
   pushLog(state, {
     summary: `${nationStates[playerNationId].name} prepares for ascendance`,
@@ -201,6 +258,7 @@ const handleInvestInTech = (
 ): string => {
   updateStats(nation, 'tech', gameConfig.techGainPerInvest)
   updateStats(nation, 'science', gameConfig.scienceGainPerInvest)
+  advanceTechResearch(state, nation.id, gameConfig.techGainPerInvest)
   pushLog(state, {
     summary: `${nation.name} invests in artisans and scholars`,
     tone: 'success',
@@ -303,6 +361,9 @@ const handleDiplomacyOffer = (
     }
   }
   modifyRelation(state.diplomacy, nation.id, target.id, effect)
+  addTreaty(state.diplomacy, nation.id, target.id, 'trade')
+  state.diplomacy.reputations[nation.id] =
+    (state.diplomacy.reputations[nation.id] ?? 0) + Math.max(1, Math.round(effect / 2))
   pushLog(state, {
     summary: `${nation.name} extends envoys to ${target.name}`,
     tone: 'success',
@@ -316,6 +377,19 @@ const handleDeclareWar = (
   nation: NationState,
   target: NationState,
 ): string => {
+  const relation = state.diplomacy.relations[nation.id]?.[target.id]
+  if (relation) {
+    const brokenTreaties = [...relation.treaties]
+    if (brokenTreaties.length) {
+      brokenTreaties.forEach((treaty) => {
+        applyTreatyPenalty(state.diplomacy, nation.id, target.id, 5)
+        removeTreaty(state.diplomacy, nation.id, target.id, treaty)
+      })
+      state.diplomacy.reputations[nation.id] =
+        (state.diplomacy.reputations[nation.id] ?? 0) - brokenTreaties.length * 5
+    }
+  }
+  setCasusBelli(state.diplomacy, nation.id, target.id, 'Aggressive expansion')
   toggleWar(state.diplomacy, nation.id, target.id, true)
   updateStats(nation, 'stability', -gameConfig.warStabilityPenalty)
   if (nation.id === 'akkad') {
@@ -335,6 +409,9 @@ const handleFormAlliance = (
 ): string => {
   toggleAlliance(state.diplomacy, nation.id, target.id, true)
   modifyRelation(state.diplomacy, nation.id, target.id, 8)
+  addTreaty(state.diplomacy, nation.id, target.id, 'defensivePact')
+  state.diplomacy.reputations[nation.id] = (state.diplomacy.reputations[nation.id] ?? 0) + 3
+  state.diplomacy.reputations[target.id] = (state.diplomacy.reputations[target.id] ?? 0) + 2
   if (nation.id === 'hittites') {
     updateStats(nation, 'stability', -1)
   }
@@ -352,6 +429,7 @@ const handleBribe = (
 ): string => {
   modifyRelation(state.diplomacy, nation.id, target.id, 4)
   updateStats(target, 'crime', 3)
+  state.diplomacy.reputations[nation.id] = (state.diplomacy.reputations[nation.id] ?? 0) - 1
   pushLog(state, {
     summary: `${nation.name} slips tribute to ${target.name}'s nobles`,
     tone: 'warning',
@@ -400,9 +478,12 @@ const applyAction = (
     return undefined
   }
 
+  let outcome: string | undefined
+
   switch (action.type) {
     case 'InvestInTech':
-      return handleInvestInTech(state, nation)
+      outcome = handleInvestInTech(state, nation)
+      break
     case 'RecruitArmy': {
       const territory = action.sourceTerritoryId
         ? state.territories[action.sourceTerritoryId]
@@ -410,10 +491,12 @@ const applyAction = (
       if (!territory || territory.ownerId !== nationId) {
         return undefined
       }
-      return handleRecruitArmy(state, nation, territory)
+      outcome = handleRecruitArmy(state, nation, territory)
+      break
     }
     case 'CollectTaxes':
-      return handleCollectTaxes(state, nation, getControlledTerritories(state, nationId))
+      outcome = handleCollectTaxes(state, nation, getControlledTerritories(state, nationId))
+      break
     case 'PassLaw':
       if (nation.id === 'carthage' && nation.stats.stability < 60) {
         pushNotification(state, {
@@ -423,29 +506,39 @@ const applyAction = (
         nation.treasury += cost
         return undefined
       }
-      return handlePassLaw(state, nation)
+      outcome = handlePassLaw(state, nation)
+      break
     case 'Spy': {
       if (!action.targetNationId) return undefined
-      return handleSpy(state, nation, state.nations[action.targetNationId])
+      outcome = handleSpy(state, nation, state.nations[action.targetNationId])
+      break
     }
     case 'DiplomacyOffer': {
       if (!action.targetNationId) return undefined
-      return handleDiplomacyOffer(state, nation, state.nations[action.targetNationId])
+      outcome = handleDiplomacyOffer(state, nation, state.nations[action.targetNationId])
+      break
     }
     case 'DeclareWar': {
       if (!action.targetNationId) return undefined
-      return handleDeclareWar(state, nation, state.nations[action.targetNationId])
+      outcome = handleDeclareWar(state, nation, state.nations[action.targetNationId])
+      if (outcome && nationId === state.playerNationId) {
+        triggerFirstWarAchievement(state)
+      }
+      break
     }
     case 'FormAlliance': {
       if (!action.targetNationId) return undefined
-      return handleFormAlliance(state, nation, state.nations[action.targetNationId])
+      outcome = handleFormAlliance(state, nation, state.nations[action.targetNationId])
+      break
     }
     case 'Bribe': {
       if (!action.targetNationId) return undefined
-      return handleBribe(state, nation, state.nations[action.targetNationId])
+      outcome = handleBribe(state, nation, state.nations[action.targetNationId])
+      break
     }
     case 'SuppressCrime':
-      return handleSuppressCrime(state, nation)
+      outcome = handleSuppressCrime(state, nation)
+      break
     case 'MoveArmy': {
       if (!action.sourceTerritoryId || !action.targetTerritoryId) {
         return undefined
@@ -466,17 +559,29 @@ const applyAction = (
           tone: 'info',
           turn: state.turn,
         })
-        return `Moved ${sent} strength to ${target.name}`
+        outcome = `Moved ${sent} strength to ${target.name}`
+        break
       }
       const result = resolveCombat(state, nationId, target.ownerId, target.id, sent, rng)
       if (result.outcome !== 'attackerVictory') {
         adjustTerritoryGarrison(source, -1)
       }
-      return `Battle result: ${result.outcome}`
+      outcome = `Battle result: ${result.outcome}`
+      break
     }
     default:
       return undefined
   }
+
+  if (outcome) {
+    state.replay.entries.push({
+      turn: state.turn,
+      actorId: nationId,
+      action: { ...action },
+    })
+  }
+
+  return outcome
 }
 
 const upkeepPhase = (state: GameState): void => {
@@ -558,8 +663,10 @@ export const advanceTurn = (state: GameState, rng: RandomGenerator): void => {
   state.currentPhase = 'events'
   upkeepPhase(state)
   applyTurnEvents(state, rng)
+  evaluateMissions(state)
   revoltChecks(state, rng)
   checkVictoryConditions(state)
+  evaluateAchievementTriggers(state)
   state.turn += 1
   state.actionsTaken = 0
   if (!state.winner && !state.defeated) {
@@ -599,18 +706,46 @@ export const quickSaveState = (state: GameState): string => {
       wars: Array.from(state.diplomacy.wars),
       alliances: Array.from(state.diplomacy.alliances),
     },
+    tech: serialiseTechState(state.tech),
+    traditions: serialiseTraditionState(state.traditions),
+    missionProgress: serialiseMissionProgress(state.missionProgress),
+    achievements: serialiseAchievements(state.achievements),
+    replay: serialiseReplay(state.replay),
   }
   return JSON.stringify(serialisable)
 }
 
 export const loadStateFromString = (payload: string): GameState => {
   const parsed = JSON.parse(payload)
-  return {
+  const loaded: GameState = {
     ...parsed,
     diplomacy: {
       relations: parsed.diplomacy.relations,
       wars: new Set(parsed.diplomacy.wars),
       alliances: new Set(parsed.diplomacy.alliances),
+      reputations: parsed.diplomacy.reputations ?? {},
     },
+    tech: parsed.tech ? hydrateTechState(parsed.tech) : buildInitialTechState(parsed.options?.mods),
+    traditions: parsed.traditions
+      ? hydrateTraditionState(parsed.traditions)
+      : buildInitialTraditionState(parsed.options?.mods),
+    missionProgress: parsed.missionProgress
+      ? hydrateMissionProgress(parsed.missionProgress)
+      : { activeMissions: [], completed: new Set<string>() },
+    achievements: parsed.achievements
+      ? hydrateAchievements(parsed.achievements)
+      : { unlocked: new Set<string>() },
+    replay: parsed.replay
+      ? hydrateReplay(parsed.replay)
+      : { seed: parsed.options?.seed ?? Date.now(), entries: [] },
   }
+  ensureRelationMatrix(loaded.diplomacy, loaded.nations)
+  Object.keys(loaded.nations).forEach((id) => {
+    if (loaded.diplomacy.reputations[id] === undefined) {
+      loaded.diplomacy.reputations[id] = 0
+    }
+  })
+  loaded.hotkeys = { ...DEFAULT_HOTKEYS, ...(loaded.hotkeys ?? {}) }
+  loaded.options.hotkeys = { ...loaded.hotkeys }
+  return loaded
 }

@@ -30,6 +30,98 @@
   gap: 1.5rem;
 }
 
+.nation-select__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option-group input[type='number'],
+.option-group select,
+.option-group textarea {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(12, 18, 30, 0.7);
+  color: inherit;
+  padding: 0.65rem 0.85rem;
+}
+
+.option-group fieldset {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option-group fieldset legend {
+  padding: 0 0.25rem;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+}
+
+.option-group fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.option-group--mods {
+  grid-column: 1 / -1;
+}
+
+.mod-inline-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.mod-inline-form textarea {
+  resize: vertical;
+}
+
+.mod-inline-form button {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(80, 120, 200, 0.35);
+  color: inherit;
+  cursor: pointer;
+  padding: 0.5rem 0.9rem;
+}
+
+.mod-error {
+  color: #ff837d;
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0;
+}
+
+.mod-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.mod-list li {
+  background: rgba(12, 18, 30, 0.7);
+  border-radius: 0.75rem;
+  padding: 0.4rem 0.75rem;
+}
+
 .nation-card {
   position: relative;
   border: none;

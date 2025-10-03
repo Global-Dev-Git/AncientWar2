@@ -1,0 +1,39 @@
+[
+  {
+    "id": "secure_heartland",
+    "name": "Secure the Heartland",
+    "description": "Consolidate core provinces to guarantee food and manpower.",
+    "prerequisites": [],
+    "objectives": [
+      { "type": "controlTerritories", "value": 4 }
+    ],
+    "rewards": [
+      { "type": "stat", "target": "stability", "amount": 5 }
+    ]
+  },
+  {
+    "id": "codify_law",
+    "name": "Codify the Law",
+    "description": "Elevate civic institutions to maintain order.",
+    "prerequisites": ["secure_heartland"],
+    "objectives": [
+      { "type": "statThreshold", "stat": "laws", "value": 60 }
+    ],
+    "rewards": [
+      { "type": "reputation", "amount": 5 }
+    ]
+  },
+  {
+    "id": "enlightened_state",
+    "name": "Enlightened State",
+    "description": "Become the beacon of learning across the ancient world.",
+    "prerequisites": ["codify_law"],
+    "objectives": [
+      { "type": "techResearched", "value": ["scholarly_academies"] }
+    ],
+    "rewards": [
+      { "type": "stat", "target": "influence", "amount": 8 },
+      { "type": "treasury", "amount": 10 }
+    ]
+  }
+]

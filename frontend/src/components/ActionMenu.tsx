@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { Lightning, Coins, Scroll, Sword, UsersThree, ShieldCheck, ArrowsCounterClockwise, Handshake, Target, Eye, Barricade } from '@phosphor-icons/react'
 import type { ActionType } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'
@@ -9,7 +9,7 @@ interface ActionMenuProps {
   actionsRemaining: number
 }
 
-const actionIcons: Record<ActionType, JSX.Element> = {
+const actionIcons: Record<ActionType, ReactElement> = {
   InvestInTech: <Lightning weight="bold" />,
   RecruitArmy: <ShieldCheck weight="bold" />,
   MoveArmy: <ArrowsCounterClockwise weight="bold" />,

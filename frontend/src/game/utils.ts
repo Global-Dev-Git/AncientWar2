@@ -1,12 +1,31 @@
-import type { DiplomacyMatrix, GameState, NationState, TerritoryState } from './types'
+import type {
+  BilateralDiplomacyStatus,
+  DiplomacyMatrix,
+  GameState,
+  NationState,
+  TerritoryState,
+  TreatyType,
+} from './types'
 
 export const relationKey = (a: string, b: string): string =>
   [a, b].sort().join('|')
 
+export const createBilateralStatus = (): BilateralDiplomacyStatus => ({
+  score: 0,
+  treaties: [],
+  reputation: 0,
+  casusBelli: null,
+  treatyPenalty: 0,
+  lastUpdated: Date.now(),
+})
+
 export const cloneRelations = (relations: DiplomacyMatrix['relations']): DiplomacyMatrix['relations'] => {
   const copy: DiplomacyMatrix['relations'] = {}
   Object.entries(relations).forEach(([from, targets]) => {
-    copy[from] = { ...targets }
+    copy[from] = {}
+    Object.entries(targets).forEach(([to, status]) => {
+      copy[from][to] = { ...status, treaties: [...status.treaties] }
+    })
   })
   return copy
 }
@@ -33,7 +52,7 @@ export const ensureRelationMatrix = (
     }
     Object.keys(nations).forEach((other) => {
       if (id !== other && diplomacy.relations[id][other] === undefined) {
-        diplomacy.relations[id][other] = 0
+        diplomacy.relations[id][other] = createBilateralStatus()
       }
     })
   })
@@ -46,10 +65,65 @@ export const modifyRelation = (
   delta: number,
 ): void => {
   ensureRelationMatrix(diplomacy, { [from]: {} as NationState, [to]: {} as NationState })
-  const current = diplomacy.relations[from][to] ?? 0
-  const updated = Math.max(-100, Math.min(100, current + delta))
-  diplomacy.relations[from][to] = updated
-  diplomacy.relations[to][from] = updated
+  const current = diplomacy.relations[from][to] ?? createBilateralStatus()
+  const updatedScore = Math.max(-100, Math.min(100, current.score + delta))
+  const updatedStatus = {
+    ...current,
+    score: updatedScore,
+    lastUpdated: Date.now(),
+  }
+  diplomacy.relations[from][to] = { ...updatedStatus }
+  diplomacy.relations[to][from] = { ...updatedStatus }
+}
+
+export const addTreaty = (
+  diplomacy: DiplomacyMatrix,
+  a: string,
+  b: string,
+  treaty: TreatyType,
+): void => {
+  ensureRelationMatrix(diplomacy, { [a]: {} as NationState, [b]: {} as NationState })
+  const statusAB = diplomacy.relations[a][b]
+  if (!statusAB.treaties.includes(treaty)) {
+    statusAB.treaties.push(treaty)
+  }
+  const statusBA = diplomacy.relations[b][a]
+  if (!statusBA.treaties.includes(treaty)) {
+    statusBA.treaties.push(treaty)
+  }
+}
+
+export const removeTreaty = (
+  diplomacy: DiplomacyMatrix,
+  a: string,
+  b: string,
+  treaty: TreatyType,
+): void => {
+  ensureRelationMatrix(diplomacy, { [a]: {} as NationState, [b]: {} as NationState })
+  diplomacy.relations[a][b].treaties = diplomacy.relations[a][b].treaties.filter((item) => item !== treaty)
+  diplomacy.relations[b][a].treaties = diplomacy.relations[b][a].treaties.filter((item) => item !== treaty)
+}
+
+export const setCasusBelli = (
+  diplomacy: DiplomacyMatrix,
+  a: string,
+  b: string,
+  reason: string | null,
+): void => {
+  ensureRelationMatrix(diplomacy, { [a]: {} as NationState, [b]: {} as NationState })
+  diplomacy.relations[a][b].casusBelli = reason
+  diplomacy.relations[b][a].casusBelli = reason
+}
+
+export const applyTreatyPenalty = (
+  diplomacy: DiplomacyMatrix,
+  a: string,
+  b: string,
+  amount: number,
+): void => {
+  ensureRelationMatrix(diplomacy, { [a]: {} as NationState, [b]: {} as NationState })
+  diplomacy.relations[a][b].treatyPenalty += amount
+  diplomacy.relations[b][a].treatyPenalty += amount
 }
 
 export const isAtWar = (diplomacy: DiplomacyMatrix, a: string, b: string): boolean =>
