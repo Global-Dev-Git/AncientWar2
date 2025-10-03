@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { Lightning, Coins, Scroll, Sword, UsersThree, ShieldCheck, ArrowsCounterClockwise, Handshake, Target, Eye, Barricade } from '@phosphor-icons/react'
 import type { ActionType } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'
+import { useTranslation } from '../contexts/TranslationContext'
 import './ActionMenu.css'
 
 interface ActionMenuProps {
@@ -9,7 +10,7 @@ interface ActionMenuProps {
   actionsRemaining: number
 }
 
-const actionIcons: Record<ActionType, JSX.Element> = {
+const actionIcons: Record<ActionType, ReactNode> = {
   InvestInTech: <Lightning weight="bold" />,
   RecruitArmy: <ShieldCheck weight="bold" />,
   MoveArmy: <ArrowsCounterClockwise weight="bold" />,
@@ -23,28 +24,17 @@ const actionIcons: Record<ActionType, JSX.Element> = {
   SuppressCrime: <Barricade weight="bold" />,
 }
 
-const actionDescriptions: Record<ActionType, string> = {
-  InvestInTech: 'Boost science and technology at the cost of coin.',
-  RecruitArmy: 'Raise fresh troops within a controlled territory.',
-  MoveArmy: 'Redeploy armies or assault a neighboring region.',
-  CollectTaxes: 'Extract revenues and risk growing unrest.',
-  PassLaw: 'Stabilize society through new legislation.',
-  Spy: 'Disrupt an opponent with covert agents.',
-  DiplomacyOffer: 'Improve relations via gifts and emissaries.',
-  DeclareWar: 'Begin open conflict with a rival state.',
-  FormAlliance: 'Bind another nation in mutual defense.',
-  Bribe: 'Influence leaders through clandestine payments.',
-  SuppressCrime: 'Deploy forces internally to lower crime.',
-}
-
 export const ActionMenu = ({ onSelect, actionsRemaining }: ActionMenuProps) => {
+  const { t } = useTranslation()
   const actionList = useMemo(() => Object.keys(ACTION_LABELS) as ActionType[], [])
 
   return (
     <div className="action-menu">
       <header>
-        <h3>Actions</h3>
-        <span>{actionsRemaining} left</span>
+        <h3>{t('actionMenu.title')}</h3>
+        <span>
+          {actionsRemaining} {t('actionMenu.remaining')}
+        </span>
       </header>
       <div className="action-menu__grid">
         {actionList.map((actionType) => (
@@ -56,8 +46,8 @@ export const ActionMenu = ({ onSelect, actionsRemaining }: ActionMenuProps) => {
           >
             <div className="action-card__icon">{actionIcons[actionType]}</div>
             <div className="action-card__body">
-              <strong>{ACTION_LABELS[actionType]}</strong>
-              <p>{actionDescriptions[actionType]}</p>
+              <strong>{t(`actions.label.${actionType}` as const)}</strong>
+              <p>{t(`actions.description.${actionType}` as const)}</p>
             </div>
           </button>
         ))}

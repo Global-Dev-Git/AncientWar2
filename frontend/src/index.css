@@ -2,23 +2,84 @@
 
 :root {
   font-family: 'Inter', system-ui, sans-serif;
-  color: #f4f7ff;
-  background: radial-gradient(circle at 20% 20%, #1f2840, #0b101b 70%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
 
-  --surface-panel: rgba(18, 26, 40, 0.78);
-  --surface-elevated: rgba(27, 37, 54, 0.72);
-  --accent-primary: #6f8cff;
-  --accent-positive: #4ed2a7;
-  --accent-warning: #f7b84b;
-  --accent-danger: #ff7d73;
-  --text-muted: rgba(204, 214, 235, 0.75);
-  --text-strong: #f8fbff;
-  --shadow-soft: 0 24px 45px rgba(4, 9, 20, 0.45);
-  --shadow-subtle: 0 18px 38px rgba(8, 12, 24, 0.35);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --color-bg: #06070c;
+  --color-surface: rgba(21, 24, 33, 0.88);
+  --color-surface-elevated: rgba(33, 40, 58, 0.88);
+  --color-text-primary: #f3f5fb;
+  --color-text-secondary: rgba(222, 229, 245, 0.72);
+  --color-border: rgba(102, 116, 150, 0.4);
+  --color-accent: #6f8cff;
+  --color-highlight: #8bb8ff;
+  --color-positive: #4ed2a7;
+  --color-warning: #f7b84b;
+  --color-negative: #ff7d73;
+  --shadow-soft: 0 24px 45px rgba(4, 9, 20, 0.35);
+  --shadow-strong: 0 30px 55px rgba(7, 10, 22, 0.45);
+  --shadow-subtle: 0 14px 28px rgba(8, 10, 18, 0.35);
+  --color-map-text: #0b1320;
+
+  --nation-rome: #f25d52;
+  --nation-carthage: #f2b950;
+  --nation-egypt: #f2d479;
+  --nation-minoa: #6fc2ff;
+  --nation-hittites: #b77cf2;
+  --nation-assyria: #ff8ab5;
+  --nation-akkad: #ff9a62;
+  --nation-medes: #8bd88f;
+  --nation-harappa: #4ec9b0;
+  --nation-shang: #8aa5ff;
+  --nation-scythia: #4c90ff;
+  --nation-neutral: #a5acc4;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #f3f5fb;
+  --color-surface: rgba(255, 255, 255, 0.86);
+  --color-surface-elevated: rgba(255, 255, 255, 0.92);
+  --color-text-primary: #1b1f29;
+  --color-text-secondary: rgba(31, 38, 56, 0.7);
+  --color-border: rgba(61, 72, 95, 0.18);
+  --color-accent: #3344cc;
+  --color-highlight: #5566dd;
+  --color-positive: #1e976c;
+  --color-warning: #d88418;
+  --color-negative: #c03f3a;
+  --shadow-soft: 0 24px 45px rgba(20, 30, 60, 0.16);
+  --shadow-strong: 0 30px 55px rgba(20, 30, 60, 0.25);
+  --shadow-subtle: 0 14px 28px rgba(20, 30, 60, 0.18);
+  --color-map-text: #1a2133;
+}
+
+[data-palette='deuteranopia'] {
+  --color-accent: #728fe2;
+  --color-highlight: #8fb4f4;
+  --color-positive: #64c6c2;
+  --color-warning: #ebb45b;
+  --color-negative: #ed7f76;
+}
+
+[data-palette='protanopia'] {
+  --color-accent: #5a91e6;
+  --color-highlight: #80b2ff;
+  --color-positive: #5cc3ae;
+  --color-warning: #f3c978;
+  --color-negative: #e87b88;
+}
+
+[data-palette='tritanopia'] {
+  --color-accent: #9a78ff;
+  --color-highlight: #b190ff;
+  --color-positive: #50c698;
+  --color-warning: #d39f3a;
+  --color-negative: #f27262;
 }
 
 * {
@@ -28,7 +89,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top, #151c2f, #090c16 70%);
+  background: radial-gradient(circle at top, rgba(48, 62, 102, 0.35), transparent 55%),
+    var(--color-bg);
+  color: var(--color-text-primary);
 }
 
 a {
@@ -36,6 +99,30 @@ a {
   text-decoration: none;
 }
 
-button {
+button,
+input,
+select {
   font-family: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tooltip-depth-basic .tooltip__bubble {
+  max-width: 18rem;
+  opacity: 0.85;
+}
+
+.tooltip-depth-deep .tooltip__bubble {
+  max-width: 26rem;
+  opacity: 1;
 }

@@ -45,7 +45,7 @@ const considerWarTargets = ({ state, nation, rng }: AIDecisionContext): PlayerAc
   return { type: 'MoveArmy', sourceTerritoryId: targetTile.id, targetTerritoryId: enemy.id }
 }
 
-const defensivePlan = ({ state, nation }: AIDecisionContext): PlayerAction | undefined => {
+const defensivePlan = ({ nation }: AIDecisionContext): PlayerAction | undefined => {
   const worstCrime = nation.stats.crime
   if (worstCrime > 60) {
     return { type: 'SuppressCrime' }

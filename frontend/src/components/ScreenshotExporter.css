@@ -1,0 +1,28 @@
+.screenshot-exporter {
+  background: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.screenshot-exporter button {
+  justify-self: start;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--color-border);
+  background: linear-gradient(135deg, var(--color-accent), transparent);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.screenshot-exporter button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.screenshot-exporter__error {
+  font-size: 0.8rem;
+  color: var(--color-negative);
+}

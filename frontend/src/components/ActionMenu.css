@@ -1,5 +1,5 @@
 .action-menu {
-  background: var(--surface-panel);
+  background: var(--color-surface);
   border-radius: 1.25rem;
   padding: 1.25rem;
   box-shadow: var(--shadow-subtle);
@@ -15,15 +15,15 @@
   text-transform: uppercase;
   font-size: 0.85rem;
   letter-spacing: 0.12em;
-  color: var(--text-muted);
+  color: var(--color-text-secondary);
 }
 
 .action-menu header span {
-  background: var(--surface-elevated);
+  background: var(--color-surface-elevated);
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  color: var(--text-strong);
+  color: var(--color-text-primary);
 }
 
 .action-menu__grid {
@@ -33,7 +33,7 @@
 }
 
 .action-card {
-  background: var(--surface-elevated);
+  background: var(--color-surface-elevated);
   border: 1px solid transparent;
   border-radius: 1rem;
   padding: 0.75rem;
@@ -58,7 +58,7 @@
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, rgba(118, 138, 166, 0.25), rgba(61, 82, 117, 0.35));
-  color: var(--accent-primary);
+  color: var(--color-accent);
   font-size: 1.4rem;
 }
 
@@ -70,11 +70,11 @@
 
 .action-card__body strong {
   font-size: 0.95rem;
-  color: var(--text-strong);
+  color: var(--color-text-primary);
 }
 
 .action-card__body p {
   margin: 0;
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--color-text-secondary);
 }

@@ -7,9 +7,9 @@ interface StatBarProps {
 }
 
 const toneColors: Record<NonNullable<StatBarProps['tone']>, string> = {
-  stable: 'var(--accent-positive)',
-  risky: 'var(--accent-warning)',
-  critical: 'var(--accent-danger)',
+  stable: 'var(--color-positive)',
+  risky: 'var(--color-warning)',
+  critical: 'var(--color-negative)',
 }
 
 export const StatBar = ({ label, value, tone = 'stable' }: StatBarProps) => (

@@ -8,19 +8,19 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--color-text-secondary);
   letter-spacing: 0.05em;
 }
 
 .stat-bar__label strong {
-  color: var(--text-strong);
+  color: var(--color-text-primary);
 }
 
 .stat-bar__meter {
   width: 100%;
   height: 0.6rem;
   border-radius: 999px;
-  background: var(--surface-elevated);
+  background: var(--color-surface-elevated);
   overflow: hidden;
 }
 

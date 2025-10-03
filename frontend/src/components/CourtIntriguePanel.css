@@ -1,0 +1,50 @@
+.court-panel {
+  display: grid;
+  gap: 1rem;
+  background: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.court-panel__list {
+  list-style: none;
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+}
+
+.court-panel__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.court-panel__meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.court-panel__risk {
+  position: relative;
+  width: 6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--color-surface-elevated);
+  overflow: hidden;
+}
+
+.court-panel__risk span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-warning), transparent);
+  transition: width 0.4s ease;
+}
+
+.court-panel__empty {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}

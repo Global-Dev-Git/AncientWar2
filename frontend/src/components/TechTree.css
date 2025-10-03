@@ -1,0 +1,54 @@
+.tech-tree {
+  background: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.tech-tree__branches {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tech-tree__branch {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tech-tree__branch.is-complete strong {
+  color: var(--color-positive);
+}
+
+.tech-tree__branchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tech-tree__branchHeader span {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.tech-tree__progress {
+  position: relative;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-surface-elevated);
+  overflow: hidden;
+}
+
+.tech-tree__progress span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-accent), transparent);
+  transition: width 0.4s ease;
+}
+
+.tech-tree__empty {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}

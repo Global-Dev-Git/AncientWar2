@@ -1,0 +1,39 @@
+.hotkey-manager {
+  background: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.hotkey-manager__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.hotkey-manager__list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-surface-elevated);
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.6rem;
+}
+
+.hotkey-manager__list button {
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+.hotkey-manager__list button.is-pending {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}

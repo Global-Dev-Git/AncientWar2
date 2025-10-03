@@ -9,9 +9,9 @@ import type {
   TerritoryState,
 } from './types'
 
-export const nations: NationDefinition[] = nationsRaw
-export const territories: TerritoryDefinition[] = territoriesRaw
-export const gameConfig: GameConfig = configRaw
+export const nations: NationDefinition[] = nationsRaw as NationDefinition[]
+export const territories: TerritoryDefinition[] = territoriesRaw as TerritoryDefinition[]
+export const gameConfig: GameConfig = configRaw as GameConfig
 
 export const buildInitialNationState = (definition: NationDefinition): NationState => ({
   ...definition,

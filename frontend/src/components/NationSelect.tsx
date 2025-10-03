@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { NationDefinition } from '../game/types'
+import { useTranslation } from '../contexts/TranslationContext'
 import './NationSelect.css'
 
 interface NationSelectProps {
@@ -8,14 +9,15 @@ interface NationSelectProps {
 }
 
 export const NationSelect = ({ nations, onSelect }: NationSelectProps) => {
+  const { t } = useTranslation()
   const [hoveredNation, setHoveredNation] = useState<string | null>(null)
   const orderedNations = useMemo(() => nations.slice().sort((a, b) => a.name.localeCompare(b.name)), [nations])
 
   return (
     <div className="nation-select">
       <header>
-        <h1>Choose Your Civilization</h1>
-        <p>Select a legendary nation to guide through intrigue, warfare, and diplomacy.</p>
+        <h1>{t('nationSelect.title')}</h1>
+        <p>{t('nationSelect.subtitle')}</p>
       </header>
       <div className="nation-select__grid">
         {orderedNations.map((nation) => (
@@ -32,19 +34,23 @@ export const NationSelect = ({ nations, onSelect }: NationSelectProps) => {
               <h2>{nation.name}</h2>
               <p>{nation.description}</p>
               <div className="nation-card__tags">
-                <span>{nation.territories.length} territories</span>
-                <span>Stability {nation.stats.stability}</span>
+                <span>
+                  {nation.territories.length} {t('nationSelect.territories')}
+                </span>
+                <span>
+                  {t('nationSelect.stabilityLabel')} {nation.stats.stability}
+                </span>
               </div>
             </div>
             {hoveredNation === nation.id && (
               <div className="nation-card__tooltip">
-                <strong>Advantages</strong>
+                <strong>{t('nationSelect.advantages')}</strong>
                 <ul>
                   {nation.advantages.map((advantage) => (
                     <li key={advantage}>{advantage}</li>
                   ))}
                 </ul>
-                <strong>Disadvantages</strong>
+                <strong>{t('nationSelect.disadvantages')}</strong>
                 <ul>
                   {nation.disadvantages.map((disadvantage) => (
                     <li key={disadvantage}>{disadvantage}</li>

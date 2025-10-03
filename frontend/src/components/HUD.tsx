@@ -1,4 +1,6 @@
-import type { NationState } from '../game/types'
+import type { NationState, StatKey } from '../game/types'
+import type { TranslationKey } from '../i18n/translations'
+import { useTranslation } from '../contexts/TranslationContext'
 import StatBar from './StatBar'
 import './HUD.css'
 
@@ -9,17 +11,17 @@ interface HUDProps {
   actionsRemaining: number
 }
 
-const statConfig = [
-  { key: 'stability', label: 'Stability' },
-  { key: 'military', label: 'Military' },
-  { key: 'tech', label: 'Technology' },
-  { key: 'economy', label: 'Economy' },
-  { key: 'crime', label: 'Crime', invert: true },
-  { key: 'influence', label: 'Influence' },
-  { key: 'support', label: 'Support' },
-  { key: 'science', label: 'Science' },
-  { key: 'laws', label: 'Laws' },
-] as const
+const statConfig: Array<{ key: StatKey; translation: TranslationKey; invert?: boolean }> = [
+  { key: 'stability', translation: 'stats.stability' },
+  { key: 'military', translation: 'stats.military' },
+  { key: 'tech', translation: 'stats.tech' },
+  { key: 'economy', translation: 'stats.economy' },
+  { key: 'crime', translation: 'stats.crime', invert: true },
+  { key: 'influence', translation: 'stats.influence' },
+  { key: 'support', translation: 'stats.support' },
+  { key: 'science', translation: 'stats.science' },
+  { key: 'laws', translation: 'stats.laws' },
+]
 
 const toneFor = (value: number, invert?: boolean) => {
   if (invert) {
@@ -32,30 +34,39 @@ const toneFor = (value: number, invert?: boolean) => {
   return 'critical'
 }
 
-export const HUD = ({ nation, treasury, turn, actionsRemaining }: HUDProps) => (
-  <section className="hud">
-    <header className="hud__header">
-      <div>
-        <h1>{nation.name}</h1>
-        <p>{nation.description}</p>
+export const HUD = ({ nation, treasury, turn, actionsRemaining }: HUDProps) => {
+  const { t } = useTranslation()
+  return (
+    <section className="hud">
+      <header className="hud__header">
+        <div>
+          <h1>{nation.name}</h1>
+          <p>{nation.description}</p>
+        </div>
+        <div className="hud__meta">
+          <span>
+            {t('app.turn')} {turn}
+          </span>
+          <span>
+            {t('app.treasury')} {treasury}
+          </span>
+          <span>
+            {t('hud.actionsLeft')} {actionsRemaining}
+          </span>
+        </div>
+      </header>
+      <div className="hud__stats">
+        {statConfig.map((stat) => (
+          <StatBar
+            key={stat.key}
+            label={t(stat.translation)}
+            value={nation.stats[stat.key]}
+            tone={toneFor(nation.stats[stat.key], stat.invert) as any}
+          />
+        ))}
       </div>
-      <div className="hud__meta">
-        <span>Turn {turn}</span>
-        <span>Treasury {treasury}</span>
-        <span>Actions left {actionsRemaining}</span>
-      </div>
-    </header>
-    <div className="hud__stats">
-      {statConfig.map((stat) => (
-        <StatBar
-          key={stat.key}
-          label={stat.label}
-          value={nation.stats[stat.key]}
-          tone={toneFor(nation.stats[stat.key], stat.invert) as any}
-        />
-      ))}
-    </div>
-  </section>
-)
+    </section>
+  )
+}
 
 export default HUD

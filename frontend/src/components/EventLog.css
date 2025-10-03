@@ -1,5 +1,5 @@
 .event-log {
-  background: var(--surface-panel);
+  background: var(--color-surface);
   border-radius: 1.25rem;
   padding: 1.25rem;
   box-shadow: var(--shadow-subtle);
@@ -13,7 +13,7 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--color-text-secondary);
 }
 
 .event-log__items {
@@ -28,7 +28,7 @@
 .event-log__item {
   border-radius: 0.9rem;
   padding: 0.85rem 1rem;
-  background: var(--surface-elevated);
+  background: var(--color-surface-elevated);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -41,18 +41,18 @@
 
 .event-log__item header span {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--color-text-secondary);
 }
 
 .event-log__item header strong {
   font-size: 0.95rem;
-  color: var(--text-strong);
+  color: var(--color-text-primary);
 }
 
 .event-log__item p {
   margin: 0.5rem 0 0;
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--color-text-secondary);
 }
 
 .event-log__item--success {
@@ -65,4 +65,9 @@
 
 .event-log__item--danger {
   border: 1px solid rgba(255, 107, 99, 0.25);
+}
+
+.event-log__empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }

@@ -1,0 +1,40 @@
+.audio-controls {
+  background: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 1rem;
+}
+
+.audio-controls__status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.audio-controls__buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.audio-controls__buttons button,
+.audio-controls__back {
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.audio-controls__slider {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.audio-controls__slider input[type='range'] {
+  accent-color: var(--color-accent);
+}

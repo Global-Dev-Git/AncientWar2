@@ -1,0 +1,37 @@
+.overlay-controls {
+  border: none;
+  background: var(--color-surface);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 0.75rem;
+  min-inline-size: 0;
+}
+
+.overlay-controls legend {
+  font-weight: 600;
+}
+
+.overlay-controls__options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.overlay-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.6rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.overlay-controls label.is-active {
+  background: linear-gradient(135deg, var(--color-accent), transparent);
+  transform: translateX(0.2rem);
+}
+
+.overlay-controls input {
+  accent-color: var(--color-accent);
+}

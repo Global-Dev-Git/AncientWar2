@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ActionType, NationState, PlayerAction, TerritoryState } from '../game/types'
-import { ACTION_LABELS } from '../game/constants'
+import { useTranslation } from '../contexts/TranslationContext'
 import './ActionModal.css'
 
 interface ActionModalProps {
@@ -16,35 +16,6 @@ interface ActionModalProps {
 const needsTargetNation: ActionType[] = ['Spy', 'DiplomacyOffer', 'DeclareWar', 'FormAlliance', 'Bribe']
 const needsSourceTerritory: ActionType[] = ['RecruitArmy', 'MoveArmy']
 
-const describeEffect = (action: ActionType): string => {
-  switch (action) {
-    case 'InvestInTech':
-      return 'Spend coin to gain technology and science.'
-    case 'RecruitArmy':
-      return 'Raise garrison strength in the selected territory.'
-    case 'MoveArmy':
-      return 'Shift troops to friendly lands or attack adjacent enemies.'
-    case 'CollectTaxes':
-      return 'Gain treasury income, but crime will rise.'
-    case 'PassLaw':
-      return 'Improve laws and stability, with cultural side effects.'
-    case 'Spy':
-      return 'Destabilise a rival and raise their crime.'
-    case 'DiplomacyOffer':
-      return 'Improve relations; special bonuses for maritime deals.'
-    case 'DeclareWar':
-      return 'Begin open conflict. Stability will drop.'
-    case 'FormAlliance':
-      return 'Form a mutual defense pact and boost relations.'
-    case 'Bribe':
-      return 'Buy influence at the cost of coin and their integrity.'
-    case 'SuppressCrime':
-      return 'Reduce crime but lose a little support.'
-    default:
-      return ''
-  }
-}
-
 export const ActionModal = ({
   actionType,
   onClose,
@@ -54,6 +25,7 @@ export const ActionModal = ({
   playerNationId,
   selectedTerritoryId,
 }: ActionModalProps) => {
+  const { t } = useTranslation()
   const [targetNationId, setTargetNationId] = useState<string>('')
   const [sourceTerritoryId, setSourceTerritoryId] = useState<string | undefined>(selectedTerritoryId)
   const [targetTerritoryId, setTargetTerritoryId] = useState<string>('')
@@ -110,21 +82,21 @@ export const ActionModal = ({
     <div className="action-modal__backdrop" role="dialog" aria-modal>
       <div className="action-modal">
         <header>
-          <h3>{ACTION_LABELS[actionType]}</h3>
-          <button type="button" onClick={onClose} aria-label="Close action dialog">
+          <h3>{t(`actions.label.${actionType}` as const)}</h3>
+          <button type="button" onClick={onClose} aria-label={t('help.close')}>
             ✕
           </button>
         </header>
-        <p className="action-modal__description">{describeEffect(actionType)}</p>
+        <p className="action-modal__description">{t(`actions.description.${actionType}` as const)}</p>
 
         {requiresSource && (
           <label className="action-modal__field">
-            <span>Source Territory</span>
+            <span>{t('actions.sourceTerritory')}</span>
             <select
               value={sourceTerritoryId ?? ''}
               onChange={(event) => setSourceTerritoryId(event.target.value || undefined)}
             >
-              <option value="">Select territory</option>
+              <option value="">{t('actions.selectTerritory')}</option>
               {controlledTerritories.map((territory) => (
                 <option key={territory.id} value={territory.id}>
                   {territory.name}
@@ -136,12 +108,15 @@ export const ActionModal = ({
 
         {requiresTargetTerritory && (
           <label className="action-modal__field">
-            <span>Target Territory</span>
+            <span>{t('actions.targetTerritory')}</span>
             <select value={targetTerritoryId} onChange={(event) => setTargetTerritoryId(event.target.value)}>
-              <option value="">Select target</option>
+              <option value="">{t('actions.selectTarget')}</option>
               {neighborOptions.map((territory) => (
                 <option key={territory.id} value={territory.id}>
-                  {territory.name} — {territory.ownerId === playerNationId ? 'Friendly' : 'Enemy'}
+                  {territory.name} —{' '}
+                  {territory.ownerId === playerNationId
+                    ? t('actions.ownership.friendly')
+                    : t('actions.ownership.enemy')}
                 </option>
               ))}
             </select>
@@ -150,9 +125,9 @@ export const ActionModal = ({
 
         {requiresNation && (
           <label className="action-modal__field">
-            <span>Target Nation</span>
+            <span>{t('actions.targetNation')}</span>
             <select value={targetNationId} onChange={(event) => setTargetNationId(event.target.value)}>
-              <option value="">Choose nation</option>
+              <option value="">{t('actions.chooseNation')}</option>
               {availableNationTargets.map((nation) => (
                 <option key={nation.id} value={nation.id}>
                   {nation.name}
@@ -164,10 +139,10 @@ export const ActionModal = ({
 
         <footer>
           <button type="button" className="secondary" onClick={onClose}>
-            Cancel
+            {t('actionModal.cancel')}
           </button>
           <button type="button" onClick={confirm} disabled={!canConfirm()}>
-            Confirm
+            {t('actionModal.confirm')}
           </button>
         </footer>
       </div>

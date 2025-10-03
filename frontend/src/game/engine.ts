@@ -45,7 +45,7 @@ const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionT
 
 export const createInitialGameState = (
   playerNationId: string,
-  seed: number = Date.now(),
+  _seed: number = Date.now(),
 ): GameState => {
   const nationStates: Record<string, NationState> = {}
   nations.forEach((nation) => {
