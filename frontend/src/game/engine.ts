@@ -157,17 +157,34 @@ const markBlockades = (state: GameState, routes: TradeRoute[]): void => {
       route.smugglingModifier = 0
       return
     }
+
     const from = state.territories[route.from]
     const to = state.territories[route.to]
     const hostileNeighbors = new Set<string>([...from.neighbors, ...to.neighbors])
-    const hasBlockade = Array.from(hostileNeighbors).some((neighborId) => {
+    let blockadeCount = 0
+
+    hostileNeighbors.forEach((neighborId) => {
       const neighbor = state.territories[neighborId]
-      if (!neighbor) return false
-      if (neighbor.ownerId === route.ownerId) return false
-      return isAtWar(state.diplomacy, route.ownerId, neighbor.ownerId)
+      if (!neighbor) return
+      if (neighbor.ownerId === route.ownerId) return
+      if (isAtWar(state.diplomacy, route.ownerId, neighbor.ownerId)) {
+        blockadeCount += 1
+      }
     })
-    route.blocked = hasBlockade
-    route.smugglingModifier = hasBlockade ? gameConfig.smugglingEfficiency : 0
+
+    route.blocked = blockadeCount > 0
+    if (!route.blocked) {
+      route.smugglingModifier = 0
+      return
+    }
+
+    const friendlyHarbours = [from, to].filter(
+      (territory) => territory.terrain === 'coastal' && territory.ownerId === route.ownerId,
+    )
+    const harbourCoverage = friendlyHarbours.length > 0 ? friendlyHarbours.length / 2 : 0
+    const pressureFactor = Math.min(1, blockadeCount / Math.max(1, hostileNeighbors.size))
+    const modifier = gameConfig.smugglingEfficiency * (harbourCoverage + (1 - pressureFactor) * 0.5)
+    route.smugglingModifier = Math.min(gameConfig.smugglingEfficiency, Number(modifier.toFixed(3)))
   })
 }
 
@@ -303,7 +320,9 @@ const updateEconomySystems = (state: GameState): void => {
     const totalSea = routesOwned.filter((route) => route.mode === 'sea')
     const blockedSea = totalSea.filter((route) => route.blocked)
     const blockadePressure = totalSea.length > 0 ? blockedSea.length / totalSea.length : 0
-    const smugglingRelief = blockadePressure * gameConfig.smugglingEfficiency
+    const smugglingRelief = blockedSea.length
+      ? blockedSea.reduce((sum, route) => sum + route.smugglingModifier, 0) / blockedSea.length
+      : 0
 
     const exportLedger = emptyLedger()
     RESOURCE_TYPES.forEach((resource) => {
@@ -315,8 +334,6 @@ const updateEconomySystems = (state: GameState): void => {
     const tariffRevenue = (mitigatedExports + smugglingRecovered) * gameConfig.baseTariffRate
     const maintenanceCost = routesOwned.length * gameConfig.routeMaintenance
     const tradeIncome = tariffRevenue - maintenanceCost
-
-    nation.treasury = Math.max(0, nation.treasury + Math.round(tradeIncome))
 
     acc[nation.id] = {
       production: cloneLedger(production),
@@ -815,6 +832,14 @@ const upkeepPhase = (state: GameState): void => {
   })
 
   updateEconomySystems(state)
+
+  Object.entries(state.economy.nationSummaries).forEach(([nationId, summary]) => {
+    const nation = state.nations[nationId]
+    if (!nation) {
+      return
+    }
+    nation.treasury = Math.max(0, nation.treasury + Math.round(summary.tradeIncome))
+  })
 }
 
 const revoltChecks = (state: GameState, rng: RandomGenerator): void => {
