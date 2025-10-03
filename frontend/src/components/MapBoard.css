@@ -75,3 +75,19 @@
   font-size: 0.66rem;
   opacity: 0.85;
 }
+
+.map-board--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+  color: rgba(224, 228, 240, 0.8);
+  font-size: 0.9rem;
+}
+
+.map-board__empty {
+  padding: 0.5rem 1rem;
+  background: rgba(15, 18, 27, 0.35);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}

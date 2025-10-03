@@ -40,11 +40,33 @@ export const MapBoard = ({
   onSelect,
   mode,
 }: MapBoardProps) => {
-  const rows = Math.max(...territories.map((territory) => territory.coordinates[0])) + 1
-  const cols = Math.max(...territories.map((territory) => territory.coordinates[1])) + 1
+  const { rows, cols } = territories.reduce(
+    (acc, territory) => {
+      const [row, col] = territory.coordinates
+      return {
+        rows: Math.max(acc.rows, row + 1),
+        cols: Math.max(acc.cols, col + 1),
+      }
+    },
+    { rows: 0, cols: 0 },
+  )
+
+  const gridRows = Math.max(1, rows)
+  const gridCols = Math.max(1, cols)
+
+  if (territories.length === 0) {
+    return (
+      <div className={`map-board map-board--${mode} map-board--empty`}>
+        <span className="map-board__empty">No territories loaded.</span>
+      </div>
+    )
+  }
 
   return (
-    <div className={`map-board map-board--${mode}`} style={{ gridTemplateRows: `repeat(${rows}, 1fr)`, gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+    <div
+      className={`map-board map-board--${mode}`}
+      style={{ gridTemplateRows: `repeat(${gridRows}, 1fr)`, gridTemplateColumns: `repeat(${gridCols}, 1fr)` }}
+    >
       {territories.map((territory) => {
         const nation = nations[territory.ownerId]
         const color = nationPalette[territory.ownerId] ?? '#888'

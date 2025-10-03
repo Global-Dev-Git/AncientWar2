@@ -53,18 +53,17 @@ export const ArmyInspector = ({
     return String(value)
   }
 
-  const contested = territory.neighbors.some((neighborId) => {
-    const neighbor = territories[neighborId]
-    if (!neighbor) return false
-    if (neighbor.ownerId === territory.ownerId) return false
-    if (territory.ownerId === playerNationId) {
-      return isAtWar(diplomacy, territory.ownerId, neighbor.ownerId)
-    }
-    if (neighbor.ownerId === playerNationId) {
-      return isAtWar(diplomacy, playerNationId, territory.ownerId)
-    }
-    return false
-  })
+  const contested = isHidden
+    ? undefined
+    : territory.neighbors.some((neighborId) => {
+        const neighbor = territories[neighborId]
+        if (!neighbor) return false
+        if (neighbor.ownerId === territory.ownerId) return false
+        if (territory.ownerId === playerNationId || neighbor.ownerId === playerNationId) {
+          return isAtWar(diplomacy, territory.ownerId, neighbor.ownerId)
+        }
+        return isAtWar(diplomacy, territory.ownerId, neighbor.ownerId)
+      })
 
   const supplyTone = isHidden ? 'unknown' : territory.supplyState
 
@@ -107,7 +106,7 @@ export const ArmyInspector = ({
         </div>
         <div>
           <dt>Zone of Control</dt>
-          <dd>{contested ? 'Contested' : 'Secure'}</dd>
+          <dd>{isHidden ? 'Unknown' : contested ? 'Contested' : 'Secure'}</dd>
         </div>
       </dl>
     </section>
