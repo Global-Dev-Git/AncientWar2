@@ -1,0 +1,80 @@
+.map-board {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.4rem;
+  background: radial-gradient(circle at top, rgba(88, 134, 255, 0.2), rgba(20, 28, 40, 0.6));
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.map-tile {
+  border-radius: 1rem;
+  border: 2px solid transparent;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #0b1320;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.map-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(12, 18, 30, 0.25);
+}
+
+.map-tile--selected {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55), 0 12px 22px rgba(12, 18, 30, 0.3);
+}
+
+.map-tile__name {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.map-tile__owner {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.map-tile__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: rgba(15, 18, 27, 0.8);
+}
+
+.map-board--stability .map-tile {
+  color: #f0f4ff;
+}
+
+.map-board--stability .map-tile__meta {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.map-board--trade .map-tile {
+  color: #f5f7ff;
+  border-style: dashed;
+}
+
+.map-tile__resources {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.map-tile__resource-pill {
+  background: rgba(15, 23, 42, 0.65);
+  color: #f8fafc;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
