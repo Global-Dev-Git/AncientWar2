@@ -54,7 +54,7 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 const buildInitialCourt = (definition: NationDefinition): CharacterState[] => {
   const stabilityBase = definition.stats.stability
   const influenceBase = definition.stats.influence
-  return COURT_TEMPLATE.slice(0, 3).map((template, index) => {
+  return COURT_TEMPLATE.map((template, index) => {
     const loyalty = clamp(Math.round(stabilityBase - 5 * index + 20), 35, 90)
     const influence = clamp(Math.round(influenceBase / 2 + 10 - index * 3), 20, 80)
     const intrigue = clamp(Math.round(45 + influenceBase / 4 + index * 8), 35, 90)
