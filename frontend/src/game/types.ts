@@ -9,6 +9,38 @@ export type StatKey =
   | 'science'
   | 'laws'
 
+export type TraitKey =
+  | 'schemer'
+  | 'loyalist'
+  | 'administrator'
+  | 'charismatic'
+  | 'spymaster'
+  | 'assassin'
+  | 'zealot'
+  | 'merchant'
+  | 'ironGuard'
+
+export type FactionFocus = 'stability' | 'economy' | 'diplomacy'
+
+export interface CharacterState {
+  id: string
+  name: string
+  role: string
+  loyalty: number
+  influence: number
+  intrigue: number
+  traits: TraitKey[]
+  factionId: string
+}
+
+export interface FactionState {
+  id: string
+  name: string
+  description: string
+  support: number
+  focus: FactionFocus
+}
+
 export type TerrainType =
   | 'plains'
   | 'hills'
@@ -48,6 +80,8 @@ export interface NationState extends NationDefinition {
   armies: ArmyUnit[]
   treasury: number
   archetype?: AIArchetype
+  court: CharacterState[]
+  factions: FactionState[]
 }
 
 export interface ArmyUnit {
@@ -69,6 +103,10 @@ export type ActionType =
   | 'DeclareWar'
   | 'FormAlliance'
   | 'Bribe'
+  | 'Purge'
+  | 'Assassinate'
+  | 'StealTech'
+  | 'FomentRevolt'
   | 'SuppressCrime'
 
 export interface DiplomacyMatrix {

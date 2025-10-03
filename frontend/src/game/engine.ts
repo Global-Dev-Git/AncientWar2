@@ -8,9 +8,16 @@ import type {
   NationState,
   PlayerAction,
   TerritoryState,
+  TraitKey,
 } from './types'
 import {
+  adjustCharacterLoyalty,
+  adjustCourtLoyaltyByFaction,
+  adjustEntireCourtLoyalty,
+  adjustFactionSupport,
+  adjustFactionSupportById,
   adjustTerritoryGarrison,
+  clampValue,
   ensureRelationMatrix,
   getControlledTerritories,
   modifyRelation,
@@ -22,6 +29,8 @@ import {
 } from './utils'
 import { decideActions, getArchetypeMap } from './ai'
 import { applyTurnEvents } from './events'
+import { calculateIntrigueChance, getBestAgent, isIntrigueAction } from './intrigue'
+import type { IntrigueActionType } from './intrigue'
 
 const ACTION_COSTS: Record<ActionType, number> = {
   InvestInTech: 6,
@@ -34,6 +43,10 @@ const ACTION_COSTS: Record<ActionType, number> = {
   DeclareWar: 0,
   FormAlliance: 0,
   Bribe: 5,
+  Purge: 4,
+  Assassinate: 6,
+  StealTech: 6,
+  FomentRevolt: 5,
   SuppressCrime: 4,
 }
 
@@ -43,9 +56,33 @@ const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionT
   minoa: { RecruitArmy: 1 },
 }
 
+const COURT_TRAIT_COST_MODIFIERS: Partial<Record<TraitKey, Partial<Record<ActionType, number>>>> = {
+  administrator: { CollectTaxes: -1, PassLaw: -1 },
+  schemer: { Bribe: -1, Spy: -1, StealTech: -1, Assassinate: -1, FomentRevolt: -1 },
+  spymaster: { StealTech: -1, FomentRevolt: -1 },
+  ironGuard: { Purge: -2, SuppressCrime: -1 },
+  loyalist: { Purge: -1 },
+  merchant: { Bribe: -1, DiplomacyOffer: -1 },
+  charismatic: { DiplomacyOffer: -1, Bribe: -1 },
+  zealot: { DeclareWar: -1, SuppressCrime: -1 },
+}
+
+const getCourtActionModifier = (nation: NationState, action: ActionType): number => {
+  const modifier = nation.court.reduce((sum, character) => {
+    if (character.loyalty < 40) return sum
+    const traitEffect = character.traits.reduce(
+      (acc, trait) => acc + (COURT_TRAIT_COST_MODIFIERS[trait]?.[action] ?? 0),
+      0,
+    )
+    return sum + traitEffect
+  }, 0)
+  if (modifier === 0) return 0
+  return Math.round(clampValue(modifier, -3, 3))
+}
+
 export const createInitialGameState = (
   playerNationId: string,
-  seed: number = Date.now(),
+  _seed: number = Date.now(),
 ): GameState => {
   const nationStates: Record<string, NationState> = {}
   nations.forEach((nation) => {
@@ -108,6 +145,10 @@ const getActionCost = (nation: NationState, action: PlayerAction): number => {
   if (modifier) {
     cost += modifier
   }
+  const courtModifier = getCourtActionModifier(nation, action.type)
+  if (courtModifier) {
+    cost += courtModifier
+  }
   return Math.max(0, cost)
 }
 
@@ -122,6 +163,72 @@ const spendCost = (nation: NationState, cost: number): boolean => {
 const grantIncome = (nation: NationState, territoriesOwned: number): void => {
   nation.treasury += territoriesOwned * gameConfig.incomePerTerritoryBase
 }
+
+const applyFactionSupportBonuses = (nation: NationState): void => {
+  nation.factions.forEach((faction) => {
+    const deviation = faction.support - 50
+    const delta = Math.trunc(deviation / 15)
+    if (delta === 0) return
+    switch (faction.focus) {
+      case 'stability':
+        updateStats(nation, 'stability', delta)
+        break
+      case 'economy':
+        updateStats(nation, 'economy', delta)
+        break
+      case 'diplomacy':
+        updateStats(nation, 'influence', delta)
+        break
+      default:
+        break
+    }
+  })
+}
+
+const driftFactionSupport = (nation: NationState): void => {
+  nation.factions.forEach((faction) => {
+    const anchor =
+      faction.focus === 'stability'
+        ? nation.stats.stability
+        : faction.focus === 'economy'
+        ? nation.stats.economy
+        : nation.stats.influence
+    const drift = Math.trunc((anchor - 55) / 25)
+    let adjustedDrift = drift
+    if (nation.stats.crime > 65 && faction.focus === 'stability') {
+      adjustedDrift -= 1
+    }
+    if (adjustedDrift !== 0) {
+      adjustFactionSupportById(nation, faction.id, adjustedDrift)
+    }
+  })
+}
+
+const driftCourtLoyalty = (nation: NationState): void => {
+  nation.court.forEach((character) => {
+    const faction = nation.factions.find((entry) => entry.id === character.factionId)
+    const factionDrift = faction ? Math.trunc((faction.support - 50) / 18) : 0
+    const crimePenalty = nation.stats.crime > 60 ? -1 : 0
+    adjustCharacterLoyalty(character, factionDrift + crimePenalty)
+  })
+}
+
+const findLowestLoyalCourtier = (nation: NationState) =>
+  [...nation.court].sort((a, b) => a.loyalty - b.loyalty)[0] ?? null
+
+const findHighestInfluenceCourtier = (nation: NationState) =>
+  [...nation.court].sort((a, b) => b.influence - a.influence)[0] ?? null
+
+const createReplacementCourtier = (nation: NationState, factionId: string) => ({
+  id: `${nation.id}-court-${Date.now().toString(36)}`,
+  name: `${nation.name.split(' ')[0]} Steward`,
+  role: 'Steward',
+  loyalty: clampValue(Math.round(nation.stats.stability / 1.5), 30, 80),
+  influence: clampValue(Math.round(nation.stats.influence / 2), 20, 70),
+  intrigue: clampValue(Math.round(nation.stats.support / 2 + 30), 25, 80),
+  traits: ['loyalist'] as TraitKey[],
+  factionId,
+})
 
 export const resolveCombat = (
   state: GameState,
@@ -345,21 +452,6 @@ const handleFormAlliance = (
   return `Alliance with ${target.name}`
 }
 
-const handleBribe = (
-  state: GameState,
-  nation: NationState,
-  target: NationState,
-): string => {
-  modifyRelation(state.diplomacy, nation.id, target.id, 4)
-  updateStats(target, 'crime', 3)
-  pushLog(state, {
-    summary: `${nation.name} slips tribute to ${target.name}'s nobles`,
-    tone: 'warning',
-    turn: state.turn,
-  })
-  return `Relations eased; ${target.name} crime rises`
-}
-
 const handleSuppressCrime = (
   state: GameState,
   nation: NationState,
@@ -382,6 +474,163 @@ const handleSuppressCrime = (
   return `Crime reduced by ${reduction}`
 }
 
+const resolveIntrigueAction = (
+  state: GameState,
+  nation: NationState,
+  action: PlayerAction & { type: IntrigueActionType },
+  rng: RandomGenerator,
+): string | undefined => {
+  const agent = getBestAgent(nation)
+  if (!agent) {
+    return undefined
+  }
+
+  const directTarget = action.targetNationId ? state.nations[action.targetNationId] : undefined
+  if (action.type !== 'Purge' && !directTarget) {
+    return undefined
+  }
+
+  const targetForChance = action.type === 'Purge' ? nation : directTarget
+  const chance = calculateIntrigueChance(action.type, nation, targetForChance)
+  const roll = rng.next()
+  const success = roll <= chance
+  const percent = Math.round(chance * 100)
+
+  let summary = ''
+  let message = ''
+  let tone: 'info' | 'success' | 'warning' | 'danger' = success ? 'success' : 'danger'
+
+  switch (action.type) {
+    case 'Bribe': {
+      const target = directTarget!
+      if (success) {
+        const relationDelta = 6 + Math.round(agent.influence / 20)
+        modifyRelation(state.diplomacy, nation.id, target.id, relationDelta)
+        updateStats(target, 'crime', 4)
+        adjustCharacterLoyalty(agent, 4)
+        adjustFactionSupport(nation, 'diplomacy', 1)
+        summary = `${nation.name}'s envoy bribes ${target.name}'s court`
+        message = `Bribe succeeded (${percent}% chance)`
+      } else {
+        modifyRelation(state.diplomacy, nation.id, target.id, -3)
+        adjustCharacterLoyalty(agent, -8)
+        adjustFactionSupport(nation, 'diplomacy', -1)
+        summary = `${nation.name}'s bribe attempt is exposed in ${target.name}`
+        message = `Bribe failed (${percent}% chance)`
+      }
+      break
+    }
+    case 'Purge': {
+      if (success) {
+        const dissenter = findLowestLoyalCourtier(nation)
+        if (dissenter) {
+          const boost = Math.max(15, 80 - dissenter.loyalty)
+          adjustCharacterLoyalty(dissenter, boost)
+          if (!dissenter.traits.includes('loyalist')) {
+            dissenter.traits = [...dissenter.traits, 'loyalist']
+          }
+          adjustCourtLoyaltyByFaction(nation, dissenter.factionId, 3)
+        }
+        adjustCharacterLoyalty(agent, 3)
+        adjustFactionSupport(nation, 'stability', 2)
+        updateStats(nation, 'stability', 3)
+        summary = `${nation.name} purges disloyal elements successfully`
+        message = `Purge succeeded (${percent}% chance)`
+      } else {
+        adjustCharacterLoyalty(agent, -6)
+        adjustEntireCourtLoyalty(nation, -6)
+        adjustFactionSupport(nation, 'stability', -3)
+        updateStats(nation, 'stability', -5)
+        summary = `${nation.name}'s purge attempt backfires`
+        message = `Purge failed (${percent}% chance)`
+      }
+      break
+    }
+    case 'Assassinate': {
+      const target = directTarget!
+      if (success) {
+        const victim = findHighestInfluenceCourtier(target)
+        if (victim) {
+          target.court = target.court.filter((character) => character.id !== victim.id)
+          target.court.push(createReplacementCourtier(target, victim.factionId))
+        }
+        updateStats(target, 'stability', -7)
+        adjustFactionSupport(target, 'stability', -4)
+        modifyRelation(state.diplomacy, nation.id, target.id, -2)
+        adjustCharacterLoyalty(agent, 6)
+        summary = `${nation.name}'s assassin strikes within ${target.name}`
+        message = `Assassination succeeded (${percent}% chance)`
+      } else {
+        modifyRelation(state.diplomacy, nation.id, target.id, -8)
+        adjustCharacterLoyalty(agent, -12)
+        adjustFactionSupport(nation, 'diplomacy', -1)
+        updateStats(nation, 'stability', -2)
+        summary = `${nation.name}'s assassin is captured in ${target.name}`
+        message = `Assassination failed (${percent}% chance)`
+      }
+      break
+    }
+    case 'StealTech': {
+      const target = directTarget!
+      if (success) {
+        updateStats(nation, 'tech', 4)
+        updateStats(nation, 'science', 3)
+        updateStats(target, 'tech', -3)
+        adjustCharacterLoyalty(agent, 4)
+        adjustFactionSupport(nation, 'economy', 1)
+        summary = `${nation.name} steals secrets from ${target.name}`
+        message = `Technology stolen (${percent}% chance)`
+      } else {
+        modifyRelation(state.diplomacy, nation.id, target.id, -5)
+        adjustCharacterLoyalty(agent, -7)
+        adjustFactionSupport(nation, 'economy', -1)
+        summary = `${nation.name}'s theft attempt is uncovered in ${target.name}`
+        message = `Steal tech failed (${percent}% chance)`
+      }
+      break
+    }
+    case 'FomentRevolt': {
+      const target = directTarget!
+      if (success) {
+        const targetTerritories = getControlledTerritories(state, target.id)
+        if (targetTerritories.length > 0) {
+          const tile = targetTerritories[Math.floor(rng.next() * targetTerritories.length)]
+          tile.unrest = clampValue(tile.unrest + 15, 0, 100)
+          adjustTerritoryGarrison(tile, -1)
+        }
+        updateStats(target, 'stability', -6)
+        adjustFactionSupport(target, 'stability', -3)
+        adjustCharacterLoyalty(agent, 3)
+        summary = `${nation.name} foments revolt within ${target.name}`
+        message = `Revolt sparked (${percent}% chance)`
+        tone = 'warning'
+      } else {
+        modifyRelation(state.diplomacy, nation.id, target.id, -4)
+        adjustCharacterLoyalty(agent, -6)
+        adjustFactionSupport(nation, 'diplomacy', -1)
+        summary = `${nation.name}'s agitators are exposed in ${target.name}`
+        message = `Revolt failed (${percent}% chance)`
+      }
+      break
+    }
+    default:
+      break
+  }
+
+  if (!summary) {
+    return undefined
+  }
+
+  pushLog(state, {
+    summary,
+    details: `${agent.name} attempted ${action.type} (${percent}% chance) — ${success ? 'success' : 'failure'}`,
+    tone,
+    turn: state.turn,
+  })
+
+  return message
+}
+
 const applyAction = (
   state: GameState,
   nationId: string,
@@ -398,6 +647,10 @@ const applyAction = (
       })
     }
     return undefined
+  }
+
+  if (isIntrigueAction(action.type)) {
+    return resolveIntrigueAction(state, nation, action as PlayerAction & { type: IntrigueActionType }, rng)
   }
 
   switch (action.type) {
@@ -439,10 +692,6 @@ const applyAction = (
     case 'FormAlliance': {
       if (!action.targetNationId) return undefined
       return handleFormAlliance(state, nation, state.nations[action.targetNationId])
-    }
-    case 'Bribe': {
-      if (!action.targetNationId) return undefined
-      return handleBribe(state, nation, state.nations[action.targetNationId])
     }
     case 'SuppressCrime':
       return handleSuppressCrime(state, nation)
@@ -501,6 +750,10 @@ const upkeepPhase = (state: GameState): void => {
     if (nation.id === 'carthage' && nation.stats.military < 55) {
       updateStats(nation, 'stability', -3)
     }
+
+    driftFactionSupport(nation)
+    applyFactionSupportBonuses(nation)
+    driftCourtLoyalty(nation)
   })
 }
 
@@ -582,9 +835,10 @@ export const executePlayerAction = (
   const result = applyAction(state, state.playerNationId, action, rng)
   if (result) {
     state.actionsTaken += 1
+    const tone = result.toLowerCase().includes('failed') ? 'negative' : 'positive'
     pushNotification(state, {
       message: result,
-      tone: 'positive',
+      tone,
     })
     return true
   }

@@ -45,6 +45,22 @@
   line-height: 1.5;
 }
 
+.action-modal__odds {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.75rem;
+  background: rgba(164, 189, 255, 0.08);
+  color: var(--text-strong);
+  font-size: 0.95rem;
+}
+
+.action-modal__odds span {
+  font-weight: 600;
+}
+
 .action-modal__field {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,21 @@
-import { useMemo } from 'react'
-import { Lightning, Coins, Scroll, Sword, UsersThree, ShieldCheck, ArrowsCounterClockwise, Handshake, Target, Eye, Barricade } from '@phosphor-icons/react'
+import { useMemo, type ReactNode } from 'react'
+import {
+  Lightning,
+  Coins,
+  Scroll,
+  Sword,
+  UsersThree,
+  ShieldCheck,
+  ArrowsCounterClockwise,
+  Handshake,
+  Target,
+  Eye,
+  Barricade,
+  FireSimple,
+  Skull,
+  Flask,
+  Megaphone,
+} from '@phosphor-icons/react'
 import type { ActionType } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'
 import './ActionMenu.css'
@@ -9,7 +25,7 @@ interface ActionMenuProps {
   actionsRemaining: number
 }
 
-const actionIcons: Record<ActionType, JSX.Element> = {
+const actionIcons: Record<ActionType, ReactNode> = {
   InvestInTech: <Lightning weight="bold" />,
   RecruitArmy: <ShieldCheck weight="bold" />,
   MoveArmy: <ArrowsCounterClockwise weight="bold" />,
@@ -20,6 +36,10 @@ const actionIcons: Record<ActionType, JSX.Element> = {
   DeclareWar: <Sword weight="bold" />,
   FormAlliance: <UsersThree weight="bold" />,
   Bribe: <Target weight="bold" />,
+  Purge: <FireSimple weight="bold" />,
+  Assassinate: <Skull weight="bold" />,
+  StealTech: <Flask weight="bold" />,
+  FomentRevolt: <Megaphone weight="bold" />,
   SuppressCrime: <Barricade weight="bold" />,
 }
 
@@ -33,7 +53,11 @@ const actionDescriptions: Record<ActionType, string> = {
   DiplomacyOffer: 'Improve relations via gifts and emissaries.',
   DeclareWar: 'Begin open conflict with a rival state.',
   FormAlliance: 'Bind another nation in mutual defense.',
-  Bribe: 'Influence leaders through clandestine payments.',
+  Bribe: 'Influence leaders through clandestine payments with court support.',
+  Purge: 'Remove disloyal courtiers to steady your rule.',
+  Assassinate: 'Attempt to eliminate a key rival figure.',
+  StealTech: 'Dispatch agents to steal scientific secrets.',
+  FomentRevolt: 'Incite unrest in an enemy province.',
   SuppressCrime: 'Deploy forces internally to lower crime.',
 }
 

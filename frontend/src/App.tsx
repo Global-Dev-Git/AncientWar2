@@ -7,6 +7,8 @@ import ActionModal from './components/ActionModal'
 import DiplomacyPanel from './components/DiplomacyPanel'
 import EventLog from './components/EventLog'
 import NotificationStack from './components/NotificationStack'
+import CourtRoster from './components/CourtRoster'
+import FactionMeters from './components/FactionMeters'
 import { useGameEngine } from './hooks/useGameEngine'
 import { gameConfig, nations as nationDefinitions } from './game/data'
 import type { ActionType } from './game/types'
@@ -116,6 +118,8 @@ function App() {
           </div>
           <aside className="sidebar">
             <ActionMenu actionsRemaining={actionsRemaining} onSelect={(action) => setPendingAction(action)} />
+            <CourtRoster court={playerNation.court} />
+            <FactionMeters factions={playerNation.factions} />
             <div id="diplomacy-panel">
               <DiplomacyPanel playerNation={playerNation} nations={nations} diplomacy={state.diplomacy} />
             </div>

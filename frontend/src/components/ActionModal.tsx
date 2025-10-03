@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ActionType, NationState, PlayerAction, TerritoryState } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'
+import { calculateIntrigueChance, isIntrigueAction } from '../game/intrigue'
 import './ActionModal.css'
 
 interface ActionModalProps {
@@ -13,7 +14,16 @@ interface ActionModalProps {
   selectedTerritoryId?: string
 }
 
-const needsTargetNation: ActionType[] = ['Spy', 'DiplomacyOffer', 'DeclareWar', 'FormAlliance', 'Bribe']
+const needsTargetNation: ActionType[] = [
+  'Spy',
+  'DiplomacyOffer',
+  'DeclareWar',
+  'FormAlliance',
+  'Bribe',
+  'Assassinate',
+  'StealTech',
+  'FomentRevolt',
+]
 const needsSourceTerritory: ActionType[] = ['RecruitArmy', 'MoveArmy']
 
 const describeEffect = (action: ActionType): string => {
@@ -37,7 +47,15 @@ const describeEffect = (action: ActionType): string => {
     case 'FormAlliance':
       return 'Form a mutual defense pact and boost relations.'
     case 'Bribe':
-      return 'Buy influence at the cost of coin and their integrity.'
+      return 'Buy influence and destabilise a rival court.'
+    case 'Purge':
+      return 'Remove disloyal courtiers to restore internal order.'
+    case 'Assassinate':
+      return 'Attempt to eliminate a powerful figure within another nation.'
+    case 'StealTech':
+      return 'Deploy agents to steal cutting-edge discoveries.'
+    case 'FomentRevolt':
+      return 'Encourage unrest in a rival territory to sap their stability.'
     case 'SuppressCrime':
       return 'Reduce crime but lose a little support.'
     default:
@@ -69,6 +87,16 @@ export const ActionModal = ({
     [nations, playerNationId],
   )
 
+  const playerNation = useMemo(
+    () => nations.find((nation) => nation.id === playerNationId),
+    [nations, playerNationId],
+  )
+
+  const targetNation = useMemo(
+    () => (targetNationId ? nations.find((nation) => nation.id === targetNationId) : undefined),
+    [nations, targetNationId],
+  )
+
   const controlledTerritories = useMemo(
     () => territories.filter((territory) => territory.ownerId === playerNationId),
     [territories, playerNationId],
@@ -86,6 +114,12 @@ export const ActionModal = ({
   const requiresNation = needsTargetNation.includes(actionType)
   const requiresSource = needsSourceTerritory.includes(actionType)
   const requiresTargetTerritory = actionType === 'MoveArmy'
+  const intriguePreview = useMemo(() => {
+    if (!playerNation || !isIntrigueAction(actionType)) return null
+    if (requiresNation && !targetNation) return null
+    const targetForRoll = actionType === 'Purge' ? playerNation : targetNation
+    return calculateIntrigueChance(actionType, playerNation, targetForRoll)
+  }, [actionType, playerNation, targetNation, requiresNation])
 
   const canConfirm = () => {
     if (requiresNation && !targetNationId) return false
@@ -160,6 +194,13 @@ export const ActionModal = ({
               ))}
             </select>
           </label>
+        )}
+
+        {isIntrigueAction(actionType) && intriguePreview !== null && (
+          <div className="action-modal__odds">
+            <strong>Success chance:</strong>
+            <span>{Math.round(intriguePreview * 100)}%</span>
+          </div>
         )}
 
         <footer>

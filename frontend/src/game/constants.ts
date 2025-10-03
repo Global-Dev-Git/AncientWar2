@@ -21,6 +21,10 @@ export const ACTION_LABELS = {
   DeclareWar: 'Declare War',
   FormAlliance: 'Form Alliance',
   Bribe: 'Bribe Officials',
+  Purge: 'Purge the Court',
+  Assassinate: 'Assassinate Rival',
+  StealTech: 'Steal Technologies',
+  FomentRevolt: 'Foment Revolt',
   SuppressCrime: 'Suppress Crime',
 } as const
 

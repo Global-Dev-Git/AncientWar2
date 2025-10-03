@@ -1,6 +1,12 @@
 import type { GameState } from './types'
 import { RandomGenerator } from './random'
-import { pushLog, pushNotification, updateStats } from './utils'
+import {
+  adjustCourtLoyaltyByFaction,
+  adjustFactionSupport,
+  pushLog,
+  pushNotification,
+  updateStats,
+} from './utils'
 
 interface EventTemplate {
   id: string
@@ -18,6 +24,11 @@ const eventPool: EventTemplate[] = [
       const nation = state.nations[nationId]
       updateStats(nation, 'economy', 3)
       updateStats(nation, 'stability', 2)
+      adjustFactionSupport(nation, 'economy', 3)
+      const guild = nation.factions.find((faction) => faction.focus === 'economy')
+      if (guild) {
+        adjustCourtLoyaltyByFaction(nation, guild.id, 3)
+      }
     },
   },
   {
@@ -34,6 +45,11 @@ const eventPool: EventTemplate[] = [
       if (nationId === 'shang') {
         updateStats(nation, 'crime', 1)
       }
+      adjustFactionSupport(nation, 'economy', -4)
+      const guild = nation.factions.find((faction) => faction.focus === 'economy')
+      if (guild) {
+        adjustCourtLoyaltyByFaction(nation, guild.id, -4)
+      }
     },
   },
   {
@@ -49,6 +65,11 @@ const eventPool: EventTemplate[] = [
         tile.unrest += 5
         tile.garrison = Math.max(1, tile.garrison - 1)
       }
+      adjustFactionSupport(nation, 'stability', -3)
+      const court = nation.factions.find((faction) => faction.focus === 'stability')
+      if (court) {
+        adjustCourtLoyaltyByFaction(nation, court.id, -2)
+      }
     },
   },
   {
@@ -60,6 +81,11 @@ const eventPool: EventTemplate[] = [
       updateStats(nation, 'support', 4)
       updateStats(nation, 'stability', 2)
       nation.treasury = Math.max(0, nation.treasury - 3)
+      adjustFactionSupport(nation, 'diplomacy', 3)
+      const sacred = nation.factions.find((faction) => faction.focus === 'diplomacy')
+      if (sacred) {
+        adjustCourtLoyaltyByFaction(nation, sacred.id, 2)
+      }
     },
   },
   {
@@ -70,6 +96,11 @@ const eventPool: EventTemplate[] = [
       const nation = state.nations[nationId]
       updateStats(nation, 'science', 4)
       updateStats(nation, 'tech', 2)
+      adjustFactionSupport(nation, 'diplomacy', 2)
+      const scholars = nation.factions.find((faction) => faction.focus === 'diplomacy')
+      if (scholars) {
+        adjustCourtLoyaltyByFaction(nation, scholars.id, 2)
+      }
     },
   },
 ]

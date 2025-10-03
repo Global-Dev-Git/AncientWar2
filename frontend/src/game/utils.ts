@@ -1,4 +1,13 @@
-import type { DiplomacyMatrix, GameState, NationState, TerritoryState } from './types'
+import type {
+  CharacterState,
+  DiplomacyMatrix,
+  FactionFocus,
+  GameState,
+  NationState,
+  TerritoryState,
+} from './types'
+
+export const clampValue = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value))
 
 export const relationKey = (a: string, b: string): string =>
   [a, b].sort().join('|')
@@ -21,6 +30,34 @@ export const adjustTerritoryGarrison = (
   delta: number,
 ): void => {
   territory.garrison = Math.max(0, territory.garrison + delta)
+}
+
+export const adjustCharacterLoyalty = (character: CharacterState, delta: number): void => {
+  character.loyalty = clampValue(character.loyalty + delta, 0, 100)
+}
+
+export const adjustFactionSupport = (nation: NationState, focus: FactionFocus, delta: number): void => {
+  const faction = nation.factions.find((entry) => entry.focus === focus)
+  if (faction) {
+    faction.support = clampValue(faction.support + delta, 0, 100)
+  }
+}
+
+export const adjustFactionSupportById = (nation: NationState, factionId: string, delta: number): void => {
+  const faction = nation.factions.find((entry) => entry.id === factionId)
+  if (faction) {
+    faction.support = clampValue(faction.support + delta, 0, 100)
+  }
+}
+
+export const adjustCourtLoyaltyByFaction = (nation: NationState, factionId: string, delta: number): void => {
+  nation.court
+    .filter((character) => character.factionId === factionId)
+    .forEach((character) => adjustCharacterLoyalty(character, delta))
+}
+
+export const adjustEntireCourtLoyalty = (nation: NationState, delta: number): void => {
+  nation.court.forEach((character) => adjustCharacterLoyalty(character, delta))
 }
 
 export const ensureRelationMatrix = (

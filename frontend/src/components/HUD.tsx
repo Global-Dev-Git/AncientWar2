@@ -9,7 +9,7 @@ interface HUDProps {
   actionsRemaining: number
 }
 
-const statConfig = [
+const statConfig: Array<{ key: keyof NationState['stats']; label: string; invert?: boolean }> = [
   { key: 'stability', label: 'Stability' },
   { key: 'military', label: 'Military' },
   { key: 'tech', label: 'Technology' },
@@ -19,7 +19,7 @@ const statConfig = [
   { key: 'support', label: 'Support' },
   { key: 'science', label: 'Science' },
   { key: 'laws', label: 'Laws' },
-] as const
+]
 
 const toneFor = (value: number, invert?: boolean) => {
   if (invert) {
