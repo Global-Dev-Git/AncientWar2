@@ -1,0 +1,79 @@
+[
+  {
+    "id": "tech_bronze_working",
+    "name": "Bronze Working",
+    "tier": 1,
+    "prerequisites": [],
+    "effects": ["Unlocks Bronze Spearmen", "+1 military stat on adoption"]
+  },
+  {
+    "id": "tech_horse_domestication",
+    "name": "Horse Domestication",
+    "tier": 1,
+    "prerequisites": [],
+    "effects": ["Unlocks Horse Archers", "Supply upkeep -1 for cavalry"]
+  },
+  {
+    "id": "tech_ritual_divination",
+    "name": "Ritual Divination",
+    "tier": 2,
+    "prerequisites": ["tech_bronze_working"],
+    "effects": ["Unlocks War Chariots", "Positive events yield +1 stability"]
+  },
+  {
+    "id": "tech_wheel_siege",
+    "name": "Siege Wheelcraft",
+    "tier": 2,
+    "prerequisites": ["tech_bronze_working"],
+    "effects": ["Unlocks Siege Engineers", "Fortification bonus reduced by 1 during assaults"]
+  },
+  {
+    "id": "tech_navigation",
+    "name": "Open Sea Navigation",
+    "tier": 2,
+    "prerequisites": ["tech_bronze_working"],
+    "effects": ["Unlocks Naval Marines", "Unlocks Desert Scouts", "+1 economy from coastal tiles"]
+  },
+  {
+    "id": "tech_composite_bow",
+    "name": "Composite Bowcraft",
+    "tier": 2,
+    "prerequisites": ["tech_horse_domestication"],
+    "effects": ["Unlocks Steppe Raiders", "Skirmish actions gain +10% effectiveness"]
+  },
+  {
+    "id": "tech_irrigation",
+    "name": "Irrigation Basins",
+    "tier": 1,
+    "prerequisites": [],
+    "effects": ["Unlocks Royal Guard", "+1 grain output from river tiles"]
+  },
+  {
+    "id": "tech_hydraulic_engineering",
+    "name": "Hydraulic Engineering",
+    "tier": 2,
+    "prerequisites": ["tech_irrigation"],
+    "effects": ["+1 development per turn in canal territories", "Unlocks canal events"]
+  },
+  {
+    "id": "tech_military_roads",
+    "name": "Military Roads",
+    "tier": 2,
+    "prerequisites": ["tech_bronze_working"],
+    "effects": ["Move Army cost -1", "+1 supply to units ending turn on roads"]
+  },
+  {
+    "id": "tech_sea_trade",
+    "name": "Sea Trade Networks",
+    "tier": 2,
+    "prerequisites": ["tech_navigation"],
+    "effects": ["Unlocks Palace Guard", "+1 influence from coastal alliances"]
+  },
+  {
+    "id": "tech_iron_forging",
+    "name": "Early Iron Forging",
+    "tier": 3,
+    "prerequisites": ["tech_bronze_working"],
+    "effects": ["+5 military", "Armies ignore 1 fortification level"]
+  }
+]

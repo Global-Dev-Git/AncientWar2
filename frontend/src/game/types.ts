@@ -18,6 +18,63 @@ export type TerrainType =
   | 'steppe'
   | 'desert'
 
+export type ResourceType = 'grain' | 'timber' | 'bronze' | 'horses' | 'stone' | 'luxuries'
+
+export interface ResourceStockpile {
+  type: ResourceType
+  amount: number
+  reserved?: number
+}
+
+export type ResourceRichness = 'scarce' | 'abundant' | 'standard'
+
+export interface TerritoryResource {
+  type: ResourceType
+  richness: ResourceRichness
+  output: number
+  notes?: string
+}
+
+export interface FortificationDefinition {
+  level: number
+  type: 'none' | 'palisade' | 'stone' | 'citadel'
+  garrisonBonus: number
+  supplyBonus?: number
+}
+
+export type CharacterRole = 'ruler' | 'general' | 'diplomat' | 'governor' | 'sage'
+
+export interface CharacterDefinition {
+  id: string
+  name: string
+  role: CharacterRole
+  loyalty: number
+  traits: string[]
+}
+
+export interface FactionDefinition {
+  id: string
+  name: string
+  agenda: string
+  approval: number
+  influence: number
+  leaderId?: string
+}
+
+export interface TraditionDefinition {
+  id: string
+  name: string
+  description: string
+  effects: string[]
+}
+
+export interface NationUnitDeployment {
+  unitId: string
+  territoryId: string
+  strength?: number
+  currentSupply?: number
+}
+
 export interface NationDefinition {
   id: string
   name: string
@@ -26,6 +83,15 @@ export interface NationDefinition {
   stats: Record<StatKey, number>
   advantages: string[]
   disadvantages: string[]
+  resourceInventory?: ResourceStockpile[]
+  characters?: CharacterDefinition[]
+  factions?: FactionDefinition[]
+  traditions?: string[]
+  startingUnits?: NationUnitDeployment[]
+  startingTechs?: string[]
+  startingMissions?: string[]
+  scenarioTags?: string[]
+  startingTreasury?: number
 }
 
 export interface TerritoryDefinition {
@@ -35,12 +101,15 @@ export interface TerritoryDefinition {
   terrain: TerrainType
   neighbors: string[]
   ownerId: string
+  resources: TerritoryResource[]
+  fortifications: FortificationDefinition
 }
 
 export interface TerritoryState extends TerritoryDefinition {
   garrison: number
   development: number
   unrest: number
+  supplyCache: number
 }
 
 export interface NationState extends NationDefinition {
@@ -48,12 +117,25 @@ export interface NationState extends NationDefinition {
   armies: ArmyUnit[]
   treasury: number
   archetype?: AIArchetype
+  resourceInventory: ResourceStockpile[]
+  characters: CharacterDefinition[]
+  factions: FactionDefinition[]
+  traditions: string[]
+  activeMissions: string[]
+  completedMissions: string[]
+  knownTechs: string[]
 }
+
+export type SupplyStatus = 'green' | 'strained' | 'depleted'
 
 export interface ArmyUnit {
   id: string
   territoryId: string
   strength: number
+  unitId?: string
+  currentSupply: number
+  maxSupply: number
+  supplyStatus: SupplyStatus
 }
 
 export type AIArchetype = 'Expansionist' | 'Defensive' | 'Opportunistic'
@@ -116,6 +198,12 @@ export interface GameConfig {
   baseCrimeGrowth: number
   eventStabilityVariance: number
   eventEconomyVariance: number
+  defaultUnitSupply: number
+  supplyConsumptionPerTurn: number
+  fortificationDefenseBonus: number
+  missionRefreshInterval: number
+  traditionAdoptionCost: number
+  resourceShortagePenalty: number
 }
 
 export interface GameState {
@@ -133,6 +221,8 @@ export interface GameState {
   winner?: string
   defeated?: boolean
   actionsTaken: number
+  scenarioId?: string
+  saveVersion: number
 }
 
 export interface PlayerAction {
@@ -149,4 +239,53 @@ export interface CombatResult {
   outcome: 'attackerVictory' | 'defenderHolds' | 'stalemate'
   attackerLoss: number
   defenderLoss: number
+}
+
+export interface TechDefinition {
+  id: string
+  name: string
+  tier: number
+  prerequisites: string[]
+  effects: string[]
+}
+
+export interface MissionDefinition {
+  id: string
+  name: string
+  description: string
+  rewards: string[]
+  requirements: string[]
+  expiresIn?: number
+}
+
+export interface ScenarioDefinition {
+  id: string
+  name: string
+  description: string
+  recommendedNations: string[]
+  victoryConditions: string[]
+  failureConditions: string[]
+}
+
+export interface SerializedDiplomacyMatrix extends Omit<DiplomacyMatrix, 'wars' | 'alliances'> {
+  wars: string[]
+  alliances: string[]
+}
+
+export interface SavePayload {
+  version: number
+  state: Omit<GameState, 'diplomacy'> & { diplomacy: SerializedDiplomacyMatrix }
+}
+
+export interface UnitDefinition {
+  id: string
+  name: string
+  category: 'infantry' | 'cavalry' | 'naval' | 'siege' | 'support'
+  baseStrength: number
+  maxSupply: number
+  upkeep: number
+  supplyUse: number
+  abilities: string[]
+  techRequirement?: string
+  description: string
 }

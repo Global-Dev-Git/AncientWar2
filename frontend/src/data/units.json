@@ -1,0 +1,121 @@
+[
+  {
+    "id": "levy_infantry",
+    "name": "Levy Infantry",
+    "category": "infantry",
+    "baseStrength": 6,
+    "maxSupply": 5,
+    "upkeep": 1,
+    "supplyUse": 1,
+    "abilities": ["Citizen levies rally quickly"],
+    "description": "Citizen militias providing the backbone of early armies."
+  },
+  {
+    "id": "bronze_spearmen",
+    "name": "Bronze Spearmen",
+    "category": "infantry",
+    "baseStrength": 7,
+    "maxSupply": 6,
+    "upkeep": 2,
+    "supplyUse": 1,
+    "abilities": ["Hold the line", "Bonus vs cavalry"],
+    "techRequirement": "tech_bronze_working",
+    "description": "Disciplined heavy infantry wielding bronze shields and spears."
+  },
+  {
+    "id": "horse_archers",
+    "name": "Horse Archers",
+    "category": "cavalry",
+    "baseStrength": 7,
+    "maxSupply": 7,
+    "upkeep": 2,
+    "supplyUse": 2,
+    "abilities": ["Mobile volley", "Strike from steppe"],
+    "techRequirement": "tech_horse_domestication",
+    "description": "Mounted archers capable of rapid raids and encirclements."
+  },
+  {
+    "id": "war_chariots",
+    "name": "War Chariots",
+    "category": "cavalry",
+    "baseStrength": 8,
+    "maxSupply": 6,
+    "upkeep": 3,
+    "supplyUse": 2,
+    "abilities": ["Shock charge", "Elite escort"],
+    "techRequirement": "tech_ritual_divination",
+    "description": "Ornate chariots that deliver devastating charges."
+  },
+  {
+    "id": "siege_engineers",
+    "name": "Siege Engineers",
+    "category": "siege",
+    "baseStrength": 5,
+    "maxSupply": 4,
+    "upkeep": 3,
+    "supplyUse": 2,
+    "abilities": ["Reduces fortification bonuses"],
+    "techRequirement": "tech_wheel_siege",
+    "description": "Specialists hauling rams and towers to breach defenses."
+  },
+  {
+    "id": "naval_marines",
+    "name": "Naval Marines",
+    "category": "naval",
+    "baseStrength": 6,
+    "maxSupply": 6,
+    "upkeep": 2,
+    "supplyUse": 1,
+    "abilities": ["Amphibious assault", "Harbor defense"],
+    "techRequirement": "tech_navigation",
+    "description": "Sea-seasoned infantry that protect harbors and board enemy ships."
+  },
+  {
+    "id": "desert_scouts",
+    "name": "Desert Scouts",
+    "category": "cavalry",
+    "baseStrength": 6,
+    "maxSupply": 5,
+    "upkeep": 1,
+    "supplyUse": 1,
+    "abilities": ["Ignore desert attrition"],
+    "techRequirement": "tech_navigation",
+    "description": "Light cavalry adept at navigating dunes and oasis trails."
+  },
+  {
+    "id": "steppe_raiders",
+    "name": "Steppe Raiders",
+    "category": "cavalry",
+    "baseStrength": 7,
+    "maxSupply": 7,
+    "upkeep": 2,
+    "supplyUse": 2,
+    "abilities": ["Ambush supply lines"],
+    "techRequirement": "tech_composite_bow",
+    "description": "Nomadic riders who excel at deep raids and feigned retreats."
+  },
+  {
+    "id": "royal_guard",
+    "name": "Royal Guard",
+    "category": "infantry",
+    "baseStrength": 8,
+    "maxSupply": 6,
+    "upkeep": 3,
+    "supplyUse": 2,
+    "abilities": ["Guard capitals", "Boost stability"],
+    "techRequirement": "tech_irrigation",
+    "description": "Elite palace troops dedicated to defending the crown."
+  },
+  {
+    "id": "palace_guard",
+    "name": "Palace Guard",
+    "category": "infantry",
+    "baseStrength": 7,
+    "maxSupply": 6,
+    "upkeep": 2,
+    "supplyUse": 1,
+    "abilities": ["Protect traditions"],
+    "techRequirement": "tech_sea_trade",
+    "description": "Ceremonial fighters who maintain order in palace complexes."
+  }
+]
