@@ -62,6 +62,11 @@ function App() {
     () => state?.hotkeys ?? { ...DEFAULT_HOTKEYS, ...hotkeyOverrides },
     [state?.hotkeys, hotkeyOverrides],
   )
+  const mods = state?.options.mods
+  const techNodes = useMemo(() => getMergedTechTree(mods), [mods])
+  const traditionDefinitions = useMemo(() => getMergedTraditions(mods), [mods])
+  const missionDefinitions = useMemo(() => getMergedMissions(mods), [mods])
+  const achievementDefinitions = useMemo(() => getMergedAchievements(mods), [mods])
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -136,7 +141,7 @@ function App() {
     if (state) {
       localStorage.setItem(HOTKEY_STORAGE_KEY, JSON.stringify(state.hotkeys))
     }
-  }, [state?.hotkeys])
+  }, [state])
 
   const territories = useMemo(() => (state ? Object.values(state.territories) : []), [state])
   const nations = useMemo(() => (state ? Object.values(state.nations) : []), [state])
@@ -150,17 +155,6 @@ function App() {
       />
     )
   }
-
-  const techNodes = useMemo(() => getMergedTechTree(state.options.mods), [state.options.mods])
-  const traditionDefinitions = useMemo(
-    () => getMergedTraditions(state.options.mods),
-    [state.options.mods],
-  )
-  const missionDefinitions = useMemo(() => getMergedMissions(state.options.mods), [state.options.mods])
-  const achievementDefinitions = useMemo(
-    () => getMergedAchievements(state.options.mods),
-    [state.options.mods],
-  )
 
   const actionsRemaining = Math.max(0, gameConfig.maxActionsPerTurn - state.actionsTaken)
 

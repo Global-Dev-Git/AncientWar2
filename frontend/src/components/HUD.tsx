@@ -21,7 +21,9 @@ const statConfig: Array<{ key: keyof NationState['stats']; label: string; invert
   { key: 'laws', label: 'Laws' },
 ] as const
 
-const toneFor = (value: number, invert?: boolean) => {
+type Tone = 'stable' | 'risky' | 'critical'
+
+const toneFor = (value: number, invert?: boolean): Tone => {
   if (invert) {
     if (value <= 25) return 'stable'
     if (value <= 60) return 'risky'
@@ -51,7 +53,7 @@ export const HUD = ({ nation, treasury, turn, actionsRemaining }: HUDProps) => (
           key={stat.key}
           label={stat.label}
           value={nation.stats[stat.key]}
-          tone={toneFor(nation.stats[stat.key], stat.invert) as any}
+          tone={toneFor(nation.stats[stat.key], stat.invert)}
         />
       ))}
     </div>
