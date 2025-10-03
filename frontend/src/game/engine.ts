@@ -47,7 +47,7 @@ export const createInitialGameState = (
   playerNationId: string,
   seed: number = Date.now(),
 ): GameState => {
-  void seed
+  const normalisedSeed = RandomGenerator.normaliseSeed(seed)
   const nationStates: Record<string, NationState> = {}
   nations.forEach((nation) => {
     nationStates[nation.id] = buildInitialNationState(nation)
@@ -77,6 +77,8 @@ export const createInitialGameState = (
     turn: 1,
     currentPhase: 'player',
     playerNationId,
+    seed: normalisedSeed,
+    rngSeed: normalisedSeed,
     nations: nationStates,
     territories: territoryStates,
     diplomacy,
@@ -187,6 +189,8 @@ export const resolveCombat = (
     tone: outcome === 'attackerVictory' ? 'success' : outcome === 'defenderHolds' ? 'warning' : 'info',
     turn: state.turn,
   })
+
+  state.rngSeed = rng.getState()
 
   return {
     attackerId,
@@ -568,6 +572,7 @@ export const advanceTurn = (state: GameState, rng: RandomGenerator): void => {
   if (!state.winner && !state.defeated) {
     state.currentPhase = 'player'
   }
+  state.rngSeed = rng.getState()
 }
 
 export const executePlayerAction = (
@@ -583,6 +588,7 @@ export const executePlayerAction = (
     return false
   }
   const result = applyAction(state, state.playerNationId, action, rng)
+  state.rngSeed = rng.getState()
   if (result) {
     state.actionsTaken += 1
     pushNotification(state, {
@@ -608,8 +614,12 @@ export const quickSaveState = (state: GameState): string => {
 
 export const loadStateFromString = (payload: string): GameState => {
   const parsed = JSON.parse(payload)
+  const seed = RandomGenerator.normaliseSeed(parsed.seed ?? parsed.rngSeed ?? Date.now())
+  const rngSeed = RandomGenerator.normaliseSeed(parsed.rngSeed ?? seed)
   return {
     ...parsed,
+    seed,
+    rngSeed,
     ironman: parsed.ironman ?? false,
     diplomacy: {
       relations: parsed.diplomacy.relations,

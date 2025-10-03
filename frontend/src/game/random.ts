@@ -2,10 +2,7 @@ export class RandomGenerator {
   private seed: number
 
   constructor(seed: number = Date.now()) {
-    this.seed = seed % 2147483647
-    if (this.seed <= 0) {
-      this.seed += 2147483646
-    }
+    this.seed = RandomGenerator.normaliseSeed(seed)
   }
 
   next(): number {
@@ -20,6 +17,18 @@ export class RandomGenerator {
   clone(): RandomGenerator {
     return new RandomGenerator(this.seed)
   }
+
+  getState(): number {
+    return this.seed
+  }
+
+  static normaliseSeed(seed: number): number {
+    let value = Math.trunc(seed) % 2147483647
+    if (value <= 0) {
+      value += 2147483646
+    }
+    return value
+  }
 }
 
 export const createRngFromString = (value: string): RandomGenerator => {
@@ -28,5 +37,5 @@ export const createRngFromString = (value: string): RandomGenerator => {
     hash = (hash << 5) - hash + value.charCodeAt(i)
     hash |= 0
   }
-  return new RandomGenerator(Math.abs(hash) + 1)
+  return new RandomGenerator(RandomGenerator.normaliseSeed(Math.abs(hash) + 1))
 }

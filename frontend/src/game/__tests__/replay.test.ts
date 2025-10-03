@@ -65,8 +65,20 @@ describe('save migration compatibility', () => {
     const legacy = JSON.parse(payload)
     delete legacy.diplomacy.blockades
     delete legacy.ironman
+    delete legacy.rngSeed
+    delete legacy.seed
     const restored = loadStateFromString(JSON.stringify(legacy))
     expect(restored.diplomacy.blockades).toEqual({})
     expect(restored.ironman).toBe(false)
+  })
+
+  it('captures and restores rng seed from saves', () => {
+    const state = createInitialGameState('rome', 1234)
+    const rng = new RandomGenerator(state.seed)
+    executePlayerAction(state, { type: 'CollectTaxes' }, rng)
+    const payload = quickSaveState(state)
+    const restored = loadStateFromString(payload)
+    expect(restored.rngSeed).toBe(rng.getState())
+    expect(restored.seed).toBe(state.seed)
   })
 })

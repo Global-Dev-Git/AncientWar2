@@ -21,6 +21,7 @@ export const useGameEngine = () => {
     const rng = new RandomGenerator(seed)
     rngRef.current = rng
     const initial = createInitialGameState(nationId, seed)
+    initial.rngSeed = rng.getState()
     stateRef.current = initial
     setGameState(cloneState(initial))
   }, [])
@@ -30,6 +31,7 @@ export const useGameEngine = () => {
     const rng = rngRef.current
     if (!current || !rng) return
     mutator(current, rng)
+    current.rngSeed = rng.getState()
     setGameState(cloneState(current))
   }, [])
 
@@ -58,13 +60,16 @@ export const useGameEngine = () => {
 
   const saveGame = useCallback(() => {
     if (!stateRef.current) return null
+    if (rngRef.current) {
+      stateRef.current.rngSeed = rngRef.current.getState()
+    }
     return quickSaveState(stateRef.current)
   }, [])
 
   const loadGameFromPayload = useCallback((payload: string) => {
     const restored = loadStateFromString(payload)
     stateRef.current = restored
-    rngRef.current = new RandomGenerator(Date.now())
+    rngRef.current = new RandomGenerator(restored.rngSeed)
     setGameState(cloneState(restored))
   }, [])
 

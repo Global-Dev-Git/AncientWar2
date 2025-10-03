@@ -132,6 +132,8 @@ export interface GameState {
   turn: number
   currentPhase: 'selection' | 'player' | 'ai' | 'events' | 'gameover'
   playerNationId: string
+  seed: number
+  rngSeed: number
   nations: Record<string, NationState>
   territories: Record<string, TerritoryState>
   diplomacy: DiplomacyMatrix
