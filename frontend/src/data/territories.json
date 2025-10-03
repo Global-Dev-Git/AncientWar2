@@ -2,217 +2,939 @@
   {
     "id": "rome_etruria",
     "name": "Etruria",
-    "coordinates": [1, 0],
+    "coordinates": [
+      1,
+      0
+    ],
     "terrain": "hills",
-    "neighbors": ["rome_latium", "minoa_aegean", "hittites_anatolia"],
-    "ownerId": "rome"
+    "neighbors": [
+      "rome_latium",
+      "minoa_aegean",
+      "hittites_anatolia"
+    ],
+    "ownerId": "rome",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Tuscan farms"
+      },
+      {
+        "type": "timber",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Oak-laden hills"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "rome_latium",
     "name": "Latium",
-    "coordinates": [2, 0],
+    "coordinates": [
+      2,
+      0
+    ],
     "terrain": "plains",
-    "neighbors": ["rome_etruria", "rome_campania", "minoa_aegean"],
-    "ownerId": "rome"
+    "neighbors": [
+      "rome_etruria",
+      "rome_campania",
+      "minoa_aegean"
+    ],
+    "ownerId": "rome",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Latium plains"
+      },
+      {
+        "type": "stone",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Tiber quarries"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2,
+      "supplyBonus": 1
+    }
   },
   {
     "id": "rome_campania",
     "name": "Campania",
-    "coordinates": [3, 0],
+    "coordinates": [
+      3,
+      0
+    ],
     "terrain": "coastal",
-    "neighbors": ["rome_latium", "carthage_carthage", "minoa_crete"],
-    "ownerId": "rome"
+    "neighbors": [
+      "rome_latium",
+      "carthage_carthage",
+      "minoa_crete"
+    ],
+    "ownerId": "rome",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Volcanic soils"
+      },
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Wine and garum"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "carthage_carthage",
     "name": "Carthage",
-    "coordinates": [3, 1],
+    "coordinates": [
+      3,
+      1
+    ],
     "terrain": "coastal",
-    "neighbors": ["rome_campania", "carthage_maghrib", "minoa_crete", "egypt_delta"],
-    "ownerId": "carthage"
+    "neighbors": [
+      "rome_campania",
+      "carthage_maghrib",
+      "minoa_crete",
+      "egypt_delta"
+    ],
+    "ownerId": "carthage",
+    "resources": [
+      {
+        "type": "luxuries",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Purple dye workshops"
+      },
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "North African fields"
+      }
+    ],
+    "fortifications": {
+      "level": 3,
+      "type": "citadel",
+      "garrisonBonus": 3,
+      "supplyBonus": 2
+    }
   },
   {
     "id": "carthage_maghrib",
     "name": "Maghrib",
-    "coordinates": [4, 1],
+    "coordinates": [
+      4,
+      1
+    ],
     "terrain": "desert",
-    "neighbors": ["carthage_carthage", "egypt_upper"],
-    "ownerId": "carthage"
+    "neighbors": [
+      "carthage_carthage",
+      "egypt_upper"
+    ],
+    "ownerId": "carthage",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "Desert oases"
+      },
+      {
+        "type": "timber",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "Coastal scrub"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "minoa_aegean",
     "name": "Aegean Isles",
-    "coordinates": [2, 1],
+    "coordinates": [
+      2,
+      1
+    ],
     "terrain": "coastal",
-    "neighbors": ["rome_etruria", "rome_latium", "minoa_crete", "hittites_capital"],
-    "ownerId": "minoa"
+    "neighbors": [
+      "rome_etruria",
+      "rome_latium",
+      "minoa_crete",
+      "hittites_capital"
+    ],
+    "ownerId": "minoa",
+    "resources": [
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Artisan goods"
+      },
+      {
+        "type": "timber",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Ship masts"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2,
+      "supplyBonus": 1
+    }
   },
   {
     "id": "minoa_crete",
     "name": "Crete",
-    "coordinates": [3, 2],
+    "coordinates": [
+      3,
+      2
+    ],
     "terrain": "coastal",
-    "neighbors": ["rome_campania", "carthage_carthage", "minoa_aegean", "egypt_delta"],
-    "ownerId": "minoa"
+    "neighbors": [
+      "rome_campania",
+      "carthage_carthage",
+      "minoa_aegean",
+      "egypt_delta"
+    ],
+    "ownerId": "minoa",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Terraced fields"
+      },
+      {
+        "type": "luxuries",
+        "richness": "abundant",
+        "output": 4,
+        "notes": "Palatial workshops"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "hittites_anatolia",
     "name": "Western Anatolia",
-    "coordinates": [1, 1],
+    "coordinates": [
+      1,
+      1
+    ],
     "terrain": "mountain",
-    "neighbors": ["rome_etruria", "minoa_aegean", "hittites_capital", "scythia_borderlands"],
-    "ownerId": "hittites"
+    "neighbors": [
+      "rome_etruria",
+      "minoa_aegean",
+      "hittites_capital",
+      "scythia_borderlands"
+    ],
+    "ownerId": "hittites",
+    "resources": [
+      {
+        "type": "stone",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Anatolian ridges"
+      },
+      {
+        "type": "timber",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Mountain forests"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "hittites_capital",
     "name": "Hattusa",
-    "coordinates": [2, 2],
+    "coordinates": [
+      2,
+      2
+    ],
     "terrain": "mountain",
-    "neighbors": ["minoa_aegean", "hittites_anatolia", "assyria_upper", "assyria_heartland"],
-    "ownerId": "hittites"
+    "neighbors": [
+      "minoa_aegean",
+      "hittites_anatolia",
+      "assyria_upper",
+      "assyria_heartland"
+    ],
+    "ownerId": "hittites",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "River valleys"
+      },
+      {
+        "type": "bronze",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Smelting works"
+      }
+    ],
+    "fortifications": {
+      "level": 3,
+      "type": "citadel",
+      "garrisonBonus": 3,
+      "supplyBonus": 1
+    }
   },
   {
     "id": "assyria_upper",
     "name": "Upper Assyria",
-    "coordinates": [1, 3],
+    "coordinates": [
+      1,
+      3
+    ],
     "terrain": "hills",
-    "neighbors": ["hittites_capital", "assyria_heartland", "scythia_borderlands", "akkad_mesopotamia"],
-    "ownerId": "assyria"
+    "neighbors": [
+      "hittites_capital",
+      "assyria_heartland",
+      "scythia_borderlands",
+      "akkad_mesopotamia"
+    ],
+    "ownerId": "assyria",
+    "resources": [
+      {
+        "type": "horses",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Steppe pastures"
+      },
+      {
+        "type": "timber",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Hill forests"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "assyria_heartland",
     "name": "Assur",
-    "coordinates": [2, 3],
+    "coordinates": [
+      2,
+      3
+    ],
     "terrain": "plains",
-    "neighbors": ["hittites_capital", "assyria_upper", "akkad_mesopotamia", "akkad_lower"],
-    "ownerId": "assyria"
+    "neighbors": [
+      "hittites_capital",
+      "assyria_upper",
+      "akkad_mesopotamia",
+      "akkad_lower"
+    ],
+    "ownerId": "assyria",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Assur granaries"
+      },
+      {
+        "type": "stone",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Temple quarries"
+      }
+    ],
+    "fortifications": {
+      "level": 3,
+      "type": "citadel",
+      "garrisonBonus": 3,
+      "supplyBonus": 1
+    }
   },
   {
     "id": "akkad_mesopotamia",
     "name": "Akkad",
-    "coordinates": [2, 4],
+    "coordinates": [
+      2,
+      4
+    ],
     "terrain": "plains",
-    "neighbors": ["assyria_upper", "assyria_heartland", "akkad_lower", "medes_plateau"],
-    "ownerId": "akkad"
+    "neighbors": [
+      "assyria_upper",
+      "assyria_heartland",
+      "akkad_lower",
+      "medes_plateau"
+    ],
+    "ownerId": "akkad",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Euphrates irrigation"
+      },
+      {
+        "type": "bronze",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Craft guilds"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "akkad_lower",
     "name": "Lower Mesopotamia",
-    "coordinates": [3, 4],
+    "coordinates": [
+      3,
+      4
+    ],
     "terrain": "river",
-    "neighbors": ["assyria_heartland", "akkad_mesopotamia", "egypt_delta", "medes_plateau", "harappa_indus"],
-    "ownerId": "akkad"
+    "neighbors": [
+      "assyria_heartland",
+      "akkad_mesopotamia",
+      "egypt_delta",
+      "medes_plateau",
+      "harappa_indus"
+    ],
+    "ownerId": "akkad",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Delta fields"
+      },
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Reed barges"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "egypt_delta",
     "name": "Lower Nile",
-    "coordinates": [3, 3],
+    "coordinates": [
+      3,
+      3
+    ],
     "terrain": "river",
-    "neighbors": ["carthage_carthage", "minoa_crete", "akkad_lower", "egypt_upper"],
-    "ownerId": "egypt"
+    "neighbors": [
+      "carthage_carthage",
+      "minoa_crete",
+      "akkad_lower",
+      "egypt_upper"
+    ],
+    "ownerId": "egypt",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 6,
+        "notes": "Nile floodplains"
+      },
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Papyrus workshops"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2,
+      "supplyBonus": 1
+    }
   },
   {
     "id": "egypt_upper",
     "name": "Upper Nile",
-    "coordinates": [4, 3],
+    "coordinates": [
+      4,
+      3
+    ],
     "terrain": "river",
-    "neighbors": ["egypt_delta", "carthage_maghrib", "medes_frontier"],
-    "ownerId": "egypt"
+    "neighbors": [
+      "egypt_delta",
+      "carthage_maghrib",
+      "medes_frontier"
+    ],
+    "ownerId": "egypt",
+    "resources": [
+      {
+        "type": "stone",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Nubian quarries"
+      },
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Canal oases"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "medes_caspian",
     "name": "Caspian Gates",
-    "coordinates": [1, 4],
+    "coordinates": [
+      1,
+      4
+    ],
     "terrain": "mountain",
-    "neighbors": ["assyria_upper", "medes_plateau", "scythia_caspian"],
-    "ownerId": "medes"
+    "neighbors": [
+      "assyria_upper",
+      "medes_plateau",
+      "scythia_caspian"
+    ],
+    "ownerId": "medes",
+    "resources": [
+      {
+        "type": "timber",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Forest passes"
+      },
+      {
+        "type": "stone",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Caspian ridges"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "medes_plateau",
     "name": "Median Plateau",
-    "coordinates": [2, 5],
+    "coordinates": [
+      2,
+      5
+    ],
     "terrain": "hills",
-    "neighbors": ["akkad_mesopotamia", "akkad_lower", "medes_caspian", "medes_frontier", "harappa_indus"],
-    "ownerId": "medes"
+    "neighbors": [
+      "akkad_mesopotamia",
+      "akkad_lower",
+      "medes_caspian",
+      "medes_frontier",
+      "harappa_indus"
+    ],
+    "ownerId": "medes",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Highland terraces"
+      },
+      {
+        "type": "horses",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Plateau pastures"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "medes_frontier",
     "name": "Eastern Frontier",
-    "coordinates": [4, 4],
+    "coordinates": [
+      4,
+      4
+    ],
     "terrain": "mountain",
-    "neighbors": ["egypt_upper", "medes_plateau", "harappa_meluha"],
-    "ownerId": "medes"
+    "neighbors": [
+      "egypt_upper",
+      "medes_plateau",
+      "harappa_meluha"
+    ],
+    "ownerId": "medes",
+    "resources": [
+      {
+        "type": "horses",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Frontier herds"
+      },
+      {
+        "type": "timber",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "Sparse copses"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2,
+      "supplyBonus": 1
+    }
   },
   {
     "id": "harappa_indus",
     "name": "Indus Heartland",
-    "coordinates": [2, 6],
+    "coordinates": [
+      2,
+      6
+    ],
     "terrain": "river",
-    "neighbors": ["medes_plateau", "akkad_lower", "harappa_meluha", "shang_yellow"],
-    "ownerId": "harappa"
+    "neighbors": [
+      "medes_plateau",
+      "akkad_lower",
+      "harappa_meluha",
+      "shang_yellow"
+    ],
+    "ownerId": "harappa",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 6,
+        "notes": "Canalized fields"
+      },
+      {
+        "type": "stone",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Brick kilns"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "harappa_meluha",
     "name": "Meluha Coast",
-    "coordinates": [3, 5],
+    "coordinates": [
+      3,
+      5
+    ],
     "terrain": "coastal",
-    "neighbors": ["medes_plateau", "harappa_indus", "medes_frontier", "harappa_sindh"],
-    "ownerId": "harappa"
+    "neighbors": [
+      "medes_plateau",
+      "harappa_indus",
+      "medes_frontier",
+      "harappa_sindh"
+    ],
+    "ownerId": "harappa",
+    "resources": [
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Seaborne trade"
+      },
+      {
+        "type": "timber",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Delta groves"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "harappa_sindh",
     "name": "Sindh Delta",
-    "coordinates": [4, 5],
+    "coordinates": [
+      4,
+      5
+    ],
     "terrain": "coastal",
-    "neighbors": ["harappa_meluha", "medes_frontier", "shang_delta"],
-    "ownerId": "harappa"
+    "neighbors": [
+      "harappa_meluha",
+      "medes_frontier",
+      "shang_delta"
+    ],
+    "ownerId": "harappa",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Sindh fisheries"
+      },
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Trade beads"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "shang_yellow",
     "name": "Yellow River",
-    "coordinates": [2, 7],
+    "coordinates": [
+      2,
+      7
+    ],
     "terrain": "river",
-    "neighbors": ["harappa_indus", "shang_delta", "scythia_east"],
-    "ownerId": "shang"
+    "neighbors": [
+      "harappa_indus",
+      "shang_delta",
+      "scythia_east"
+    ],
+    "ownerId": "shang",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "abundant",
+        "output": 6,
+        "notes": "Loess farmlands"
+      },
+      {
+        "type": "bronze",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Foundry towns"
+      }
+    ],
+    "fortifications": {
+      "level": 2,
+      "type": "stone",
+      "garrisonBonus": 2
+    }
   },
   {
     "id": "shang_delta",
     "name": "Eastern Delta",
-    "coordinates": [3, 6],
+    "coordinates": [
+      3,
+      6
+    ],
     "terrain": "coastal",
-    "neighbors": ["harappa_meluha", "harappa_sindh", "shang_yellow"],
-    "ownerId": "shang"
+    "neighbors": [
+      "harappa_meluha",
+      "harappa_sindh",
+      "shang_yellow"
+    ],
+    "ownerId": "shang",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Delta paddies"
+      },
+      {
+        "type": "luxuries",
+        "richness": "standard",
+        "output": 3,
+        "notes": "Oracle shells"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "scythia_steppe",
     "name": "Great Steppe",
-    "coordinates": [0, 3],
+    "coordinates": [
+      0,
+      3
+    ],
     "terrain": "steppe",
-    "neighbors": ["scythia_borderlands", "scythia_caspian"],
-    "ownerId": "scythia"
+    "neighbors": [
+      "scythia_borderlands",
+      "scythia_caspian"
+    ],
+    "ownerId": "scythia",
+    "resources": [
+      {
+        "type": "horses",
+        "richness": "abundant",
+        "output": 6,
+        "notes": "Endless grasslands"
+      },
+      {
+        "type": "grain",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "Nomad farms"
+      }
+    ],
+    "fortifications": {
+      "level": 0,
+      "type": "none",
+      "garrisonBonus": 0
+    }
   },
   {
     "id": "scythia_caspian",
     "name": "Caspian Steppe",
-    "coordinates": [0, 4],
+    "coordinates": [
+      0,
+      4
+    ],
     "terrain": "steppe",
-    "neighbors": ["scythia_steppe", "medes_caspian", "scythia_east"],
-    "ownerId": "scythia"
+    "neighbors": [
+      "scythia_steppe",
+      "medes_caspian",
+      "scythia_east"
+    ],
+    "ownerId": "scythia",
+    "resources": [
+      {
+        "type": "horses",
+        "richness": "abundant",
+        "output": 5,
+        "notes": "Coastal steppes"
+      },
+      {
+        "type": "timber",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "River woods"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "scythia_borderlands",
     "name": "Border Marches",
-    "coordinates": [1, 2],
+    "coordinates": [
+      1,
+      2
+    ],
     "terrain": "steppe",
-    "neighbors": ["scythia_steppe", "hittites_anatolia", "assyria_upper"],
-    "ownerId": "scythia"
+    "neighbors": [
+      "scythia_steppe",
+      "hittites_anatolia",
+      "assyria_upper"
+    ],
+    "ownerId": "scythia",
+    "resources": [
+      {
+        "type": "horses",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Border corrals"
+      },
+      {
+        "type": "timber",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "Scrub brush"
+      }
+    ],
+    "fortifications": {
+      "level": 1,
+      "type": "palisade",
+      "garrisonBonus": 1
+    }
   },
   {
     "id": "scythia_east",
     "name": "Far Steppe",
-    "coordinates": [1, 5],
+    "coordinates": [
+      1,
+      5
+    ],
     "terrain": "steppe",
-    "neighbors": ["scythia_caspian", "medes_plateau", "shang_yellow"],
-    "ownerId": "scythia"
+    "neighbors": [
+      "scythia_caspian",
+      "medes_plateau",
+      "shang_yellow"
+    ],
+    "ownerId": "scythia",
+    "resources": [
+      {
+        "type": "grain",
+        "richness": "scarce",
+        "output": 2,
+        "notes": "Rugged steppes"
+      },
+      {
+        "type": "horses",
+        "richness": "standard",
+        "output": 4,
+        "notes": "Nomad herds"
+      }
+    ],
+    "fortifications": {
+      "level": 0,
+      "type": "none",
+      "garrisonBonus": 0
+    }
   }
 ]

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { JSX } from 'react'
 import { Lightning, Coins, Scroll, Sword, UsersThree, ShieldCheck, ArrowsCounterClockwise, Handshake, Target, Eye, Barricade } from '@phosphor-icons/react'
 import type { ActionType } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'

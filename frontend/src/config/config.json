@@ -21,5 +21,11 @@
   "baseScienceDrift": 1,
   "baseCrimeGrowth": 1,
   "eventStabilityVariance": 3,
-  "eventEconomyVariance": 4
+  "eventEconomyVariance": 4,
+  "defaultUnitSupply": 5,
+  "supplyConsumptionPerTurn": 1,
+  "fortificationDefenseBonus": 2,
+  "missionRefreshInterval": 5,
+  "traditionAdoptionCost": 8,
+  "resourceShortagePenalty": 3
 }

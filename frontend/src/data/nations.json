@@ -3,7 +3,11 @@
     "id": "medes",
     "name": "Medes",
     "description": "Highland coalition famed for swift horse archers and vigilant satraps guarding the Iranian plateau.",
-    "territories": ["medes_caspian", "medes_plateau", "medes_frontier"],
+    "territories": [
+      "medes_caspian",
+      "medes_plateau",
+      "medes_frontier"
+    ],
     "stats": {
       "stability": 68,
       "military": 74,
@@ -22,13 +26,97 @@
     "disadvantages": [
       "Fragmented Nobility: -5 stability if economy falls below 50.",
       "Mountain Supply: Army recruitment costs +1 upkeep."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 10
+      },
+      {
+        "type": "horses",
+        "amount": 6
+      },
+      {
+        "type": "timber",
+        "amount": 4
+      }
+    ],
+    "characters": [
+      {
+        "id": "medes_deioces",
+        "name": "Deioces",
+        "role": "ruler",
+        "loyalty": 78,
+        "traits": [
+          "Arbiter of Tribes",
+          "Visionary Planner"
+        ]
+      },
+      {
+        "id": "medes_phraortes",
+        "name": "Phraortes",
+        "role": "general",
+        "loyalty": 66,
+        "traits": [
+          "Horse Lord",
+          "Frontier Vigilance"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "medes_clans",
+        "name": "Highland Clans",
+        "agenda": "Protect grazing rights on the plateau",
+        "approval": 58,
+        "influence": 55,
+        "leaderId": "medes_deioces"
+      },
+      {
+        "id": "medes_satraps",
+        "name": "Satrap Coalition",
+        "agenda": "Expand fortifications along the frontier",
+        "approval": 64,
+        "influence": 60,
+        "leaderId": "medes_phraortes"
+      }
+    ],
+    "traditions": [
+      "tradition_mede_horsemasters",
+      "tradition_mede_watchfires"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "horse_archers",
+        "territoryId": "medes_frontier",
+        "strength": 7
+      },
+      {
+        "unitId": "levy_infantry",
+        "territoryId": "medes_plateau",
+        "strength": 6
+      }
+    ],
+    "startingTechs": [
+      "tech_horse_domestication"
+    ],
+    "startingMissions": [
+      "mission_secure_plateau"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "median_rise"
+    ],
+    "startingTreasury": 22
   },
   {
     "id": "shang",
     "name": "Shang",
     "description": "Bronze-age dynasty mastering divination and chariot warfare across the Yellow River basin.",
-    "territories": ["shang_yellow", "shang_delta"],
+    "territories": [
+      "shang_yellow",
+      "shang_delta"
+    ],
     "stats": {
       "stability": 72,
       "military": 70,
@@ -47,13 +135,98 @@
     "disadvantages": [
       "Ancestor Burdens: -5 support if laws fall under 55.",
       "Flood Risk: Delta territories suffer +1 crime per drought event."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 12
+      },
+      {
+        "type": "bronze",
+        "amount": 8
+      },
+      {
+        "type": "luxuries",
+        "amount": 5
+      }
+    ],
+    "characters": [
+      {
+        "id": "shang_wuding",
+        "name": "Wu Ding",
+        "role": "ruler",
+        "loyalty": 82,
+        "traits": [
+          "Oracle Seeker",
+          "Bronze Patron"
+        ]
+      },
+      {
+        "id": "shang_fuhao",
+        "name": "Fu Hao",
+        "role": "general",
+        "loyalty": 75,
+        "traits": [
+          "Battle Priestess",
+          "Chariot Commander"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "shang_oracle",
+        "name": "Diviners of Anyang",
+        "agenda": "Consult the ancestors for every major decision",
+        "approval": 68,
+        "influence": 72,
+        "leaderId": "shang_wuding"
+      },
+      {
+        "id": "shang_chariots",
+        "name": "Chariot Marshals",
+        "agenda": "Expand bronze foundries for elite troops",
+        "approval": 61,
+        "influence": 63,
+        "leaderId": "shang_fuhao"
+      }
+    ],
+    "traditions": [
+      "tradition_shang_divinations",
+      "tradition_shang_chariotry"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "war_chariots",
+        "territoryId": "shang_delta",
+        "strength": 8
+      },
+      {
+        "unitId": "bronze_spearmen",
+        "territoryId": "shang_yellow",
+        "strength": 7
+      }
+    ],
+    "startingTechs": [
+      "tech_ritual_divination"
+    ],
+    "startingMissions": [
+      "mission_consult_oracle"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "oracle_dynasty"
+    ],
+    "startingTreasury": 24
   },
   {
     "id": "harappa",
     "name": "Harappa",
     "description": "Indus valley planners balancing trade guilds and elaborate irrigation networks.",
-    "territories": ["harappa_indus", "harappa_meluha", "harappa_sindh"],
+    "territories": [
+      "harappa_indus",
+      "harappa_meluha",
+      "harappa_sindh"
+    ],
     "stats": {
       "stability": 75,
       "military": 54,
@@ -72,13 +245,97 @@
     "disadvantages": [
       "Pacifist Merchants: -10 military if stability drops under 55.",
       "Monsoon Fragility: Drought events reduce economy by extra 2."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 14
+      },
+      {
+        "type": "stone",
+        "amount": 6
+      },
+      {
+        "type": "luxuries",
+        "amount": 7
+      }
+    ],
+    "characters": [
+      {
+        "id": "harappa_rishi",
+        "name": "Priest Rishi",
+        "role": "sage",
+        "loyalty": 73,
+        "traits": [
+          "Canal Scholar",
+          "Seal Keeper"
+        ]
+      },
+      {
+        "id": "harappa_shakti",
+        "name": "Shakti of Meluha",
+        "role": "governor",
+        "loyalty": 70,
+        "traits": [
+          "Harbor Master",
+          "Guild Liaison"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "harappa_guilds",
+        "name": "Meluha Guild Confederation",
+        "agenda": "Secure trade monopolies with far ports",
+        "approval": 72,
+        "influence": 68,
+        "leaderId": "harappa_shakti"
+      },
+      {
+        "id": "harappa_priests",
+        "name": "Great Bath Custodians",
+        "agenda": "Maintain ritual purity and canal upkeep",
+        "approval": 65,
+        "influence": 60,
+        "leaderId": "harappa_rishi"
+      }
+    ],
+    "traditions": [
+      "tradition_harappa_canalmasters",
+      "tradition_harappa_sealmakers"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "levy_infantry",
+        "territoryId": "harappa_indus",
+        "strength": 6
+      },
+      {
+        "unitId": "naval_marines",
+        "territoryId": "harappa_meluha",
+        "strength": 6
+      }
+    ],
+    "startingTechs": [
+      "tech_hydraulic_engineering"
+    ],
+    "startingMissions": [
+      "mission_expand_canals"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "indus_ascendancy"
+    ],
+    "startingTreasury": 26
   },
   {
     "id": "akkad",
     "name": "Akkad",
     "description": "Imperial architects leveraging river trade and siegecraft to dominate Mesopotamia.",
-    "territories": ["akkad_mesopotamia", "akkad_lower"],
+    "territories": [
+      "akkad_mesopotamia",
+      "akkad_lower"
+    ],
     "stats": {
       "stability": 64,
       "military": 76,
@@ -97,13 +354,97 @@
     "disadvantages": [
       "Rebel Cities: Crime penalties doubled on revolt checks.",
       "Harsh Conscription: Recruit Army lowers support by 2."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 11
+      },
+      {
+        "type": "bronze",
+        "amount": 7
+      },
+      {
+        "type": "timber",
+        "amount": 5
+      }
+    ],
+    "characters": [
+      {
+        "id": "akkad_sargon",
+        "name": "Sargon",
+        "role": "ruler",
+        "loyalty": 80,
+        "traits": [
+          "Imperial Architect",
+          "River Trader"
+        ]
+      },
+      {
+        "id": "akkad_enheduanna",
+        "name": "Enheduanna",
+        "role": "sage",
+        "loyalty": 76,
+        "traits": [
+          "Poet Laureate",
+          "Diplomatic Envoy"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "akkad_merchants",
+        "name": "Canal Merchants",
+        "agenda": "Expand trade posts along the rivers",
+        "approval": 63,
+        "influence": 67,
+        "leaderId": "akkad_enheduanna"
+      },
+      {
+        "id": "akkad_legions",
+        "name": "Siege Engineers",
+        "agenda": "Invest in battering rams and sappers",
+        "approval": 60,
+        "influence": 62,
+        "leaderId": "akkad_sargon"
+      }
+    ],
+    "traditions": [
+      "tradition_akkad_ziggurat_builders",
+      "tradition_akkad_siegecraft"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "bronze_spearmen",
+        "territoryId": "akkad_mesopotamia",
+        "strength": 7
+      },
+      {
+        "unitId": "siege_engineers",
+        "territoryId": "akkad_lower",
+        "strength": 5
+      }
+    ],
+    "startingTechs": [
+      "tech_wheel_siege"
+    ],
+    "startingMissions": [
+      "mission_build_ziggurat"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "imperial_dawn"
+    ],
+    "startingTreasury": 25
   },
   {
     "id": "assyria",
     "name": "Assyria",
     "description": "Hardened armies and iron discipline radiating from fortress cities along the Tigris.",
-    "territories": ["assyria_upper", "assyria_heartland"],
+    "territories": [
+      "assyria_upper",
+      "assyria_heartland"
+    ],
     "stats": {
       "stability": 66,
       "military": 82,
@@ -122,13 +463,97 @@
     "disadvantages": [
       "Overextension: Stability -3 for each concurrent war after the first.",
       "Intimidation Diplomacy: Diplomacy Offer effects halved."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 9
+      },
+      {
+        "type": "horses",
+        "amount": 5
+      },
+      {
+        "type": "stone",
+        "amount": 6
+      }
+    ],
+    "characters": [
+      {
+        "id": "assyria_ashur",
+        "name": "Ashur-Nasir",
+        "role": "ruler",
+        "loyalty": 74,
+        "traits": [
+          "Fortress Builder",
+          "Iron Discipline"
+        ]
+      },
+      {
+        "id": "assyria_shamshi",
+        "name": "Shamshi Belu",
+        "role": "general",
+        "loyalty": 69,
+        "traits": [
+          "Siege Veteran",
+          "Relentless Scout"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "assyria_officers",
+        "name": "Royal Officers",
+        "agenda": "Maintain high readiness along Tigris forts",
+        "approval": 62,
+        "influence": 66,
+        "leaderId": "assyria_shamshi"
+      },
+      {
+        "id": "assyria_merchants",
+        "name": "Assur Traders",
+        "agenda": "Secure caravan tolls to fund the army",
+        "approval": 58,
+        "influence": 59,
+        "leaderId": "assyria_ashur"
+      }
+    ],
+    "traditions": [
+      "tradition_assyria_fortified_path",
+      "tradition_assyria_iron_ranks"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "bronze_spearmen",
+        "territoryId": "assyria_heartland",
+        "strength": 7
+      },
+      {
+        "unitId": "horse_archers",
+        "territoryId": "assyria_upper",
+        "strength": 7
+      }
+    ],
+    "startingTechs": [
+      "tech_iron_forging"
+    ],
+    "startingMissions": [
+      "mission_crush_rebels"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "fortress_empire"
+    ],
+    "startingTreasury": 23
   },
   {
     "id": "carthage",
     "name": "Carthage",
     "description": "Thalassocratic traders balancing mercenary hosts and far-flung harbors.",
-    "territories": ["carthage_carthage", "carthage_maghrib"],
+    "territories": [
+      "carthage_carthage",
+      "carthage_maghrib"
+    ],
     "stats": {
       "stability": 70,
       "military": 68,
@@ -147,13 +572,98 @@
     "disadvantages": [
       "Senatorial Gridlock: Passing laws requires stability >=60 or fails.",
       "Mercenary Loyalty: Lose 3 stability if military falls under 55."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 8
+      },
+      {
+        "type": "timber",
+        "amount": 7
+      },
+      {
+        "type": "luxuries",
+        "amount": 9
+      }
+    ],
+    "characters": [
+      {
+        "id": "carthage_dido",
+        "name": "Queen Dido",
+        "role": "ruler",
+        "loyalty": 85,
+        "traits": [
+          "Sea Founder",
+          "Merchant Matron"
+        ]
+      },
+      {
+        "id": "carthage_hanno",
+        "name": "Hanno the Navigator",
+        "role": "diplomat",
+        "loyalty": 72,
+        "traits": [
+          "Explorer Admiral",
+          "Silver Tongue"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "carthage_senate",
+        "name": "Merchant Senate",
+        "agenda": "Expand sea trade routes and colonies",
+        "approval": 70,
+        "influence": 75,
+        "leaderId": "carthage_dido"
+      },
+      {
+        "id": "carthage_marines",
+        "name": "Sacred Band Captains",
+        "agenda": "Invest in elite marines and harbor walls",
+        "approval": 63,
+        "influence": 65,
+        "leaderId": "carthage_hanno"
+      }
+    ],
+    "traditions": [
+      "tradition_carthage_sea_empire",
+      "tradition_carthage_trade_law"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "naval_marines",
+        "territoryId": "carthage_carthage",
+        "strength": 6
+      },
+      {
+        "unitId": "desert_scouts",
+        "territoryId": "carthage_maghrib",
+        "strength": 5
+      }
+    ],
+    "startingTechs": [
+      "tech_navigation"
+    ],
+    "startingMissions": [
+      "mission_dominate_sea"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "sea_trade"
+    ],
+    "startingTreasury": 27
   },
   {
     "id": "scythia",
     "name": "Scythia",
     "description": "Nomadic confederations patrolling the steppe with composite bows and raiding savvy.",
-    "territories": ["scythia_steppe", "scythia_caspian", "scythia_borderlands"],
+    "territories": [
+      "scythia_steppe",
+      "scythia_caspian",
+      "scythia_borderlands"
+    ],
     "stats": {
       "stability": 58,
       "military": 78,
@@ -172,13 +682,97 @@
     "disadvantages": [
       "Loose Confederacy: Passing laws reduces support by 3.",
       "Nomad Crime: Crime decays 1 point slower."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 6
+      },
+      {
+        "type": "horses",
+        "amount": 12
+      },
+      {
+        "type": "timber",
+        "amount": 3
+      }
+    ],
+    "characters": [
+      {
+        "id": "scythia_idanthyrsus",
+        "name": "Idanthyrsus",
+        "role": "ruler",
+        "loyalty": 70,
+        "traits": [
+          "Master Rider",
+          "Steppe Envoy"
+        ]
+      },
+      {
+        "id": "scythia_tomyris",
+        "name": "Tomyris",
+        "role": "general",
+        "loyalty": 74,
+        "traits": [
+          "Nomad Queen",
+          "Ambush Savant"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "scythia_raiders",
+        "name": "Raider Clans",
+        "agenda": "Raid frontier farms for tribute",
+        "approval": 60,
+        "influence": 58,
+        "leaderId": "scythia_tomyris"
+      },
+      {
+        "id": "scythia_sages",
+        "name": "Sky Shamans",
+        "agenda": "Keep peace among rival clans",
+        "approval": 55,
+        "influence": 52,
+        "leaderId": "scythia_idanthyrsus"
+      }
+    ],
+    "traditions": [
+      "tradition_scythia_nomad_bows",
+      "tradition_scythia_wind_riders"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "steppe_raiders",
+        "territoryId": "scythia_steppe",
+        "strength": 7
+      },
+      {
+        "unitId": "horse_archers",
+        "territoryId": "scythia_borderlands",
+        "strength": 7
+      }
+    ],
+    "startingTechs": [
+      "tech_composite_bow"
+    ],
+    "startingMissions": [
+      "mission_raid_frontier"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "nomad_thunder"
+    ],
+    "startingTreasury": 18
   },
   {
     "id": "egypt",
     "name": "Egypt",
     "description": "Nile dynasts sustaining bureaucracy and monumental projects through predictable floods.",
-    "territories": ["egypt_delta", "egypt_upper"],
+    "territories": [
+      "egypt_delta",
+      "egypt_upper"
+    ],
     "stats": {
       "stability": 82,
       "military": 64,
@@ -195,15 +789,100 @@
       "Vizier Cadres: Pass Law increases laws by an additional 2."
     ],
     "disadvantages": [
-      "Labor Corvée: Suppress Crime reduces support by 2.",
+      "Labor Corv\u00e9e: Suppress Crime reduces support by 2.",
       "Desert Supply: Armies outside Nile tiles lose 1 strength per turn."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 16
+      },
+      {
+        "type": "stone",
+        "amount": 8
+      },
+      {
+        "type": "luxuries",
+        "amount": 6
+      }
+    ],
+    "characters": [
+      {
+        "id": "egypt_hatshepsut",
+        "name": "Hatshepsut",
+        "role": "ruler",
+        "loyalty": 88,
+        "traits": [
+          "Divine Builder",
+          "Diplomatic Bridge"
+        ]
+      },
+      {
+        "id": "egypt_thutmose",
+        "name": "Thutmose",
+        "role": "general",
+        "loyalty": 77,
+        "traits": [
+          "Nile Commander",
+          "Desert Scout"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "egypt_priesthood",
+        "name": "Priests of Amun",
+        "agenda": "Fund temple projects and rituals",
+        "approval": 75,
+        "influence": 80,
+        "leaderId": "egypt_hatshepsut"
+      },
+      {
+        "id": "egypt_navy",
+        "name": "Nile Fleetmasters",
+        "agenda": "Secure river trade and supply routes",
+        "approval": 68,
+        "influence": 65,
+        "leaderId": "egypt_thutmose"
+      }
+    ],
+    "traditions": [
+      "tradition_egypt_river_bounty",
+      "tradition_egypt_monumental"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "levy_infantry",
+        "territoryId": "egypt_delta",
+        "strength": 6
+      },
+      {
+        "unitId": "royal_guard",
+        "territoryId": "egypt_upper",
+        "strength": 8
+      }
+    ],
+    "startingTechs": [
+      "tech_irrigation"
+    ],
+    "startingMissions": [
+      "mission_honour_nile"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "nile_empire"
+    ],
+    "startingTreasury": 28
   },
   {
     "id": "rome",
     "name": "Rome",
     "description": "Ambitious republic leveraging disciplined legions, civic roads, and resilient citizenry.",
-    "territories": ["rome_etruria", "rome_latium", "rome_campania"],
+    "territories": [
+      "rome_etruria",
+      "rome_latium",
+      "rome_campania"
+    ],
     "stats": {
       "stability": 74,
       "military": 80,
@@ -222,13 +901,102 @@
     "disadvantages": [
       "Class Tensions: Collect Taxes adds +2 crime if support <65.",
       "Senate Debates: Diplomacy Offer effectiveness reduced by 1 relation."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 13
+      },
+      {
+        "type": "stone",
+        "amount": 7
+      },
+      {
+        "type": "timber",
+        "amount": 6
+      }
+    ],
+    "characters": [
+      {
+        "id": "rome_brutus",
+        "name": "Lucius Brutus",
+        "role": "ruler",
+        "loyalty": 76,
+        "traits": [
+          "Republic Founder",
+          "Consular Authority"
+        ]
+      },
+      {
+        "id": "rome_camillus",
+        "name": "Marcus Camillus",
+        "role": "general",
+        "loyalty": 74,
+        "traits": [
+          "Legion Organizer",
+          "Engineer of Roads"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "rome_senate",
+        "name": "Senatorial Bloc",
+        "agenda": "Invest in civic roads and colonies",
+        "approval": 66,
+        "influence": 70,
+        "leaderId": "rome_brutus"
+      },
+      {
+        "id": "rome_legions",
+        "name": "Legion Tribunes",
+        "agenda": "Expand legion training and fort lines",
+        "approval": 64,
+        "influence": 68,
+        "leaderId": "rome_camillus"
+      }
+    ],
+    "traditions": [
+      "tradition_rome_legionary_discipline",
+      "tradition_rome_civic_roads"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "levy_infantry",
+        "territoryId": "rome_latium",
+        "strength": 6
+      },
+      {
+        "unitId": "bronze_spearmen",
+        "territoryId": "rome_etruria",
+        "strength": 7
+      },
+      {
+        "unitId": "war_chariots",
+        "territoryId": "rome_campania",
+        "strength": 7
+      }
+    ],
+    "startingTechs": [
+      "tech_military_roads"
+    ],
+    "startingMissions": [
+      "mission_expand_republic"
+    ],
+    "scenarioTags": [
+      "classical_age",
+      "italian_rise"
+    ],
+    "startingTreasury": 26
   },
   {
     "id": "minoa",
     "name": "Minoa",
     "description": "Aegean maritime power controlling key islands with vibrant artisan guilds.",
-    "territories": ["minoa_aegean", "minoa_crete"],
+    "territories": [
+      "minoa_aegean",
+      "minoa_crete"
+    ],
     "stats": {
       "stability": 68,
       "military": 58,
@@ -247,13 +1015,97 @@
     "disadvantages": [
       "Earthquake Threat: Random events can hit stability harder (-1 additional).",
       "No Standing Army: Recruit Army costs +1 economy."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 7
+      },
+      {
+        "type": "luxuries",
+        "amount": 8
+      },
+      {
+        "type": "timber",
+        "amount": 5
+      }
+    ],
+    "characters": [
+      {
+        "id": "minoa_minossa",
+        "name": "Queen Minossa",
+        "role": "ruler",
+        "loyalty": 79,
+        "traits": [
+          "Sea Throne",
+          "Labyrinth Patron"
+        ]
+      },
+      {
+        "id": "minoa_daedalus",
+        "name": "Daedalus",
+        "role": "sage",
+        "loyalty": 71,
+        "traits": [
+          "Artisan Genius",
+          "Harbor Architect"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "minoa_traders",
+        "name": "Aegean Traders",
+        "agenda": "Restore island trade dominance",
+        "approval": 69,
+        "influence": 70,
+        "leaderId": "minoa_minossa"
+      },
+      {
+        "id": "minoa_artisans",
+        "name": "Palatial Artisans",
+        "agenda": "Fund artisan guilds and festivals",
+        "approval": 65,
+        "influence": 62,
+        "leaderId": "minoa_daedalus"
+      }
+    ],
+    "traditions": [
+      "tradition_minoa_sea_lords",
+      "tradition_minoa_palatial_craft"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "naval_marines",
+        "territoryId": "minoa_aegean",
+        "strength": 6
+      },
+      {
+        "unitId": "palace_guard",
+        "territoryId": "minoa_crete",
+        "strength": 7
+      }
+    ],
+    "startingTechs": [
+      "tech_sea_trade"
+    ],
+    "startingMissions": [
+      "mission_reopen_trade"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "aegean_supremacy"
+    ],
+    "startingTreasury": 24
   },
   {
     "id": "hittites",
     "name": "Hittites",
     "description": "Anatolian federation famed for chariot corps and complex legal code.",
-    "territories": ["hittites_anatolia", "hittites_capital"],
+    "territories": [
+      "hittites_anatolia",
+      "hittites_capital"
+    ],
     "stats": {
       "stability": 71,
       "military": 77,
@@ -272,6 +1124,87 @@
     "disadvantages": [
       "Vassal Disputes: Alliances reduce stability by 1 due to obligations.",
       "Mountain Routes: Move Army into Anatolia tiles costs +1 strength."
-    ]
+    ],
+    "resourceInventory": [
+      {
+        "type": "grain",
+        "amount": 10
+      },
+      {
+        "type": "bronze",
+        "amount": 9
+      },
+      {
+        "type": "stone",
+        "amount": 7
+      }
+    ],
+    "characters": [
+      {
+        "id": "hittites_suppiluliuma",
+        "name": "Suppiluliuma",
+        "role": "ruler",
+        "loyalty": 83,
+        "traits": [
+          "Lawgiver King",
+          "Chariot Tactician"
+        ]
+      },
+      {
+        "id": "hittites_puduhepa",
+        "name": "Puduhepa",
+        "role": "diplomat",
+        "loyalty": 76,
+        "traits": [
+          "Priestess Mediator",
+          "Treaty Weaver"
+        ]
+      }
+    ],
+    "factions": [
+      {
+        "id": "hittites_nobles",
+        "name": "Anatolian Nobles",
+        "agenda": "Codify vassal treaties and secure borders",
+        "approval": 67,
+        "influence": 69,
+        "leaderId": "hittites_suppiluliuma"
+      },
+      {
+        "id": "hittites_chariots",
+        "name": "Royal Chariot Corps",
+        "agenda": "Invest in elite chariot regiments",
+        "approval": 62,
+        "influence": 65,
+        "leaderId": "hittites_puduhepa"
+      }
+    ],
+    "traditions": [
+      "tradition_hittites_law_tablets",
+      "tradition_hittites_chariot_legions"
+    ],
+    "startingUnits": [
+      {
+        "unitId": "war_chariots",
+        "territoryId": "hittites_anatolia",
+        "strength": 8
+      },
+      {
+        "unitId": "bronze_spearmen",
+        "territoryId": "hittites_capital",
+        "strength": 7
+      }
+    ],
+    "startingTechs": [
+      "tech_bronze_working"
+    ],
+    "startingMissions": [
+      "mission_codify_laws"
+    ],
+    "scenarioTags": [
+      "bronze_age",
+      "anatolian_hegemony"
+    ],
+    "startingTreasury": 23
   }
 ]

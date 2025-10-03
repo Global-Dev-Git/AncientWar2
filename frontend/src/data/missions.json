@@ -1,0 +1,90 @@
+[
+  {
+    "id": "mission_secure_plateau",
+    "name": "Secure the Plateau",
+    "description": "Fortify the eastern frontier and ensure horse herds thrive.",
+    "rewards": ["+5 stability", "+20 grain stockpile"],
+    "requirements": ["Control medes_plateau", "Supply cache in frontier >= 6"],
+    "expiresIn": 12
+  },
+  {
+    "id": "mission_consult_oracle",
+    "name": "Consult the Oracle",
+    "description": "Hold a grand divination to guide the dynasty's next campaign.",
+    "rewards": ["+4 influence", "Reveal random tech"],
+    "requirements": ["Stability >= 70", "At least 2 characters with loyalty >= 70"],
+    "expiresIn": 10
+  },
+  {
+    "id": "mission_expand_canals",
+    "name": "Expand the Canal Grid",
+    "description": "Finance new sluices to boost flood control and trade.",
+    "rewards": ["+2 development in all river territories", "+10 luxuries"],
+    "requirements": ["Control harappa_indus", "Treasury >= 20"],
+    "expiresIn": 14
+  },
+  {
+    "id": "mission_build_ziggurat",
+    "name": "Raise a Monument",
+    "description": "Commission a towering ziggurat to awe allies and rivals.",
+    "rewards": ["+6 influence", "Unlock festival tradition"],
+    "requirements": ["Control akkad_mesopotamia", "At least 8 stone resources"],
+    "expiresIn": 16
+  },
+  {
+    "id": "mission_crush_rebels",
+    "name": "Crush the Rebels",
+    "description": "Suppress unrest before it spreads through the realm.",
+    "rewards": ["Crime -6", "Supply caches refreshed"],
+    "requirements": ["No territory unrest above 30", "At least one fortification level 2"],
+    "expiresIn": 8
+  },
+  {
+    "id": "mission_dominate_sea",
+    "name": "Dominate the Sea",
+    "description": "Reassert control over the central sea lanes and harbors.",
+    "rewards": ["+5 economy", "Gain Naval Marines"],
+    "requirements": ["Control 3 coastal territories", "Maintain 2 naval units"],
+    "expiresIn": 12
+  },
+  {
+    "id": "mission_raid_frontier",
+    "name": "Raid the Frontier",
+    "description": "Launch raids into settled lands to capture tribute.",
+    "rewards": ["+10 horses", "Relations -5 with raided nation"],
+    "requirements": ["At war with a settled nation", "At least one cavalry unit with supply >= 5"],
+    "expiresIn": 6
+  },
+  {
+    "id": "mission_honour_nile",
+    "name": "Honour the Nile",
+    "description": "Celebrate the inundation to secure loyalty and abundance.",
+    "rewards": ["+6 stability", "+10 luxuries"],
+    "requirements": ["Control egypt_delta", "Grain stockpile >= 15"],
+    "expiresIn": 10
+  },
+  {
+    "id": "mission_expand_republic",
+    "name": "Expand the Republic",
+    "description": "Integrate new allies and extend citizen rights.",
+    "rewards": ["+4 influence", "Unlock new tradition"],
+    "requirements": ["Control 5 territories", "Support >= 65"],
+    "expiresIn": 14
+  },
+  {
+    "id": "mission_reopen_trade",
+    "name": "Reopen Trade",
+    "description": "Restore the prestige of the island trade leagues.",
+    "rewards": ["+5 economy", "Gain 5 luxuries"],
+    "requirements": ["Have an alliance with a coastal nation", "Treasury >= 18"],
+    "expiresIn": 12
+  },
+  {
+    "id": "mission_codify_laws",
+    "name": "Codify the Laws",
+    "description": "Gather scribes to record treaties and statutes for posterity.",
+    "rewards": ["+5 laws", "Tradition adoption cost -2"],
+    "requirements": ["Laws >= 65", "Control hittites_capital"],
+    "expiresIn": 15
+  }
+]

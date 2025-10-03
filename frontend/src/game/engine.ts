@@ -8,6 +8,8 @@ import type {
   NationState,
   PlayerAction,
   TerritoryState,
+  SavePayload,
+  SerializedDiplomacyMatrix,
 } from './types'
 import {
   adjustTerritoryGarrison,
@@ -22,6 +24,8 @@ import {
 } from './utils'
 import { decideActions, getArchetypeMap } from './ai'
 import { applyTurnEvents } from './events'
+
+const CURRENT_SAVE_VERSION = 2
 
 const ACTION_COSTS: Record<ActionType, number> = {
   InvestInTech: 6,
@@ -45,7 +49,7 @@ const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionT
 
 export const createInitialGameState = (
   playerNationId: string,
-  seed: number = Date.now(),
+  _seed: number = Date.now(),
 ): GameState => {
   const nationStates: Record<string, NationState> = {}
   nations.forEach((nation) => {
@@ -86,6 +90,8 @@ export const createInitialGameState = (
     winner: undefined,
     defeated: undefined,
     actionsTaken: 0,
+    scenarioId: 'default',
+    saveVersion: CURRENT_SAVE_VERSION,
   }
 
   pushLog(state, {
@@ -591,26 +597,89 @@ export const executePlayerAction = (
   return false
 }
 
+const determineSupplyStatus = (current: number, max: number) => {
+  if (current >= max * 0.66) return 'green'
+  if (current >= max * 0.33) return 'strained'
+  return 'depleted'
+}
+
 export const quickSaveState = (state: GameState): string => {
-  const serialisable = {
+  const serialisable: SavePayload['state'] = {
     ...state,
+    saveVersion: CURRENT_SAVE_VERSION,
     diplomacy: {
       ...state.diplomacy,
       wars: Array.from(state.diplomacy.wars),
       alliances: Array.from(state.diplomacy.alliances),
     },
   }
-  return JSON.stringify(serialisable)
+  const payload: SavePayload = {
+    version: CURRENT_SAVE_VERSION,
+    state: serialisable,
+  }
+  return JSON.stringify(payload)
 }
 
 export const loadStateFromString = (payload: string): GameState => {
   const parsed = JSON.parse(payload)
-  return {
-    ...parsed,
+  const version: number = typeof parsed.version === 'number' ? parsed.version : 1
+  const rawState = (parsed.version ? parsed.state : parsed) as SavePayload['state']
+
+  const serializedDiplomacy = rawState.diplomacy as SerializedDiplomacyMatrix
+
+  const hydrated: GameState = {
+    ...rawState,
     diplomacy: {
-      relations: parsed.diplomacy.relations,
-      wars: new Set(parsed.diplomacy.wars),
-      alliances: new Set(parsed.diplomacy.alliances),
+      relations: rawState.diplomacy.relations,
+      wars: new Set(serializedDiplomacy.wars ?? []),
+      alliances: new Set(serializedDiplomacy.alliances ?? []),
     },
+    saveVersion: version,
+    scenarioId: rawState.scenarioId ?? 'default',
   }
+
+  Object.values(hydrated.nations).forEach((nation) => {
+    nation.resourceInventory = nation.resourceInventory?.map((entry) => ({ ...entry })) ?? []
+    nation.characters = nation.characters?.map((character) => ({
+      ...character,
+      traits: [...character.traits],
+    })) ?? []
+    nation.factions = nation.factions?.map((faction) => ({ ...faction })) ?? []
+    nation.traditions = nation.traditions ? [...nation.traditions] : []
+    nation.activeMissions = nation.activeMissions
+      ? [...nation.activeMissions]
+      : nation.startingMissions
+      ? [...nation.startingMissions]
+      : []
+    nation.completedMissions = nation.completedMissions ? [...nation.completedMissions] : []
+    nation.knownTechs = nation.knownTechs
+      ? [...nation.knownTechs]
+      : nation.startingTechs
+      ? [...nation.startingTechs]
+      : []
+    nation.armies = nation.armies.map((army) => {
+      const maxSupply = army.maxSupply ?? gameConfig.defaultUnitSupply
+      const currentSupply = Math.min(maxSupply, army.currentSupply ?? maxSupply)
+      return {
+        ...army,
+        unitId: army.unitId,
+        maxSupply,
+        currentSupply,
+        supplyStatus: determineSupplyStatus(currentSupply, maxSupply),
+      }
+    })
+  })
+
+  Object.values(hydrated.territories).forEach((territory) => {
+    territory.resources = territory.resources ? [...territory.resources] : []
+    territory.fortifications = territory.fortifications
+      ? { ...territory.fortifications }
+      : { level: 0, type: 'none', garrisonBonus: 0 }
+    territory.supplyCache =
+      typeof territory.supplyCache === 'number'
+        ? territory.supplyCache
+        : territory.resources.reduce((total, resource) => total + Math.round(resource.output / 2), 0)
+  })
+
+  return hydrated
 }
