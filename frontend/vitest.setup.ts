@@ -1,2 +1,3 @@
-// Custom test setup placeholder. Add DOM matchers or mocks here if needed.
-export {}
+import '@testing-library/jest-dom/vitest'
+
+// Additional shared mocks or setup helpers can be added here as needed.

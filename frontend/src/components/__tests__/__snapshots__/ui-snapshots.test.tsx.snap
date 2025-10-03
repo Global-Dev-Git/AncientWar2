@@ -1,0 +1,416 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UI snapshot coverage > renders HUD stat panel snapshot 1`] = `
+<DocumentFragment>
+  <section
+    class="hud"
+  >
+    <header
+      class="hud__header"
+    >
+      <div>
+        <h1>
+          Roman Republic
+        </h1>
+        <p>
+          Legions prepared for campaigns across the Mediterranean.
+        </p>
+      </div>
+      <div
+        class="hud__meta"
+      >
+        <span>
+          Turn 5
+        </span>
+        <span>
+          Treasury 90
+        </span>
+        <span>
+          Actions left 2
+        </span>
+      </div>
+    </header>
+    <div
+      class="hud__stats"
+    >
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Stability
+          </span>
+          <strong>
+            72
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 72%; background: var(--accent-positive);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Military
+          </span>
+          <strong>
+            85
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 85%; background: var(--accent-positive);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Technology
+          </span>
+          <strong>
+            63
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 63%; background: var(--accent-warning);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Economy
+          </span>
+          <strong>
+            58
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 58%; background: var(--accent-warning);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Crime
+          </span>
+          <strong>
+            22
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 22%; background: var(--accent-positive);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Influence
+          </span>
+          <strong>
+            48
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 48%; background: var(--accent-warning);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Support
+          </span>
+          <strong>
+            71
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 71%; background: var(--accent-positive);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Science
+          </span>
+          <strong>
+            54
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 54%; background: var(--accent-warning);"
+          />
+        </div>
+      </div>
+      <div
+        class="stat-bar"
+      >
+        <div
+          class="stat-bar__label"
+        >
+          <span>
+            Laws
+          </span>
+          <strong>
+            60
+          </strong>
+        </div>
+        <div
+          class="stat-bar__meter"
+        >
+          <div
+            class="stat-bar__fill"
+            style="width: 60%; background: var(--accent-warning);"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;
+
+exports[`UI snapshot coverage > renders army inspector modal snapshot 1`] = `
+<DocumentFragment>
+  <div
+    aria-modal="true"
+    class="action-modal__backdrop"
+    role="dialog"
+  >
+    <div
+      class="action-modal"
+    >
+      <header>
+        <h3>
+          Move Army
+        </h3>
+        <button
+          aria-label="Close action dialog"
+          type="button"
+        >
+          ✕
+        </button>
+      </header>
+      <p
+        class="action-modal__description"
+      >
+        Shift troops to friendly lands or attack adjacent enemies.
+      </p>
+      <label
+        class="action-modal__field"
+      >
+        <span>
+          Source Territory
+        </span>
+        bound HTMLSelectElement {
+          "0": <option
+            value=""
+          >
+            Select territory
+          </option>,
+          "1": <option
+            value="rome_latium"
+          >
+            Latium
+          </option>,
+          "2": <option
+            value="rome_etruria"
+          >
+            Etruria
+          </option>,
+        }
+      </label>
+      <label
+        class="action-modal__field"
+      >
+        <span>
+          Target Territory
+        </span>
+        bound HTMLSelectElement {
+          "0": <option
+            value=""
+          >
+            Select target
+          </option>,
+          "1": <option
+            value="rome_etruria"
+          >
+            Etruria — Friendly
+          </option>,
+          "2": <option
+            value="carthage_carthage"
+          >
+            Carthage — Enemy
+          </option>,
+        }
+      </label>
+      <footer>
+        <button
+          class="secondary"
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          disabled=""
+          type="button"
+        >
+          Confirm
+        </button>
+      </footer>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`UI snapshot coverage > renders diplomacy treaty rows snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="diplomacy-panel"
+  >
+    <h3>
+      Diplomacy
+    </h3>
+    <ul>
+      <li
+        class="diplomacy-row diplomacy-row--hostile"
+      >
+        <div>
+          <strong>
+            Carthage
+          </strong>
+          <span>
+            Maritime traders contesting sea lanes.
+          </span>
+        </div>
+        <div
+          class="diplomacy-row__status"
+        >
+          <span
+            class="diplomacy-score"
+          >
+            -35
+          </span>
+          <span
+            class="tag tag--war"
+          >
+            War
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`UI snapshot coverage > renders notification panel snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="notification-stack"
+  >
+    <div
+      class="notification notification--positive"
+    >
+      Latium celebrates a festival.
+    </div>
+    <div
+      class="notification notification--negative"
+    >
+      Carthaginian corsairs harass traders.
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`UI snapshot coverage > renders stat bar snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="stat-bar"
+  >
+    <div
+      class="stat-bar__label"
+    >
+      <span>
+        Military
+      </span>
+      <strong>
+        85
+      </strong>
+    </div>
+    <div
+      class="stat-bar__meter"
+    >
+      <div
+        class="stat-bar__fill"
+        style="width: 85%; background: var(--accent-positive);"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -11,6 +11,8 @@ export const cloneRelations = (relations: DiplomacyMatrix['relations']): Diploma
   return copy
 }
 
+const clamp = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value))
+
 export const updateStats = (nation: NationState, key: keyof NationState['stats'], delta: number): void => {
   const value = nation.stats[key] + delta
   nation.stats[key] = Math.max(0, Math.min(100, value))
@@ -27,6 +29,9 @@ export const ensureRelationMatrix = (
   diplomacy: DiplomacyMatrix,
   nations: Record<string, NationState>,
 ): void => {
+  if (!diplomacy.blockades) {
+    diplomacy.blockades = {}
+  }
   Object.keys(nations).forEach((id) => {
     if (!diplomacy.relations[id]) {
       diplomacy.relations[id] = {}
@@ -67,6 +72,7 @@ export const toggleWar = (
     diplomacy.alliances.delete(key)
   } else {
     diplomacy.wars.delete(key)
+    delete diplomacy.blockades[key]
   }
 }
 
@@ -80,8 +86,27 @@ export const toggleAlliance = (
   if (allied) {
     diplomacy.alliances.add(key)
     diplomacy.wars.delete(key)
+    delete diplomacy.blockades[key]
   } else {
     diplomacy.alliances.delete(key)
+  }
+}
+
+export const getBlockadeSeverity = (diplomacy: DiplomacyMatrix, a: string, b: string): number =>
+  diplomacy.blockades[relationKey(a, b)] ?? 0
+
+export const setBlockade = (
+  diplomacy: DiplomacyMatrix,
+  a: string,
+  b: string,
+  severity: number,
+): void => {
+  const key = relationKey(a, b)
+  const value = clamp(severity, 0, 1)
+  if (value <= 0) {
+    delete diplomacy.blockades[key]
+  } else {
+    diplomacy.blockades[key] = value
   }
 }
 

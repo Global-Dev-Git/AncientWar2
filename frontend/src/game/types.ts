@@ -75,7 +75,17 @@ export interface DiplomacyMatrix {
   relations: Record<string, Record<string, number>>
   wars: Set<string>
   alliances: Set<string>
+  blockades: Record<string, number>
 }
+
+export interface Treaty {
+  type: 'trade' | 'defense' | 'nonAggression' | 'vassalage'
+  partner: string
+  exclusivity?: boolean
+  expires?: number
+}
+
+export type TechTree = Record<string, string[]>
 
 export interface NotificationEntry {
   id: string
@@ -133,6 +143,7 @@ export interface GameState {
   winner?: string
   defeated?: boolean
   actionsTaken: number
+  ironman: boolean
 }
 
 export interface PlayerAction {

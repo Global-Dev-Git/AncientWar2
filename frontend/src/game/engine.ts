@@ -47,6 +47,7 @@ export const createInitialGameState = (
   playerNationId: string,
   seed: number = Date.now(),
 ): GameState => {
+  void seed
   const nationStates: Record<string, NationState> = {}
   nations.forEach((nation) => {
     nationStates[nation.id] = buildInitialNationState(nation)
@@ -61,6 +62,7 @@ export const createInitialGameState = (
     relations: {},
     wars: new Set<string>(),
     alliances: new Set<string>(),
+    blockades: {},
   }
   ensureRelationMatrix(diplomacy, nationStates)
 
@@ -86,6 +88,7 @@ export const createInitialGameState = (
     winner: undefined,
     defeated: undefined,
     actionsTaken: 0,
+    ironman: false,
   }
 
   pushLog(state, {
@@ -607,10 +610,12 @@ export const loadStateFromString = (payload: string): GameState => {
   const parsed = JSON.parse(payload)
   return {
     ...parsed,
+    ironman: parsed.ironman ?? false,
     diplomacy: {
       relations: parsed.diplomacy.relations,
       wars: new Set(parsed.diplomacy.wars),
       alliances: new Set(parsed.diplomacy.alliances),
+      blockades: parsed.diplomacy.blockades ?? {},
     },
   }
 }
