@@ -95,6 +95,12 @@ The **Save** and **Load** buttons in the map header persist the serialized game 
 
 The balancing file `frontend/src/config/config.json` exposes combat variance, per-action gains, upkeep costs, and systemic drifts (support, crime, science). Adjust values and restart the dev server to retune the experience. For example, increasing `techGainPerInvest` accelerates the tech race, while raising `stabilityDecayPerWar` makes protracted conflicts riskier. The engine reads this file at runtime, so no code changes are needed.
 
+### Court & intrigue
+
+* Press **C** or use the **Court & Intrigue** button to open a full-screen, glassmorphic court view showing every leader, advisor, and general with loyalty bars and trait chips.
+* Factions (Military, Priesthood, Merchants, Nobility) now display support meters that influence stability and economy each upkeep tick.
+* Intrigue actions — Bribe Advisor, Purge, Assassinate, Steal Technology, and Foment Revolt — surface projected success odds, your leading specialist, and failure risks inside the action modal.
+
 ### Extending nations or the map
 
 * Add new nation definitions to `frontend/src/data/nations.json`. Keep the stat keys (0–100) consistent.

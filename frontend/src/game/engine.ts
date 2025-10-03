@@ -5,6 +5,7 @@ import {
   buildInitialNationState,
   buildInitialTerritoryState,
   buildInitialTradeState,
+  generateFallbackCharacters,
 } from './data'
 import { RandomGenerator } from './random'
 import { TERRAIN_MODIFIERS } from './constants'
@@ -18,9 +19,12 @@ import type {
   TerritoryState,
 } from './types'
 import {
+  adjustFactionSupport,
   adjustTerritoryGarrison,
+  averageFactionSupport,
   ensureRelationMatrix,
   getControlledTerritories,
+  getFactionStanding,
   modifyRelation,
   pushLog,
   pushNotification,
@@ -28,6 +32,7 @@ import {
   toggleWar,
   updateStats,
 } from './utils'
+import { calculateIntrigueChance, getIntrigueSpecialistName } from './intrigue'
 import { decideActions, getArchetypeMap } from './ai'
 import { applyTurnEvents } from './events'
 
@@ -43,6 +48,11 @@ const ACTION_COSTS: Record<ActionType, number> = {
   FormAlliance: 0,
   Bribe: 5,
   SuppressCrime: 4,
+  BribeAdvisor: 4,
+  Purge: 3,
+  Assassinate: 6,
+  StealTech: 5,
+  FomentRevolt: 5,
 }
 
 const UNIQUE_TRAIT_COST_MODIFIERS: Partial<Record<string, Partial<Record<ActionType, number>>>> = {
@@ -393,6 +403,191 @@ const handleSuppressCrime = (
   return `Crime reduced by ${reduction}`
 }
 
+const adjustLoyalty = (loyalty: number, delta: number): number =>
+  Math.max(0, Math.min(100, loyalty + delta))
+
+const findLowestLoyalAdvisor = (nation: NationState) =>
+  nation.characters
+    .filter((character) => character.role === 'Advisor')
+    .sort((a, b) => a.loyalty - b.loyalty)[0]
+
+const handleBribeAdvisor = (
+  state: GameState,
+  nation: NationState,
+  rng: RandomGenerator,
+): string | undefined => {
+  const advisor = findLowestLoyalAdvisor(nation)
+  if (!advisor) return undefined
+  const chance = calculateIntrigueChance('BribeAdvisor', nation)
+  const success = rng.next() <= chance
+  if (success) {
+    advisor.loyalty = adjustLoyalty(advisor.loyalty, 18)
+    adjustFactionSupport(nation, 'Merchants', 4)
+    pushLog(state, {
+      summary: `${nation.name} quietly secures ${advisor.name}'s loyalty`,
+      tone: 'success',
+      turn: state.turn,
+      details: `Success chance ${Math.round(chance * 100)}%`,
+    })
+    return `${advisor.name} loyalty now ${advisor.loyalty}`
+  }
+  advisor.loyalty = adjustLoyalty(advisor.loyalty, -6)
+  updateStats(nation, 'stability', -gameConfig.intrigueFailurePenalty)
+  adjustFactionSupport(nation, 'Merchants', -3)
+  pushLog(state, {
+    summary: `${nation.name} bribe plot exposed`,
+    tone: 'danger',
+    turn: state.turn,
+    details: `Chance ${Math.round(chance * 100)}%`,
+  })
+  pushNotification(state, {
+    message: 'Bribe failed and shook domestic confidence.',
+    tone: 'negative',
+  })
+  return 'Bribe attempt failed'
+}
+
+const handlePurge = (
+  state: GameState,
+  nation: NationState,
+  rng: RandomGenerator,
+): string | undefined => {
+  const advisor = findLowestLoyalAdvisor(nation)
+  if (!advisor) return undefined
+  const chance = calculateIntrigueChance('Purge', nation)
+  const success = rng.next() <= chance
+  if (success) {
+    nation.characters = nation.characters.filter((character) => character.id !== advisor.id)
+    adjustFactionSupport(nation, 'Military', 3)
+    adjustFactionSupport(nation, 'Priesthood', 2)
+    updateStats(nation, 'stability', 1)
+    pushLog(state, {
+      summary: `${nation.name} purges ${advisor.name} from court`,
+      tone: 'warning',
+      turn: state.turn,
+    })
+    return `${advisor.name} removed; factions steady`
+  }
+  updateStats(nation, 'stability', -gameConfig.intrigueFailurePenalty)
+  adjustFactionSupport(nation, 'Nobility', -4)
+  pushLog(state, {
+    summary: `${nation.name} purge misfires and sparks scandal`,
+    tone: 'danger',
+    turn: state.turn,
+  })
+  pushNotification(state, {
+    message: 'Purge failed; Nobility are offended.',
+    tone: 'negative',
+  })
+  return 'Purge attempt failed'
+}
+
+const handleAssassinate = (
+  state: GameState,
+  nation: NationState,
+  target: NationState,
+  rng: RandomGenerator,
+): string => {
+  const chance = calculateIntrigueChance('Assassinate', nation, target)
+  const success = rng.next() <= chance
+  if (success) {
+    const leader = target.characters.find((character) => character.role === 'Leader')
+    if (leader) {
+      leader.loyalty = adjustLoyalty(leader.loyalty, -20)
+    }
+    updateStats(target, 'stability', -6)
+    updateStats(target, 'crime', 4)
+    adjustFactionSupport(nation, 'Military', 4)
+    pushLog(state, {
+      summary: `${nation.name} assassinates a ${target.name} notable`,
+      tone: 'warning',
+      turn: state.turn,
+      details: `Success chance ${Math.round(chance * 100)}%`,
+    })
+    return `Assassination success; ${target.name} reels`
+  }
+  updateStats(nation, 'stability', -gameConfig.intrigueFailurePenalty)
+  adjustFactionSupport(nation, 'Priesthood', -3)
+  pushLog(state, {
+    summary: `${nation.name} assassin plot foiled by ${target.name}`,
+    tone: 'danger',
+    turn: state.turn,
+  })
+  pushNotification(state, {
+    message: 'Assassins captured; reputation suffers.',
+    tone: 'negative',
+  })
+  return 'Assassination attempt failed'
+}
+
+const handleStealTech = (
+  state: GameState,
+  nation: NationState,
+  target: NationState,
+  rng: RandomGenerator,
+): string => {
+  const chance = calculateIntrigueChance('StealTech', nation, target)
+  const success = rng.next() <= chance
+  if (success) {
+    updateStats(nation, 'tech', Math.ceil(gameConfig.techGainPerInvest / 2))
+    updateStats(nation, 'science', 2)
+    updateStats(target, 'science', -1)
+    adjustFactionSupport(nation, 'Merchants', 2)
+    pushLog(state, {
+      summary: `${nation.name} spies pilfer designs from ${target.name}`,
+      tone: 'success',
+      turn: state.turn,
+    })
+    return `Stolen insights advance science`
+  }
+  updateStats(nation, 'stability', -gameConfig.intrigueFailurePenalty)
+  adjustFactionSupport(nation, 'Merchants', -2)
+  pushLog(state, {
+    summary: `${nation.name} agents caught stealing scrolls`,
+    tone: 'danger',
+    turn: state.turn,
+  })
+  pushNotification(state, {
+    message: 'Steal Tech failed; merchants embarrassed.',
+    tone: 'negative',
+  })
+  return 'Steal Tech attempt failed'
+}
+
+const handleFomentRevolt = (
+  state: GameState,
+  nation: NationState,
+  target: NationState,
+  rng: RandomGenerator,
+): string => {
+  const chance = calculateIntrigueChance('FomentRevolt', nation, target)
+  const success = rng.next() <= chance
+  if (success) {
+    updateStats(target, 'stability', -5)
+    updateStats(target, 'crime', 5)
+    const merchants = getFactionStanding(target, 'Merchants')
+    merchants.support = adjustLoyalty(merchants.support, -5)
+    pushLog(state, {
+      summary: `${nation.name} foments unrest within ${target.name}`,
+      tone: 'warning',
+      turn: state.turn,
+    })
+    return `${target.name} faces uprisings`
+  }
+  updateStats(nation, 'stability', -gameConfig.intrigueFailurePenalty)
+  adjustFactionSupport(nation, 'Nobility', -2)
+  pushLog(state, {
+    summary: `${nation.name} agitators uncovered in ${target.name}`,
+    tone: 'danger',
+    turn: state.turn,
+  })
+  pushNotification(state, {
+    message: 'Revolt plots exposed.',
+    tone: 'negative',
+  })
+  return 'Foment revolt failed'
+}
+
 const applyAction = (
   state: GameState,
   nationId: string,
@@ -457,6 +652,22 @@ const applyAction = (
     }
     case 'SuppressCrime':
       return handleSuppressCrime(state, nation)
+    case 'BribeAdvisor':
+      return handleBribeAdvisor(state, nation, rng)
+    case 'Purge':
+      return handlePurge(state, nation, rng)
+    case 'Assassinate': {
+      if (!action.targetNationId) return undefined
+      return handleAssassinate(state, nation, state.nations[action.targetNationId], rng)
+    }
+    case 'StealTech': {
+      if (!action.targetNationId) return undefined
+      return handleStealTech(state, nation, state.nations[action.targetNationId], rng)
+    }
+    case 'FomentRevolt': {
+      if (!action.targetNationId) return undefined
+      return handleFomentRevolt(state, nation, state.nations[action.targetNationId], rng)
+    }
     case 'MoveArmy': {
       if (!action.sourceTerritoryId || !action.targetTerritoryId) {
         return undefined
@@ -500,6 +711,16 @@ const upkeepPhase = (state: GameState): void => {
     updateStats(nation, 'support', -gameConfig.baseSupportDecay)
     updateStats(nation, 'science', gameConfig.baseScienceDrift)
     updateStats(nation, 'crime', gameConfig.baseCrimeGrowth - gameConfig.crimeDecay)
+
+    const stabilityShift = Math.round((averageFactionSupport(nation) - 55) * gameConfig.factionStabilityImpact)
+    if (stabilityShift !== 0) {
+      updateStats(nation, 'stability', stabilityShift)
+    }
+    const merchantSupport = getFactionStanding(nation, 'Merchants').support
+    const economyShift = Math.round((merchantSupport - 50) * gameConfig.factionEconomyImpact)
+    if (economyShift !== 0) {
+      updateStats(nation, 'economy', economyShift)
+    }
 
     const wars = [...state.diplomacy.wars].filter((key) => key.includes(nation.id))
     updateStats(nation, 'stability', -wars.length * gameConfig.stabilityDecayPerWar)
@@ -594,9 +815,10 @@ export const executePlayerAction = (
   const result = applyAction(state, state.playerNationId, action, rng)
   if (result) {
     state.actionsTaken += 1
+    const tone = result.toLowerCase().includes('fail') ? 'negative' : 'positive'
     pushNotification(state, {
       message: result,
-      tone: 'positive',
+      tone,
     })
     return true
   }
@@ -653,6 +875,24 @@ const reviveNations = (nationSnapshot: Record<string, NationState> | undefined):
     return result
   }
   Object.entries(nationSnapshot).forEach(([id, nation]) => {
+    const baseDefinition = nations.find((candidate) => candidate.id === id)
+    const fallbackCharacters = baseDefinition
+      ? (baseDefinition.startingCharacters ?? generateFallbackCharacters(baseDefinition))
+      : []
+    const characters = Array.isArray(nation.characters) && nation.characters.length
+      ? nation.characters.map((character) => ({
+          ...character,
+          traits: Array.isArray(character.traits) ? [...character.traits] : [],
+        }))
+      : fallbackCharacters.map((character) => ({ ...character, traits: [...character.traits] }))
+    const factions = Array.isArray(nation.factions) && nation.factions.length
+      ? nation.factions.map((faction) => ({ ...faction }))
+      : [
+          { id: 'Military', support: 62 },
+          { id: 'Priesthood', support: 58 },
+          { id: 'Merchants', support: 60 },
+          { id: 'Nobility', support: 55 },
+        ]
     result[id] = {
       ...nation,
       economySummary: nation.economySummary ?? {
@@ -661,6 +901,8 @@ const reviveNations = (nationSnapshot: Record<string, NationState> | undefined):
         blockedRoutes: 0,
         smugglingFactor: 0,
       },
+      characters,
+      factions,
     }
   })
   return result

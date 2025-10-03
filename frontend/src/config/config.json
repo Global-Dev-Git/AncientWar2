@@ -27,5 +27,10 @@
   "routeMaintenance": 0.6,
   "priceElasticity": 0.04,
   "priceFloor": 0.75,
-  "priceCeiling": 1.25
+  "priceCeiling": 1.25,
+  "intrigueBaseSuccess": 0.45,
+  "intrigueTraitBonus": 0.08,
+  "intrigueFailurePenalty": 3,
+  "factionStabilityImpact": 0.15,
+  "factionEconomyImpact": 0.12
 }

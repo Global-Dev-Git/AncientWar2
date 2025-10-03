@@ -1,4 +1,11 @@
-import type { DiplomacyMatrix, GameState, NationState, TerritoryState } from './types'
+import type {
+  DiplomacyMatrix,
+  FactionStanding,
+  FactionType,
+  GameState,
+  NationState,
+  TerritoryState,
+} from './types'
 
 export const relationKey = (a: string, b: string): string =>
   [a, b].sort().join('|')
@@ -111,4 +118,31 @@ export const pushNotification = (
     ...notification,
   }
   state.notifications = [entry, ...state.notifications].slice(0, 5)
+}
+
+export const getFactionStanding = (
+  nation: NationState,
+  factionId: FactionType,
+): FactionStanding => {
+  let standing = nation.factions.find((faction) => faction.id === factionId)
+  if (!standing) {
+    standing = { id: factionId, support: 55 }
+    nation.factions.push(standing)
+  }
+  return standing
+}
+
+export const adjustFactionSupport = (
+  nation: NationState,
+  factionId: FactionType,
+  delta: number,
+): void => {
+  const standing = getFactionStanding(nation, factionId)
+  standing.support = Math.max(0, Math.min(100, standing.support + delta))
+}
+
+export const averageFactionSupport = (nation: NationState): number => {
+  if (!nation.factions.length) return 50
+  const total = nation.factions.reduce((sum, faction) => sum + faction.support, 0)
+  return total / nation.factions.length
 }

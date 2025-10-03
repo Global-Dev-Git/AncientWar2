@@ -21,6 +21,13 @@ Each turn runs the following phases:
 * **Support** – Popular backing; influences combat and attrition losses.
 * **Laws** – Legislative rigor; targeted by Pass Law and certain events.
 * **Treasury** – Not a stat but tracked per nation for costs and upkeep.
+* **Faction Support** – Military, Priesthood, Merchants, and Nobility each maintain a 0–100 support track. Average support shifts stability; Merchants modify economy drift.
+
+## Characters & factions
+
+* Every nation fields a Leader, two Advisors, and a General. Characters expose loyalty (0–100), traits (`Brave`, `Scholar`, `Corrupt`, `Cunning`, `Charismatic`), and an expertise focus (`military`, `economy`, `diplomacy`, `intrigue`).
+* Intrigue odds leverage the highest-loyal specialist that matches the action focus and receive trait synergies (e.g., `Scholar` boosts Steal Tech). Specialists are surfaced in the UI and for tests via `getIntrigueSpecialistName`.
+* Factions represent powerful blocs. Support ≥55 stabilises the nation; support ≤45 introduces extra decay. Merchants specifically alter economic drift. Actions and events nudge faction support (bribery aids Merchants, failed purges anger Nobility, etc.).
 
 ## Actions
 
@@ -37,6 +44,11 @@ Each turn runs the following phases:
 | FormAlliance | Toggle alliance and improve relations. | Alliance on, some traits reduce stability. |
 | Bribe | Raise relations while inflating the target’s crime. | +Relations, target crime +. |
 | SuppressCrime | Reduce crime, usually at small support cost. | -Crime, support penalty, trait modifiers. |
+| BribeAdvisor | Spend coin to increase the loyalty of the weakest advisor, bolstering Merchants. | Loyalty +, Merchants support +; failure harms stability. |
+| Purge | Attempt to remove a disloyal advisor; success steadies factions, failure causes scandals. | Remove advisor, Military/Priesthood +; failure stability −, Nobility −. |
+| Assassinate | Deploy covert blades to injure a rival court. | Target stability −, crime +; failure penalises stability. |
+| StealTech | Infiltrate rivals to steal scientific insight. | Player tech/science +, target science −. |
+| FomentRevolt | Seed unrest in another nation. | Target stability −, crime +, Merchants support −. |
 
 ## Economy & trade
 
@@ -115,6 +127,7 @@ After actions:
 * Trade economy refreshes first: routes recomputed, prices updated, per-nation trade income/maintenance applied.
 * Treasury income = controlled territories × `incomePerTerritoryBase` minus army upkeep (after trade adjustments).
 * Support decays (`baseSupportDecay`), science drifts (`baseScienceDrift`), crime adjusts (`baseCrimeGrowth - crimeDecay`).
+* Faction averaging applies: `(avgSupport - 55) × factionStabilityImpact` shifts stability; Merchants support modifies economy via `factionEconomyImpact`.
 * Each active war reduces stability by `stabilityDecayPerWar`.
 * Random events apply per nation (player always receives one, AI has 45% chance). Events include harvest (+economy +stability), drought (-economy -stability with trait penalties), border raid (garrison hit + unrest), festival (+support +stability), scholar (+science +tech).
 * Revolt check: `unrestScore = crime + territory.unrest - stability`; if >60 and RNG >0.6, territory loses garrison and nation loses stability.
@@ -133,5 +146,6 @@ After actions:
 * `combat.test.ts` – deterministic combat outcome with seeded RNG.
 * `ai.test.ts` – verifies each archetype chooses expected action categories.
 * `turn.test.ts` – ensures turn advancement increments counters, resets actions, and applies maintenance.
+* `intrigue.test.ts` – validates intrigue odds, loyalty adjustments, and failure penalties.
 * `trade.test.ts` – validates price clamping, blockade penalties, and sea/land route classification.
 

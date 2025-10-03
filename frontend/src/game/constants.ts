@@ -22,6 +22,11 @@ export const ACTION_LABELS = {
   FormAlliance: 'Form Alliance',
   Bribe: 'Bribe Officials',
   SuppressCrime: 'Suppress Crime',
+  BribeAdvisor: 'Bribe Advisor',
+  Purge: 'Conduct Purge',
+  Assassinate: 'Assassinate Rival',
+  StealTech: 'Steal Technology',
+  FomentRevolt: 'Foment Revolt',
 } as const
 
 export const ARMY_MIN_STRENGTH = 1
@@ -31,4 +36,5 @@ export const ACTION_SHORTCUTS: Record<string, string> = {
   toggleMapMode: 'm',
   openActions: 'a',
   openDiplomacy: 'd',
+  openCourt: 'c',
 }

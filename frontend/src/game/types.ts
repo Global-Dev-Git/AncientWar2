@@ -26,6 +26,26 @@ export type ResourceType =
   | 'horses'
   | 'papyrus'
 
+export type Trait = 'Brave' | 'Scholar' | 'Corrupt' | 'Cunning' | 'Charismatic'
+
+export type CharacterRole = 'Leader' | 'Advisor' | 'General'
+
+export interface CharacterState {
+  id: string
+  name: string
+  role: CharacterRole
+  loyalty: number
+  traits: Trait[]
+  expertise: 'military' | 'economy' | 'diplomacy' | 'intrigue'
+}
+
+export type FactionType = 'Military' | 'Priesthood' | 'Merchants' | 'Nobility'
+
+export interface FactionStanding {
+  id: FactionType
+  support: number
+}
+
 export interface TradeRoute {
   id: string
   from: string
@@ -58,6 +78,7 @@ export interface NationDefinition {
   culture?: string
   traditions?: string[]
   resourceNeeds?: Record<string, number>
+  startingCharacters?: CharacterState[]
 }
 
 export interface TerritoryDefinition {
@@ -83,6 +104,8 @@ export interface NationState extends NationDefinition {
   treasury: number
   archetype?: AIArchetype
   economySummary?: NationEconomySummary
+  characters: CharacterState[]
+  factions: FactionStanding[]
 }
 
 export interface ArmyUnit {
@@ -105,6 +128,11 @@ export type ActionType =
   | 'FormAlliance'
   | 'Bribe'
   | 'SuppressCrime'
+  | 'BribeAdvisor'
+  | 'Purge'
+  | 'Assassinate'
+  | 'StealTech'
+  | 'FomentRevolt'
 
 export interface DiplomacyMatrix {
   relations: Record<string, Record<string, number>>
@@ -157,6 +185,11 @@ export interface GameConfig {
   priceElasticity: number
   priceFloor: number
   priceCeiling: number
+  intrigueBaseSuccess: number
+  intrigueTraitBonus: number
+  intrigueFailurePenalty: number
+  factionStabilityImpact: number
+  factionEconomyImpact: number
 }
 
 export interface GameState {

@@ -1,5 +1,22 @@
 import { useMemo } from 'react'
-import { Lightning, Coins, Scroll, Sword, UsersThree, ShieldCheck, ArrowsCounterClockwise, Handshake, Target, Eye, Barricade } from '@phosphor-icons/react'
+import {
+  Lightning,
+  Coins,
+  Scroll,
+  Sword,
+  UsersThree,
+  ShieldCheck,
+  ArrowsCounterClockwise,
+  Handshake,
+  Target,
+  Eye,
+  Barricade,
+  HandCoins,
+  Scales,
+  Skull,
+  Telescope,
+  Fire,
+} from '@phosphor-icons/react'
 import type { ActionType } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'
 import './ActionMenu.css'
@@ -21,6 +38,11 @@ const actionIcons: Record<ActionType, JSX.Element> = {
   FormAlliance: <UsersThree weight="bold" />,
   Bribe: <Target weight="bold" />,
   SuppressCrime: <Barricade weight="bold" />,
+  BribeAdvisor: <HandCoins weight="bold" />,
+  Purge: <Scales weight="bold" />,
+  Assassinate: <Skull weight="bold" />,
+  StealTech: <Telescope weight="bold" />,
+  FomentRevolt: <Fire weight="bold" />,
 }
 
 const actionDescriptions: Record<ActionType, string> = {
@@ -35,6 +57,11 @@ const actionDescriptions: Record<ActionType, string> = {
   FormAlliance: 'Bind another nation in mutual defense.',
   Bribe: 'Influence leaders through clandestine payments.',
   SuppressCrime: 'Deploy forces internally to lower crime.',
+  BribeAdvisor: 'Raise the loyalty of a wavering advisor.',
+  Purge: 'Remove disloyal figures at the risk of unrest.',
+  Assassinate: 'Attempt to eliminate a rival leader or general.',
+  StealTech: 'Send agents to steal scientific insights.',
+  FomentRevolt: 'Stir unrest within an opposing nation.',
 }
 
 export const ActionMenu = ({ onSelect, actionsRemaining }: ActionMenuProps) => {

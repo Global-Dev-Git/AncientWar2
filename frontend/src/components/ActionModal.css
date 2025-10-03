@@ -61,6 +61,22 @@
   color: var(--text-strong);
 }
 
+.action-modal__insight {
+  background: var(--surface-elevated);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1rem;
+  box-shadow: 0 8px 22px rgba(20, 24, 35, 0.18);
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.action-modal__insight strong {
+  color: var(--text-strong);
+  font-size: 0.9rem;
+}
+
 .action-modal footer {
   display: flex;
   justify-content: flex-end;

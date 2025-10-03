@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ActionType, NationState, PlayerAction, TerritoryState } from '../game/types'
 import { ACTION_LABELS } from '../game/constants'
+import { calculateIntrigueChance, getIntrigueSpecialistName, INTRIGUE_ACTIONS } from '../game/intrigue'
+import { gameConfig } from '../game/data'
 import './ActionModal.css'
 
 interface ActionModalProps {
@@ -13,7 +15,16 @@ interface ActionModalProps {
   selectedTerritoryId?: string
 }
 
-const needsTargetNation: ActionType[] = ['Spy', 'DiplomacyOffer', 'DeclareWar', 'FormAlliance', 'Bribe']
+const needsTargetNation: ActionType[] = [
+  'Spy',
+  'DiplomacyOffer',
+  'DeclareWar',
+  'FormAlliance',
+  'Bribe',
+  'Assassinate',
+  'StealTech',
+  'FomentRevolt',
+]
 const needsSourceTerritory: ActionType[] = ['RecruitArmy', 'MoveArmy']
 
 const describeEffect = (action: ActionType): string => {
@@ -40,6 +51,16 @@ const describeEffect = (action: ActionType): string => {
       return 'Buy influence at the cost of coin and their integrity.'
     case 'SuppressCrime':
       return 'Reduce crime but lose a little support.'
+    case 'BribeAdvisor':
+      return 'Grease the palms of your least loyal advisor to secure their support.'
+    case 'Purge':
+      return 'Remove a disloyal advisor; success steadies the court, failure angers nobles.'
+    case 'Assassinate':
+      return 'Eliminate a rival leader or general to destabilise their realm.'
+    case 'StealTech':
+      return 'Send operatives to pilfer scientific knowledge.'
+    case 'FomentRevolt':
+      return 'Agitate dissidents to raise crime and unrest in another nation.'
     default:
       return ''
   }
@@ -83,6 +104,11 @@ export const ActionModal = ({
 
   if (!actionType) return null
 
+  const playerNation = useMemo(
+    () => nations.find((nation) => nation.id === playerNationId),
+    [nations, playerNationId],
+  )
+
   const requiresNation = needsTargetNation.includes(actionType)
   const requiresSource = needsSourceTerritory.includes(actionType)
   const requiresTargetTerritory = actionType === 'MoveArmy'
@@ -93,6 +119,21 @@ export const ActionModal = ({
     if (requiresTargetTerritory && !targetTerritoryId) return false
     return true
   }
+
+  const isIntrigueAction = INTRIGUE_ACTIONS.includes(actionType)
+  const intrigueTarget = useMemo(
+    () => (requiresNation ? nations.find((nation) => nation.id === targetNationId) : undefined),
+    [requiresNation, nations, targetNationId],
+  )
+  const intrigueChance = useMemo(() => {
+    if (!isIntrigueAction || !playerNation) return null
+    return calculateIntrigueChance(actionType, playerNation, intrigueTarget)
+  }, [actionType, intrigueTarget, isIntrigueAction, playerNation])
+
+  const specialistName = useMemo(() => {
+    if (!isIntrigueAction || !playerNation) return undefined
+    return getIntrigueSpecialistName(playerNation, actionType)
+  }, [actionType, isIntrigueAction, playerNation])
 
   const confirm = () => {
     if (!canConfirm()) return
@@ -160,6 +201,18 @@ export const ActionModal = ({
               ))}
             </select>
           </label>
+        )}
+
+        {isIntrigueAction && (
+          <div className="action-modal__insight" role="note">
+            <strong>Intrigue Outlook</strong>
+            <p>
+              Success chance:{' '}
+              {intrigueChance ? `${Math.round(intrigueChance * 100)}%` : '—'}
+            </p>
+            {specialistName && <p>Specialist: {specialistName}</p>}
+            <p>Failure: -{gameConfig.intrigueFailurePenalty} stability, faction unrest.</p>
+          </div>
         )}
 
         <footer>

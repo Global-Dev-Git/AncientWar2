@@ -3,7 +3,11 @@
     "id": "medes",
     "name": "Medes",
     "description": "Highland coalition famed for swift horse archers and vigilant satraps guarding the Iranian plateau.",
-    "territories": ["medes_caspian", "medes_plateau", "medes_frontier"],
+    "territories": [
+      "medes_caspian",
+      "medes_plateau",
+      "medes_frontier"
+    ],
     "stats": {
       "stability": 68,
       "military": 74,
@@ -22,13 +26,63 @@
     "disadvantages": [
       "Fragmented Nobility: -5 stability if economy falls below 50.",
       "Mountain Supply: Army recruitment costs +1 upkeep."
+    ],
+    "culture": "Iranian Highlands",
+    "traditions": [
+      "Horse Archery",
+      "Mountain Satrapies"
+    ],
+    "startingCharacters": [
+      {
+        "id": "medes-leader",
+        "name": "King Cyaxares",
+        "role": "Leader",
+        "loyalty": 70,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "medes-advisor-1",
+        "name": "Oracle Vissiya",
+        "role": "Advisor",
+        "loyalty": 62,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "medes-advisor-2",
+        "name": "Satrap Uparmiya",
+        "role": "Advisor",
+        "loyalty": 58,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "medes-general",
+        "name": "General Harpagos",
+        "role": "General",
+        "loyalty": 67,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "shang",
     "name": "Shang",
     "description": "Bronze-age dynasty mastering divination and chariot warfare across the Yellow River basin.",
-    "territories": ["shang_yellow", "shang_delta"],
+    "territories": [
+      "shang_yellow",
+      "shang_delta"
+    ],
     "stats": {
       "stability": 72,
       "military": 70,
@@ -47,13 +101,64 @@
     "disadvantages": [
       "Ancestor Burdens: -5 support if laws fall under 55.",
       "Flood Risk: Delta territories suffer +1 crime per drought event."
+    ],
+    "culture": "Yellow River",
+    "traditions": [
+      "Bronze Rites",
+      "Oracle Bones"
+    ],
+    "startingCharacters": [
+      {
+        "id": "shang-leader",
+        "name": "Empress Fu Hao",
+        "role": "Leader",
+        "loyalty": 74,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "shang-advisor-1",
+        "name": "Astrologer Wu Ding",
+        "role": "Advisor",
+        "loyalty": 66,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "shang-advisor-2",
+        "name": "Chancellor Yi",
+        "role": "Advisor",
+        "loyalty": 60,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "shang-general",
+        "name": "Marshal Pan Geng",
+        "role": "General",
+        "loyalty": 68,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "harappa",
     "name": "Harappa",
     "description": "Indus valley planners balancing trade guilds and elaborate irrigation networks.",
-    "territories": ["harappa_indus", "harappa_meluha", "harappa_sindh"],
+    "territories": [
+      "harappa_indus",
+      "harappa_meluha",
+      "harappa_sindh"
+    ],
     "stats": {
       "stability": 75,
       "military": 54,
@@ -72,13 +177,63 @@
     "disadvantages": [
       "Pacifist Merchants: -10 military if stability drops under 55.",
       "Monsoon Fragility: Drought events reduce economy by extra 2."
+    ],
+    "culture": "Indus",
+    "traditions": [
+      "Canal Engineers",
+      "Urban Planners"
+    ],
+    "startingCharacters": [
+      {
+        "id": "harappa-leader",
+        "name": "Council Elder Vasu",
+        "role": "Leader",
+        "loyalty": 69,
+        "traits": [
+          "Charismatic"
+        ],
+        "expertise": "diplomacy"
+      },
+      {
+        "id": "harappa-advisor-1",
+        "name": "Architect Lajja",
+        "role": "Advisor",
+        "loyalty": 60,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "harappa-advisor-2",
+        "name": "Canal Overseer Hima",
+        "role": "Advisor",
+        "loyalty": 57,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "harappa-general",
+        "name": "Marshal Rakh",
+        "role": "General",
+        "loyalty": 63,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "akkad",
     "name": "Akkad",
     "description": "Imperial architects leveraging river trade and siegecraft to dominate Mesopotamia.",
-    "territories": ["akkad_mesopotamia", "akkad_lower"],
+    "territories": [
+      "akkad_mesopotamia",
+      "akkad_lower"
+    ],
     "stats": {
       "stability": 64,
       "military": 76,
@@ -97,13 +252,63 @@
     "disadvantages": [
       "Rebel Cities: Crime penalties doubled on revolt checks.",
       "Harsh Conscription: Recruit Army lowers support by 2."
+    ],
+    "culture": "Mesopotamian",
+    "traditions": [
+      "Imperial Bureaucracy",
+      "Siege Masters"
+    ],
+    "startingCharacters": [
+      {
+        "id": "akkad-leader",
+        "name": "Sargon the Elder",
+        "role": "Leader",
+        "loyalty": 72,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "akkad-advisor-1",
+        "name": "Vizier Enhedu",
+        "role": "Advisor",
+        "loyalty": 61,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "akkad-advisor-2",
+        "name": "Treasurer Zamu",
+        "role": "Advisor",
+        "loyalty": 55,
+        "traits": [
+          "Corrupt"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "akkad-general",
+        "name": "General Rimush",
+        "role": "General",
+        "loyalty": 64,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "assyria",
     "name": "Assyria",
     "description": "Hardened armies and iron discipline radiating from fortress cities along the Tigris.",
-    "territories": ["assyria_upper", "assyria_heartland"],
+    "territories": [
+      "assyria_upper",
+      "assyria_heartland"
+    ],
     "stats": {
       "stability": 66,
       "military": 82,
@@ -122,13 +327,63 @@
     "disadvantages": [
       "Overextension: Stability -3 for each concurrent war after the first.",
       "Intimidation Diplomacy: Diplomacy Offer effects halved."
+    ],
+    "culture": "Levantine",
+    "traditions": [
+      "Iron Discipline",
+      "Siege Towers"
+    ],
+    "startingCharacters": [
+      {
+        "id": "assyria-leader",
+        "name": "Ashurban Regent",
+        "role": "Leader",
+        "loyalty": 68,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "assyria-advisor-1",
+        "name": "High Priestess Shamshi",
+        "role": "Advisor",
+        "loyalty": 57,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "assyria-advisor-2",
+        "name": "Chamberlain Nabu",
+        "role": "Advisor",
+        "loyalty": 52,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "assyria-general",
+        "name": "General Tiglath",
+        "role": "General",
+        "loyalty": 66,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "carthage",
     "name": "Carthage",
     "description": "Thalassocratic traders balancing mercenary hosts and far-flung harbors.",
-    "territories": ["carthage_carthage", "carthage_maghrib"],
+    "territories": [
+      "carthage_carthage",
+      "carthage_maghrib"
+    ],
     "stats": {
       "stability": 70,
       "military": 68,
@@ -147,13 +402,64 @@
     "disadvantages": [
       "Senatorial Gridlock: Passing laws requires stability >=60 or fails.",
       "Mercenary Loyalty: Lose 3 stability if military falls under 55."
+    ],
+    "culture": "Mediterranean",
+    "traditions": [
+      "Thalassocracy",
+      "Merchant Councils"
+    ],
+    "startingCharacters": [
+      {
+        "id": "carthage-leader",
+        "name": "Suffete Hanno",
+        "role": "Leader",
+        "loyalty": 65,
+        "traits": [
+          "Charismatic"
+        ],
+        "expertise": "diplomacy"
+      },
+      {
+        "id": "carthage-advisor-1",
+        "name": "Admiral Mago",
+        "role": "Advisor",
+        "loyalty": 60,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "carthage-advisor-2",
+        "name": "Merchant Azar",
+        "role": "Advisor",
+        "loyalty": 58,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "carthage-general",
+        "name": "General Gisgo",
+        "role": "General",
+        "loyalty": 62,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "scythia",
     "name": "Scythia",
     "description": "Nomadic confederations patrolling the steppe with composite bows and raiding savvy.",
-    "territories": ["scythia_steppe", "scythia_caspian", "scythia_borderlands"],
+    "territories": [
+      "scythia_steppe",
+      "scythia_caspian",
+      "scythia_borderlands"
+    ],
     "stats": {
       "stability": 58,
       "military": 78,
@@ -172,13 +478,63 @@
     "disadvantages": [
       "Loose Confederacy: Passing laws reduces support by 3.",
       "Nomad Crime: Crime decays 1 point slower."
+    ],
+    "culture": "Steppe",
+    "traditions": [
+      "Nomad Cavalry",
+      "Sky Burial"
+    ],
+    "startingCharacters": [
+      {
+        "id": "scythia-leader",
+        "name": "Queen Tomyris",
+        "role": "Leader",
+        "loyalty": 73,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "scythia-advisor-1",
+        "name": "Shaman Argin",
+        "role": "Advisor",
+        "loyalty": 59,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "scythia-advisor-2",
+        "name": "Trader Saka",
+        "role": "Advisor",
+        "loyalty": 55,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "scythia-general",
+        "name": "General Spargap",
+        "role": "General",
+        "loyalty": 65,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "egypt",
     "name": "Egypt",
     "description": "Nile dynasts sustaining bureaucracy and monumental projects through predictable floods.",
-    "territories": ["egypt_delta", "egypt_upper"],
+    "territories": [
+      "egypt_delta",
+      "egypt_upper"
+    ],
     "stats": {
       "stability": 82,
       "military": 64,
@@ -195,15 +551,66 @@
       "Vizier Cadres: Pass Law increases laws by an additional 2."
     ],
     "disadvantages": [
-      "Labor Corvée: Suppress Crime reduces support by 2.",
+      "Labor Corv\u00e9e: Suppress Crime reduces support by 2.",
       "Desert Supply: Armies outside Nile tiles lose 1 strength per turn."
+    ],
+    "culture": "Nile",
+    "traditions": [
+      "Divine Pharaoh",
+      "Flood Harvests"
+    ],
+    "startingCharacters": [
+      {
+        "id": "egypt-leader",
+        "name": "Pharaoh Neferu",
+        "role": "Leader",
+        "loyalty": 71,
+        "traits": [
+          "Charismatic"
+        ],
+        "expertise": "diplomacy"
+      },
+      {
+        "id": "egypt-advisor-1",
+        "name": "Vizier Ptah",
+        "role": "Advisor",
+        "loyalty": 64,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "egypt-advisor-2",
+        "name": "High Priestess Merit",
+        "role": "Advisor",
+        "loyalty": 58,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "egypt-general",
+        "name": "General Ramose",
+        "role": "General",
+        "loyalty": 67,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "rome",
     "name": "Rome",
     "description": "Ambitious republic leveraging disciplined legions, civic roads, and resilient citizenry.",
-    "territories": ["rome_etruria", "rome_latium", "rome_campania"],
+    "territories": [
+      "rome_etruria",
+      "rome_latium",
+      "rome_campania"
+    ],
     "stats": {
       "stability": 74,
       "military": 80,
@@ -222,13 +629,63 @@
     "disadvantages": [
       "Class Tensions: Collect Taxes adds +2 crime if support <65.",
       "Senate Debates: Diplomacy Offer effectiveness reduced by 1 relation."
+    ],
+    "culture": "Mediterranean",
+    "traditions": [
+      "Republican Virtue",
+      "Road Builders"
+    ],
+    "startingCharacters": [
+      {
+        "id": "rome-leader",
+        "name": "Consul Camillus",
+        "role": "Leader",
+        "loyalty": 75,
+        "traits": [
+          "Charismatic"
+        ],
+        "expertise": "diplomacy"
+      },
+      {
+        "id": "rome-advisor-1",
+        "name": "Quaestor Lucullus",
+        "role": "Advisor",
+        "loyalty": 66,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "rome-advisor-2",
+        "name": "Augur Marcia",
+        "role": "Advisor",
+        "loyalty": 62,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "rome-general",
+        "name": "General Fabius",
+        "role": "General",
+        "loyalty": 68,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "minoa",
     "name": "Minoa",
     "description": "Aegean maritime power controlling key islands with vibrant artisan guilds.",
-    "territories": ["minoa_aegean", "minoa_crete"],
+    "territories": [
+      "minoa_aegean",
+      "minoa_crete"
+    ],
     "stats": {
       "stability": 68,
       "military": 58,
@@ -247,13 +704,63 @@
     "disadvantages": [
       "Earthquake Threat: Random events can hit stability harder (-1 additional).",
       "No Standing Army: Recruit Army costs +1 economy."
+    ],
+    "culture": "Aegean",
+    "traditions": [
+      "Maritime Palaces",
+      "Labyrinth Runners"
+    ],
+    "startingCharacters": [
+      {
+        "id": "minoa-leader",
+        "name": "Queen Pasiphae",
+        "role": "Leader",
+        "loyalty": 68,
+        "traits": [
+          "Charismatic"
+        ],
+        "expertise": "diplomacy"
+      },
+      {
+        "id": "minoa-advisor-1",
+        "name": "Navigator Daidalos",
+        "role": "Advisor",
+        "loyalty": 60,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "minoa-advisor-2",
+        "name": "Harbor Master Phae",
+        "role": "Advisor",
+        "loyalty": 56,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "minoa-general",
+        "name": "Captain Talos",
+        "role": "General",
+        "loyalty": 63,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   },
   {
     "id": "hittites",
     "name": "Hittites",
     "description": "Anatolian federation famed for chariot corps and complex legal code.",
-    "territories": ["hittites_anatolia", "hittites_capital"],
+    "territories": [
+      "hittites_anatolia",
+      "hittites_capital"
+    ],
     "stats": {
       "stability": 71,
       "military": 77,
@@ -272,6 +779,53 @@
     "disadvantages": [
       "Vassal Disputes: Alliances reduce stability by 1 due to obligations.",
       "Mountain Routes: Move Army into Anatolia tiles costs +1 strength."
+    ],
+    "culture": "Anatolian",
+    "traditions": [
+      "Chariot Forgeries",
+      "Stone Citadels"
+    ],
+    "startingCharacters": [
+      {
+        "id": "hittites-leader",
+        "name": "Great King Mursili",
+        "role": "Leader",
+        "loyalty": 70,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      },
+      {
+        "id": "hittites-advisor-1",
+        "name": "High Seer Arinna",
+        "role": "Advisor",
+        "loyalty": 58,
+        "traits": [
+          "Scholar"
+        ],
+        "expertise": "intrigue"
+      },
+      {
+        "id": "hittites-advisor-2",
+        "name": "Treasurer Tarh",
+        "role": "Advisor",
+        "loyalty": 54,
+        "traits": [
+          "Cunning"
+        ],
+        "expertise": "economy"
+      },
+      {
+        "id": "hittites-general",
+        "name": "General Suppiluliuma",
+        "role": "General",
+        "loyalty": 65,
+        "traits": [
+          "Brave"
+        ],
+        "expertise": "military"
+      }
     ]
   }
 ]

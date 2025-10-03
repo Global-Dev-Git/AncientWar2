@@ -8,6 +8,7 @@ import DiplomacyPanel from './components/DiplomacyPanel'
 import EventLog from './components/EventLog'
 import NotificationStack from './components/NotificationStack'
 import EconomyPanel from './components/EconomyPanel'
+import CourtPanel from './components/CourtPanel'
 import { useGameEngine } from './hooks/useGameEngine'
 import { gameConfig, nations as nationDefinitions } from './game/data'
 import type { ActionType } from './game/types'
@@ -22,6 +23,7 @@ function App() {
   const [pendingAction, setPendingAction] = useState<ActionType | null>(null)
   const [mapMode, setMapMode] = useState<'political' | 'stability' | 'trade'>('political')
   const [showEconomy, setShowEconomy] = useState(false)
+  const [showCourt, setShowCourt] = useState(false)
 
   const playerNation = state ? state.nations[state.playerNationId] : null
 
@@ -44,6 +46,10 @@ function App() {
       if (key === ACTION_SHORTCUTS.openDiplomacy) {
         event.preventDefault()
         document.getElementById('diplomacy-panel')?.scrollIntoView({ behavior: 'smooth' })
+      }
+      if (key === ACTION_SHORTCUTS.openCourt) {
+        event.preventDefault()
+        setShowCourt(true)
       }
     }
     window.addEventListener('keydown', handler)
@@ -114,6 +120,9 @@ function App() {
                 <button type="button" onClick={() => setShowEconomy((prev) => !prev)}>
                   {showEconomy ? 'Hide Economy' : 'Economy & Trade'}
                 </button>
+                <button type="button" onClick={() => setShowCourt(true)}>
+                  Court & Intrigue (C)
+                </button>
               </div>
             </div>
             <MapBoard
@@ -144,6 +153,16 @@ function App() {
           territories={territories}
           playerNationId={state.playerNationId}
           selectedTerritoryId={state.selectedTerritoryId}
+        />
+      )}
+      {showCourt && (
+        <CourtPanel
+          nation={playerNation}
+          onClose={() => setShowCourt(false)}
+          onSelectAction={(action) => {
+            setShowCourt(false)
+            setPendingAction(action)
+          }}
         />
       )}
     </div>
